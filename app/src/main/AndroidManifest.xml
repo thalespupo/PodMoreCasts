@@ -19,7 +19,8 @@
         <activity
             android:name=".discover.DiscoverPodcastActivity"
             android:label="@string/title_activity_discover_podcast"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
 
 </manifest>
