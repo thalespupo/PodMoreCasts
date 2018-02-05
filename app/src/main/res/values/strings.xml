@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">PodMoreCasts</string>
+    <string name="title_activity_discover_podcast">DiscoverPodcastActivity</string>
+</resources>
