@@ -39,8 +39,11 @@ dependencies {
     }
     compile 'com.google.firebase:firebase-core:11.8.0'
     implementation 'com.firebaseui:firebase-ui-auth:3.2.1'
+    compile 'com.google.firebase:firebase-database:11.8.0'
     debugCompile 'com.readystatesoftware.chuck:library:1.1.0'
     releaseCompile 'com.readystatesoftware.chuck:library-no-op:1.1.0'
+    compile 'com.google.firebase:firebase-auth:11.8.0'
+    compile 'com.google.android.gms:play-services-auth:11.8.0'
 }
 
 

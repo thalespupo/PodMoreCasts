@@ -5,8 +5,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tapura.podmorecasts.model.ItunesResponse;
 import com.tapura.podmorecasts.model.ItunesResultsItem;
+import com.tapura.podmorecasts.model.Podcast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class FakeData {
@@ -14,6 +16,16 @@ public class FakeData {
     public static ItunesResponse getItunesResponse() {
         Gson gson = new GsonBuilder().create();
         return gson.fromJson(getRawFeed(), ItunesResponse.class);
+    }
+
+    public static Podcast getPodcast() {
+        Podcast podcast = new Podcast();
+        podcast.setTitle("NerdCast");
+        podcast.setAuthor("Jovem Nerd");
+        podcast.setSummary("O mundo vira piada no Jovem Nerd");
+        podcast.setImagePath("https://jovemnerd.com.br/wp-content/themes/jovemnerd/assets/images/nc-feed.jpg");
+        podcast.setEpisodes(Arrays.asList("asas", "aushaush", "aasaosiasj"));
+        return podcast;
     }
 
     private static String getRawFeed() {
