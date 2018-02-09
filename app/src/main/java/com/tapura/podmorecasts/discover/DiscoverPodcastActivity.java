@@ -1,20 +1,16 @@
 package com.tapura.podmorecasts.discover;
 
-import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.widget.SearchView;
-import android.widget.Toast;
 
 import com.tapura.podmorecasts.R;
-import com.tapura.podmorecasts.fake.FakeData;
+import com.tapura.podmorecasts.details.PodcastDetailsActivity;
 import com.tapura.podmorecasts.model.ItunesResponse;
 import com.tapura.podmorecasts.model.ItunesResultsItem;
 import com.tapura.podmorecasts.retrofit.ItunesSearchService;
@@ -23,16 +19,16 @@ import com.tapura.podmorecasts.retrofit.ItunesSearchServiceBuilder;
 import org.parceler.Parcels;
 
 import java.util.List;
-import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DiscoverPodcastActivity extends AppCompatActivity {
+public class DiscoverPodcastActivity extends AppCompatActivity implements PodcastDiscoveredAdapter.PodcastDiscoveredOnClickListener {
 
     private static final String TAG = DiscoverPodcastActivity.class.getCanonicalName();
     private static final String PODCAST_LIST_KEY = "podcast_list_key";
+    private static final String FEED_URL_KEY = "feed_url";
 
     private PodcastDiscoveredAdapter mAdapter;
     private RecyclerView mGridView;
@@ -50,7 +46,7 @@ public class DiscoverPodcastActivity extends AppCompatActivity {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 
-        mAdapter = new PodcastDiscoveredAdapter(this);
+        mAdapter = new PodcastDiscoveredAdapter(this, this);
 
         mGridView.setAdapter(mAdapter);
         mGridView.setLayoutManager(layoutManager);
@@ -65,7 +61,7 @@ public class DiscoverPodcastActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 if (mSearchService != null) {
-                    mSearchService.getPodcasts("podcast",query).enqueue(new Callback<ItunesResponse>() {
+                    mSearchService.getPodcasts("podcast", query).enqueue(new Callback<ItunesResponse>() {
                         @Override
                         public void onResponse(Call<ItunesResponse> call, Response<ItunesResponse> response) {
                             if (response.isSuccessful()) {
@@ -108,5 +104,13 @@ public class DiscoverPodcastActivity extends AppCompatActivity {
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelable(PODCAST_LIST_KEY, Parcels.wrap(mAdapter.getList()));
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onClick(int pos) {
+        String feedUrl = mAdapter.getList().get(pos).getFeedUrl();
+        Intent intent = new Intent(this, PodcastDetailsActivity.class);
+        intent.putExtra(FEED_URL_KEY, feedUrl);
+        startActivity(intent);
     }
 }

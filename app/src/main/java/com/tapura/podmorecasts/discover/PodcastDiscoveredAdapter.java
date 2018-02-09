@@ -2,7 +2,6 @@ package com.tapura.podmorecasts.discover;
 
 
 import android.content.Context;
-import android.support.v7.widget.ListPopupWindow;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,8 +20,15 @@ class PodcastDiscoveredAdapter extends RecyclerView.Adapter<PodcastDiscoveredAda
     private List<ItunesResultsItem> mList;
     private Context mContext;
 
-    public PodcastDiscoveredAdapter(Context context) {
+    public interface PodcastDiscoveredOnClickListener {
+        void onClick(int pos);
+    }
+
+    private PodcastDiscoveredOnClickListener mCallback;
+
+    public PodcastDiscoveredAdapter(Context context, PodcastDiscoveredOnClickListener listener) {
         mContext = context;
+        mCallback = listener;
     }
 
     @Override
@@ -43,6 +49,7 @@ class PodcastDiscoveredAdapter extends RecyclerView.Adapter<PodcastDiscoveredAda
         holder.tvPodcastName.setText(item.getCollectionName());
         holder.tvPodcastAuthorName.setText(item.getArtistName());
         holder.tvPodcastGenre.setText(item.getPrimaryGenreName());
+
     }
 
     @Override
@@ -60,7 +67,7 @@ class PodcastDiscoveredAdapter extends RecyclerView.Adapter<PodcastDiscoveredAda
     }
 
 
-    public class DiscoveredViewHolder extends RecyclerView.ViewHolder {
+    public class DiscoveredViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView ivThumbnail;
         TextView tvPodcastName;
         TextView tvPodcastAuthorName;
@@ -72,6 +79,11 @@ class PodcastDiscoveredAdapter extends RecyclerView.Adapter<PodcastDiscoveredAda
             tvPodcastName = itemView.findViewById(R.id.text_view_podcast_name);
             tvPodcastAuthorName = itemView.findViewById(R.id.text_view_podcast_author_name);
             tvPodcastGenre = itemView.findViewById(R.id.text_view_podcast_genre);
+        }
+
+        @Override
+        public void onClick(View v) {
+            mCallback.onClick(getAdapterPosition());
         }
     }
 }

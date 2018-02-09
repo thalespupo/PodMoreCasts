@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
+    version="2.0">
+    <channel>
+        <title>NerdCast</title>
+        <link>https://jovemnerd.com.br/feed-nerdcast/</link>
+        <description>O mundo vira piada no Jovem Nerd</description>
+        <language>pt-BR</language>
+        <copyright>2002-2016 Jovem Nerd | Pazos e Ottoni LTDA</copyright>
+        <lastBuildDate>Fri, 01 Jul 2016 18:03:59 +0000</lastBuildDate>
+        <itunes:author>Jovem Nerd</itunes:author>
+        <itunes:subtitle>NerdCast</itunes:subtitle>
+        <itunes:summary>O mundo vira piada no Jovem Nerd</itunes:summary>
+        <itunes:category text="Society &amp; Culture" />
+        <itunes:owner>
+            <itunes:name>Jovem Nerd</itunes:name>
+            <itunes:email>feedback@jovemnerd.com</itunes:email>
+        </itunes:owner>
+        <itunes:block>no</itunes:block>
+        <itunes:explicit>no</itunes:explicit>
+        <itunes:image href="https://jovemnerd.com.br/wp-content/themes/jovemnerd/assets/images/nc-feed.jpg" />
+        <image>
+            <url>https://jovemnerd.com.br/wp-content/themes/jovemnerd/assets/images/nc-feed.jpg
+            </url>
+            <title>NerdCast</title>
+            <link>https://jovemnerd.com.br/feed-nerdcast/</link>
+            <width>1400</width>
+            <height>1400</height>
+        </image>
+        <managingEditor>feedback@jovemnerd.com</managingEditor>
+        <item>
+            <title>NerdCast 605 - Batalha de Crossovers 7</title>
+            <link>https://jovemnerd.com.br/?podcast=batalha-de-crossovers-7</link>
+            <itunes:summary>Encontraremos de Saitama a Mario, de Orcs a Replicantes. Nosso octógono
+                de crossovers está cheio novamente para mais uma batalha!
+            </itunes:summary>
+            <itunes:duration>01:35:21</itunes:duration>
+            <enclosure
+                length="5721"
+                type="audio/mpeg"
+                url="https://nerdcast.jovemnerd.com.br/nerdcast_605_batalha_de_crossovers_7.mp3" />
+            <pubDate>Fri, 02 Feb 2018 11:01:58 +0000</pubDate>
+            <guid>https://jovemnerd.com.br/?podcast=batalha-de-crossovers-7</guid>
+            <description><![CDATA[Neste podcast: Encontraremos de Saitama a Mario, de Orcs a Replicantes. Nosso octógono de crossovers está cheio novamente para mais uma batalha!
+ARTE DA VITRINE:  André Carvalho
+Magazine Luiza
+
+ 	10% de de desconto na categoria de esporte lazer pra quem baixar app e usar o cupom "maridodagisele".
+ 	Baixe o App: http://maga.lu/2nhCWPR
+
+Novas Camisetas Exclusivas Nerdstore
+
+ 	House of Tiamat, Bad to the Bone e Flesh Wound.
+ 	Garanta já a sua: http://bit.ly/2y1Lr7x
+
+Nerdtech
+
+ 	Nerdtech 24 - Bugs:
+ 	Playlist completa Nerdtech: https://goo.gl/18WWFs
+ 	Toda a PRIMEIRA sexta-feira do mês você vai ter um Nerdcast extra sobre tecnologia.
+ 	Acesse: http://www.alura.com.br/promocao/nerd
+
+Nerdcast Stories
+
+
+Assista: Não me arrependo de nada!
+E-MAILS
+
+ 	Mande suas críticas, elogios, sugestões e caneladas para nerdcast@jovemnerd.com.br
+
+OUÇA TAMBÉM
+
+ 	Playlist completa Batalha dos Crossovers: http://bit.ly/2dw8cFJ
+
+EDIÇÃO COMPLETA POR RADIOFOBIA PODCAST E MULTIMÍDIA
+
+ 	http://radiofobia.com.br
+]]></description>
+        </item>
+        <item>
+            <title>NerdTech 24 - Deu Bug!</title>
+            <link>https://jovemnerd.com.br/?podcast=deu-bug</link>
+            <itunes:summary>Conheça a origem da palavra bug na computação, o que foi o bug do
+                milênio e por que o bug existe.
+            </itunes:summary>
+            <itunes:duration>00:55:05</itunes:duration>
+            <enclosure
+                length="3305"
+                type="audio/mpeg"
+                url="https://nerdcast.jovemnerd.com.br/nerdtech_24.mp3" />
+            <pubDate>Fri, 02 Feb 2018 11:00:06 +0000</pubDate>
+            <guid>https://jovemnerd.com.br/?podcast=deu-bug</guid>
+            <description><![CDATA[Neste podcast: Conheça a origem da palavra bug na computação, o que foi o bug do milênio e por que o bug existe.
+ARTE DA VITRINE:  André Carvalho
+ESTE NERDCAST É UM OFERECIMENTO DA ALURA
+
+ 	Toda a PRIMEIRA sexta-feira do mês você vai ter um Nerdcast extra sobre tecnologia.
+ 	Mais de 500 cursos online!
+ 	Ouvinte do Nerdcast tem 10% de desconto!
+ 	Acesse: http://www.alura.com.br/promocao/nerd
+
+Links citados no programa
+
+ 	https://www.alura.com.br/podcast-nerdtech/links
+
+NerdTech
+
+ 	Playlist completa Nerdtech: https://goo.gl/18WWFs
+
+E-MAILS
+
+ 	Mande suas críticas, elogios, sugestões e caneladas para nerdcast@jovemnerd.com.br
+
+EDIÇÃO COMPLETA POR RADIOFOBIA PODCAST E MULTIMÍDIA
+
+ 	http://radiofobia.com.br
+]]></description>
+        </item>
+        <item>
+            <title>NerdCast 604 - O Futuro da Educação</title>
+            <link>https://jovemnerd.com.br/?podcast=o-futuro-da-educacao</link>
+            <itunes:summary>Discutiremos como a educação deveria ser, e lembre-se: se você não "deu
+                certo" na escola talvez o problema não seja você.
+            </itunes:summary>
+            <itunes:duration>01:36:28</itunes:duration>
+            <enclosure
+                length="5788"
+                type="audio/mpeg"
+                url="https://nerdcast.jovemnerd.com.br/nerdcast_604_futuro_da_educacao.mp3" />
+            <pubDate>Fri, 26 Jan 2018 11:01:15 +0000</pubDate>
+            <guid>https://jovemnerd.com.br/?podcast=o-futuro-da-educacao</guid>
+            <description><![CDATA[Neste podcast: Discutiremos como a educação deveria ser, e lembre-se: se você não "deu certo" na escola talvez o problema não seja você.
+ARTE DA VITRINE:  André Carvalho
+Magazine Luiza
+
+ 	Baixe o App do Magazine Luiza e use o cupom "MAGALUNERD12" para ganhar 12% de desconto na categoria GAMES!
+ 	O cupom é válido para as primeiras mil compras.
+ 	Aproveite: https://magazineluiza.onelink.me/589508454/1499e8ce
+
+Prêmio e-Bit Nerdstore
+
+ 	A votação que escolhe a loja mais querida é aberta ao público. Então, esta é a hora de ativarmos o NERDPOWER e votar!
+ 	Esse ano é a Nerdstore rumo ao Diamante!
+ 	Vote: http://bit.ly/DiamanteNerdstore
+
+Nerdcast Empreendedor
+
+ 	Nerdcast Empreendedor 37 - Ferramentas para avaliar seu negócio: http://bit.ly/2rEEnMN
+ 	Playlist completa Nerdcast Empreendedor: http://bit.ly/2cS4M22
+
+Nerdcast Stories
+
+
+Assista: MAIOR PRAZER
+CITADOS NA LEITURA DE E-MAILS
+
+ 	Artigo completo sobre médicos gamers: http://bit.ly/2DH3CE1
+
+E-MAILS
+
+ 	Mande suas críticas, elogios, sugestões e caneladas para nerdcast@jovemnerd.com.br
+
+EDIÇÃO COMPLETA POR RADIOFOBIA PODCAST E MULTIMÍDIA
+
+ 	http://radiofobia.com.br
+]]></description>
+        </item>
+        <item>
+            <title>Empreendedor 37 - Ferramentas para avaliar seu negócio</title>
+            <link>https://jovemnerd.com.br/?podcast=ferramentas-para-avaliar-seu-negocio</link>
+            <itunes:summary>Flávio Augusto apresenta as ferramentas pessoais que ele utiliza para
+                avaliar seus negócios.
+            </itunes:summary>
+            <itunes:duration>00:54:17</itunes:duration>
+            <enclosure
+                length="3257"
+                type="audio/mpeg"
+                url="https://nerdcast.jovemnerd.com.br/nerdcast_empreendedor_37.mp3" />
+            <pubDate>Fri, 26 Jan 2018 11:00:23 +0000</pubDate>
+            <guid>https://jovemnerd.com.br/?podcast=ferramentas-para-avaliar-seu-negocio</guid>
+            <description><![CDATA[Neste podcast: Flávio Augusto apresenta as ferramentas pessoais que ele utiliza para avaliar seus negócios.
+ARTE DA VITRINE:  André Carvalho
+Wise Up
+
+ 	Aprenda inglês mais rápido.
+ 	Acesse: http://www.wiseup.com/
+
+MeuSucesso
+
+ 	Teste por 7 dias gratuitamente, tendo acesso a todo conteúdo do site.
+ 	Acesse: https://meusucesso.com/jovemnerd
+
+PROGRAMA ANTERIOR
+
+ 	Nerdcast Empreendedor 36 - O que esperar de 2018?: http://bit.ly/2DvHI1U
+ 	Playlist completa Nerdcast Empreendedor: http://bit.ly/2cS4M22
+
+CITADOS NO PROGRAMA:
+
+ 	Vídeo do Flávio: http://bit.ly/2DzZFwy
+
+E-MAILS
+
+ 	Mande suas críticas, elogios, sugestões e caneladas para nerdcast@jovemnerd.com.br
+
+EDIÇÃO COMPLETA POR RADIOFOBIA PODCAST E MULTIMÍDIA
+
+ 	http://radiofobia.com.br
+]]></description>
+        </item>
+        <item>
+            <title>NerdCast 603 - Bariátricas Selvagens</title>
+            <link>https://jovemnerd.com.br/?podcast=bariatricas-selvagens</link>
+            <itunes:summary>Os nerds se reúnem para discutir suas experiências com a famigerada
+                cirurgia bariátrica.
+            </itunes:summary>
+            <itunes:duration>02:41:35</itunes:duration>
+            <enclosure
+                length="9695"
+                type="audio/mpeg"
+                url="https://nerdcast.jovemnerd.com.br/nerdcast_603_bariatricas_selvagens.mp3" />
+            <pubDate>Fri, 19 Jan 2018 11:00:22 +0000</pubDate>
+            <guid>https://jovemnerd.com.br/?podcast=bariatricas-selvagens</guid>
+            <description><![CDATA[Neste podcast: Os nerds se reúnem para discutir suas experiências com a famigerada cirurgia bariátrica.
+ARTE DA VITRINE:  André Carvalho
+Pic Pay
+
+ 	Recarga PicPay e Google Play
+ 	https://www.picpay.com/site/download
+ 	O cashback é válido apenas na primeira recarga de celular do usuário.
+
+Liquidação Modafoca 2018
+
+ 	A maior liquidação Nerd do Brasil com desconto de até 80% e lançamentos especiais.
+ 	Clique no link e aproveite!
+ 	http://www.nerdstore.com.br/
+
+Prêmio e-Bit
+
+ 	A votação que escolhe a loja mais querida é aberta ao público. Então, esta é a hora de ativarmos o NERDPOWER e votar!
+ 	Esse ano é a Nerdstore rumo ao Diamante!
+ 	Vote http://bit.ly/DiamanteNerdstore
+
+CITADO NO PROGRAMA
+
+ 	MINHA BARIÁTRICA E COMPULSÕES | Gaveta Show: https://youtu.be/1oynjs6q6pY
+
+Nerdcast Stories
+
+
+Assista: AS CINZAS DA TINHA COTINHA
+
+ 
+E-MAILS
+
+ 	Mande suas críticas, elogios, sugestões e caneladas para nerdcast@jovemnerd.com.br
+
+EDIÇÃO COMPLETA POR RADIOFOBIA PODCAST E MULTIMÍDIA
+
+ 	http://radiofobia.com.br
+]]></description>
+        </item>
+        <item>
+            <title>NerdCast 602 - RPG Call of Cthulhu 2: O horror do Necronomicon</title>
+            <link>https://jovemnerd.com.br/?podcast=rpg-call-of-cthulhu-2-o-horror-do-necronomicon
+            </link>
+            <itunes:summary>A confraria de investigadores está prestes a embarcar em uma viagem
+                tenebrosa ao coração do regime nazista, à procura do enigmático livro Necronomicon.
+                Quem será que os alcançará primeiro? Seus inimigos ou a INSANIDADE?
+            </itunes:summary>
+            <itunes:duration>02:58:59</itunes:duration>
+            <enclosure
+                length="10739"
+                type="audio/mpeg"
+                url="https://nerdcast.jovemnerd.com.br/nerdcast_602_RPG_cthulhu_2.mp3" />
+            <pubDate>Fri, 12 Jan 2018 11:00:25 +0000</pubDate>
+            <guid>https://jovemnerd.com.br/?podcast=rpg-call-of-cthulhu-2-o-horror-do-necronomicon
+            </guid>
+            <description><![CDATA[43 de dezembro de 2017. Depois de um ano de angústia à espera da continuação de "O Mistério de William Faraday" mergulhe no desconhecido mais uma vez com Jovem Nerd, Azaghal, Tucano, Rex, Carlos Voltor e Leonel Caldela em mais um Nerdcast Especial de RPG!
+
+Neste podcast: A confraria de investigadores está prestes a embarcar em uma viagem tenebrosa ao coração do regime nazista, à procura do enigmático livro Necronomicon. Quem será que os alcançará primeiro? Seus inimigos ou a INSANIDADE?
+Não recomendado para menores de 16 anos 
+“Não está morto o que pode eternamente jazer. E em eras estranhas até a morte pode morrer”
+ALTAMENTE RECOMENDÁVEL OUVIR COM FONES DE OUVIDO
+
+
+ 	HISTÓRIA: Leonel Caldela
+ 	EDIÇÃO E DIREÇÃO: Deive Pazos
+ 	EDIÇÃO E SONORIZAÇÃO: Alexandre Ottoni
+ 	AUXILIARES TÉCNICOS: Leo Lopes, Jef Barbosa e Thiago Miro
+ 	SUPORTE: Diego Moreno e Richard Kloppe
+ 	LOCUÇÃO: Élcio Romar
+ 	DIREÇÃO DE LOCUÇÃO: Beatriz Rodrigues
+ 	VOZ NYARLATHOTEPE: Leo Castilhos
+ 	VOZES E SFX ADICIONAIS: Leo Lopes e outros
+ 	CONSULTORIA CIENTÍFICA: Caio Gomes
+ 	ARTE DA VITRINE: André Meister
+ 	PRODUÇÃO: Jovem Nerd
+
+OUÇA TAMBÉM
+
+ 	RPG Call of Cthulhu 1: O mistério de William Faraday: http://bit.ly/2muWakC
+
+E-MAILS
+
+ 	Mande suas críticas, elogios, sugestões e caneladas para nerdcast@jovemnerd.com.br
+]]></description>
+        </item>
+        <item>
+            <title>NerdCast 601 - Política Internacional 2017</title>
+            <link>https://jovemnerd.com.br/?podcast=politica-internacional-2017</link>
+            <itunes:summary>Fique atento com a ameça dos esquilos, ataques hackers e outros eventos
+                marcantes na política internacional de 2017.
+            </itunes:summary>
+            <itunes:duration>01:56:32</itunes:duration>
+            <enclosure
+                length="6992"
+                type="audio/mpeg"
+                url="https://nerdcast.jovemnerd.com.br/nerdcast_601_politica_internacional_2017.mp3" />
+            <pubDate>Fri, 05 Jan 2018 11:01:24 +0000</pubDate>
+            <guid>https://jovemnerd.com.br/?podcast=politica-internacional-2017</guid>
+            <description><![CDATA[Neste podcast: Fique atento com a ameaça dos esquilos, ataques hackers e outros eventos marcantes na política internacional de 2017.
+ARTE DA VITRINE:  André Carvalho
+Prêmio e-Bit
+
+ 	A votação que escolhe a loja mais querida é aberta ao público. Então, esta é a hora de ativarmos o NERDPOWER e votar!
+ 	Esse ano é a Nerdstore rumo ao Diamante!
+ 	Vote http://bit.ly/DiamanteNerdstore
+
+Magazine Luiza Liquidação Fantástica
+
+ 	Baixe o app, favorite os produtos que você quer comprar e prepare-se, dá pra namorar os itens a vontade sem gastar a internet
+ 	Compre no site e retire na loja
+ 	Acesse: http://bit.ly/2CTmHiF
+
+Nerdtech
+
+ 	Nerdtech 23 - Breve história dos games: http://bit.ly/2m2HoBv
+ 	Playlist completa Nerdtech: https://goo.gl/18WWFs
+ 	Toda a PRIMEIRA sexta-feira do mês você vai ter um Nerdcast extra sobre tecnologia.
+ 	Acesse: http://www.alura.com.br/promocao/nerd
+
+Nerdcast Stories
+
+
+Assista: A Rosa e o Beholder
+OUÇA TAMBÉM
+
+ 	Playlist completa Política Internacional: http://bit.ly/2CuEDiu
+
+E-MAILS
+
+ 	Mande suas críticas, elogios, sugestões e caneladas para nerdcast@jovemnerd.com.br
+
+EDIÇÃO COMPLETA POR RADIOFOBIA PODCAST E MULTIMÍDIA
+
+ 	http://radiofobia.com.br
+]]></description>
+        </item>
+        <item>
+            <title>NerdTech 23 - Breve história dos games</title>
+            <link>https://jovemnerd.com.br/?podcast=breve-historia-dos-games</link>
+            <itunes:summary>Vamos ser nostálgicos comentando sobre jogos clássicos e momentos
+                importantes na história dos games.
+            </itunes:summary>
+            <itunes:duration>00:52:50</itunes:duration>
+            <enclosure
+                length="3170"
+                type="audio/mpeg"
+                url="https://nerdcast.jovemnerd.com.br/nerdtech_23.mp3" />
+            <pubDate>Fri, 05 Jan 2018 11:00:36 +0000</pubDate>
+            <guid>https://jovemnerd.com.br/?podcast=breve-historia-dos-games</guid>
+            <description><![CDATA[Neste podcast: Vamos ser nostálgicos comentando sobre jogos clássicos e momentos importantes na história dos games.
+ARTE DA VITRINE:  André Carvalho
+ESTE NERDCAST É UM OFERECIMENTO DA ALURA
+
+ 	Toda a PRIMEIRA sexta-feira do mês você vai ter um Nerdcast extra sobre tecnologia.
+ 	Acesse: http://www.alura.com.br/promocao/nerd
+ 	Curso Online de Lua, crie um RPG em 2D: https://www.alura.com.br/curso-online-fuga-das-sombras
+ 	Curso Online de jogos com Unity: https://www.alura.com.br/curso-online-criacao-de-jogos-com-unity
+
+E mais pra quem gosta de games e programação em https://www.alura.com.br/cursos-online-programacao/jogos
+Links citados no programa
+
+ 	https://www.alura.com.br/podcast-nerdtech/links
+
+NerdTech
+
+ 	Playlist completa Nerdtech: https://goo.gl/18WWFs
+
+E-MAILS
+
+ 	Mande suas críticas, elogios, sugestões e caneladas para nerdcast@jovemnerd.com.br
+
+EDIÇÃO COMPLETA POR RADIOFOBIA PODCAST E MULTIMÍDIA
+
+ 	http://radiofobia.com.br
+]]></description>
+        </item>
+    </channel>
+</rss>
