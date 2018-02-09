@@ -77,4 +77,8 @@ public class FakeData {
                 "\n" +
                 "\n";
     }
+
+    public static String getFakeFeedUrl() {
+        return "https://jovemnerd.com.br/feed-aaaaaaaanerdcast/";
+    }
 }

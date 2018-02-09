@@ -9,6 +9,7 @@ import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.tapura.podmorecasts.details.PodcastDetailsActivity;
+import com.tapura.podmorecasts.discover.DiscoverPodcastActivity;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +31,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         finish();*/
 
+        Intent intent = new Intent(this, DiscoverPodcastActivity.class);
+        startActivity(intent);
+        finish();
+        /*
         mAuth = FirebaseAuth.getInstance();
 
         startActivityForResult(
@@ -38,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
                         .setAvailableProviders(providers)
                         .build(),
                 RC_SIGN_IN);
-
+*/
 
     }
 

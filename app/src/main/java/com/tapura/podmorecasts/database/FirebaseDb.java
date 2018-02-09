@@ -16,6 +16,7 @@ public class FirebaseDb {
     }
 
     public static void insert(Podcast podcast) {
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -28,7 +29,6 @@ public class FirebaseDb {
         DatabaseReference userRef = database.getReference(USER_REF).child(uid).child(podcastId);
 
         userRef.setValue(podcast);
-
+        
     }
-
 }

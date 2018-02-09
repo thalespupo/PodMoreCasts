@@ -79,6 +79,7 @@ class PodcastDiscoveredAdapter extends RecyclerView.Adapter<PodcastDiscoveredAda
             tvPodcastName = itemView.findViewById(R.id.text_view_podcast_name);
             tvPodcastAuthorName = itemView.findViewById(R.id.text_view_podcast_author_name);
             tvPodcastGenre = itemView.findViewById(R.id.text_view_podcast_genre);
+            itemView.setOnClickListener(this);
         }
 
         @Override

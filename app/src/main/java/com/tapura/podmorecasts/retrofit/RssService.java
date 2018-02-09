@@ -1,5 +1,10 @@
 package com.tapura.podmorecasts.retrofit;
 
 
-public class RssService {
+import retrofit2.Call;
+import retrofit2.http.GET;
+
+public interface RssService {
+    @GET("")
+    public Call<String> getPodcasts();
 }

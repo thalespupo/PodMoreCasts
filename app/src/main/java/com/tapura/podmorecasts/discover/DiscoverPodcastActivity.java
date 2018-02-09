@@ -28,7 +28,7 @@ public class DiscoverPodcastActivity extends AppCompatActivity implements Podcas
 
     private static final String TAG = DiscoverPodcastActivity.class.getCanonicalName();
     private static final String PODCAST_LIST_KEY = "podcast_list_key";
-    private static final String FEED_URL_KEY = "feed_url";
+    public static final String FEED_URL_KEY = "feed_url";
 
     private PodcastDiscoveredAdapter mAdapter;
     private RecyclerView mGridView;
