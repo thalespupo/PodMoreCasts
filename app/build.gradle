@@ -31,12 +31,6 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
     compile 'com.google.code.gson:gson:2.8.2'
-    compile 'com.squareup.retrofit2:converter-simplexml:2.3.0'
-    compile('org.simpleframework:simple-xml:2.7.+') {
-        exclude module: 'stax'
-        exclude module: 'stax-api'
-        exclude module: 'xpp3'
-    }
     compile 'com.google.firebase:firebase-core:11.8.0'
     implementation 'com.firebaseui:firebase-ui-auth:3.2.1'
     compile 'com.google.firebase:firebase-database:11.8.0'
@@ -44,6 +38,8 @@ dependencies {
     releaseCompile 'com.readystatesoftware.chuck:library-no-op:1.1.0'
     compile 'com.google.firebase:firebase-auth:11.8.0'
     compile 'com.google.android.gms:play-services-auth:11.8.0'
+    compile 'com.google.android.exoplayer:exoplayer-core:2.6.1'
+    compile 'com.google.android.exoplayer:exoplayer-ui:2.6.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

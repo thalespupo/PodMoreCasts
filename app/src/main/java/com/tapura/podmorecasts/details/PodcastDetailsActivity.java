@@ -60,8 +60,11 @@ public class PodcastDetailsActivity extends AppCompatActivity {
             mPodcast.setFeedUrl(feedUrl);
         }
 
-        new DownloadAndParseFeedTask().execute(feedUrl);
-
+        if (savedInstanceState != null) {
+            onResumeRotate(savedInstanceState);
+        } else {
+            new DownloadAndParseFeedTask().execute(feedUrl);
+        }
     }
 
     public void favoritePodcast(View view) {

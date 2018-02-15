@@ -3,13 +3,16 @@ package com.tapura.podmorecasts;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.tapura.podmorecasts.database.UserControlSharedPrefs;
 import com.tapura.podmorecasts.details.PodcastDetailsActivity;
 import com.tapura.podmorecasts.discover.DiscoverPodcastActivity;
+import com.tapura.podmorecasts.player.PlayerTestActivity;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,20 +34,41 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
         finish();*/
 
+         /*
         Intent intent = new Intent(this, DiscoverPodcastActivity.class);
         startActivity(intent);
         finish();
-        /*
+        */
+
         mAuth = FirebaseAuth.getInstance();
+        String loggedUserId = UserControlSharedPrefs.getAlreadyLoggedUserId(this);
 
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setAvailableProviders(providers)
-                        .build(),
-                RC_SIGN_IN);
-*/
+        if (TextUtils.isEmpty(loggedUserId)) {
+            startActivityForResult(
+                    AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .setAvailableProviders(providers)
+                            .build(),
+                    RC_SIGN_IN);
+        } else {
+            startPodMoreCastsEntryPoint();
+        }
+    }
 
+    private void startPodMoreCastsEntryPoint() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String userId = null;
+        if (user != null) {
+            userId = user.getUid();
+        }
+        if (TextUtils.isEmpty(userId)) {
+            throw new SecurityException("No user ID found in Firebase database OR null User");
+        } else {
+            UserControlSharedPrefs.setUserId(this, userId);
+            Intent intent = new Intent(this, DiscoverPodcastActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     @Override
@@ -56,10 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                Intent intent = new Intent(this, PodcastDetailsActivity.class);
-                startActivity(intent);
-                finish();
+                startPodMoreCastsEntryPoint();
                 // ...
             } else {
                 finish();

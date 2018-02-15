@@ -22,7 +22,11 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".details.PodcastDetailsActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".player.PlayerTestActivity"
+            android:label="@string/title_activity_player_test"
+            android:theme="@style/SplashTheme"></activity>
     </application>
 
 </manifest>
