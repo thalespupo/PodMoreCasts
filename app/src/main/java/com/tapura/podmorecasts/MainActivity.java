@@ -9,6 +9,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 import com.tapura.podmorecasts.database.UserControlSharedPrefs;
 import com.tapura.podmorecasts.details.PodcastDetailsActivity;
 import com.tapura.podmorecasts.discover.DiscoverPodcastActivity;
@@ -20,8 +21,6 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 123;
-
-    private FirebaseAuth mAuth;
 
     List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.GoogleBuilder().build(),
@@ -40,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
         finish();
         */
 
-        mAuth = FirebaseAuth.getInstance();
         String loggedUserId = UserControlSharedPrefs.getAlreadyLoggedUserId(this);
 
         if (TextUtils.isEmpty(loggedUserId)) {
@@ -57,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void startPodMoreCastsEntryPoint() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         String userId = null;
         if (user != null) {
             userId = user.getUid();

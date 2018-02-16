@@ -1,6 +1,8 @@
 package com.tapura.podmorecasts.database;
 
 
+import android.content.Context;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -15,20 +17,26 @@ public class FirebaseDb {
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
 
-    public static void insert(Podcast podcast) {
+    public static boolean insert(Podcast podcast, Context context) {
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        String uid;
         if (currentUser == null) {
-            return;
+            uid = UserControlSharedPrefs.getAlreadyLoggedUserId(context);
+        } else {
+            uid = currentUser.getUid();
         }
-        String uid = currentUser.getUid();
+
+        if (uid == null) {
+            return false;
+        }
 
         String podcastId = String.valueOf(podcast.getFeedUrl().hashCode());
         DatabaseReference userRef = database.getReference(USER_REF).child(uid).child(podcastId);
 
         userRef.setValue(podcast);
-        
+        return true;
     }
 }

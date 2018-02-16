@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.squareup.picasso.Picasso;
 import com.tapura.podmorecasts.R;
 import com.tapura.podmorecasts.database.FirebaseDb;
@@ -24,8 +25,11 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.SocketTimeoutException;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import static com.tapura.podmorecasts.discover.DiscoverPodcastActivity.FEED_URL_KEY;
 
@@ -68,11 +72,21 @@ public class PodcastDetailsActivity extends AppCompatActivity {
     }
 
     public void favoritePodcast(View view) {
-        FirebaseDb.insert(mPodcast);
-        Toast.makeText(this, "The Podcast " + mPodcast.getTitle() + " was added!", Toast.LENGTH_LONG).show();
+        boolean result = FirebaseDb.insert(mPodcast, this);
+
+        if (result) {
+            Toast.makeText(this, "The Podcast " + mPodcast.getTitle() + " was added!", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Error, please check!!", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private void bindView(Podcast podcast) {
+        if (podcast == null) {
+            Toast.makeText(this, "Podcast Null!!", Toast.LENGTH_LONG).show();
+            return;
+        }
         mFeedLoaded = true;
         podcast.setFeedUrl(mPodcast.getFeedUrl());
         mPodcast = podcast;
@@ -103,7 +117,7 @@ public class PodcastDetailsActivity extends AppCompatActivity {
     }
 
     private void onResumeRotate(Bundle bundle) {
-        mPodcast = bundle.getParcelable(PODCAST_KEY);
+        mPodcast = Parcels.unwrap(bundle.getParcelable(PODCAST_KEY));
         mFeedLoaded = bundle.getBoolean(FEED_LOADED_KEY);
         if (mFeedLoaded) {
             bindView(mPodcast);
@@ -134,21 +148,32 @@ public class PodcastDetailsActivity extends AppCompatActivity {
             return podcast;
         }
 
-        private InputStream downloadXml(String urlString) throws IOException {
-            URL url = new URL(urlString);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(10000 /* milliseconds */);
-            conn.setConnectTimeout(15000 /* milliseconds */);
-            conn.setRequestMethod("GET");
-            conn.setDoInput(true);
-            // Starts the query
-            conn.connect();
-            return conn.getInputStream();
+        private InputStream downloadXml(String url) throws IOException {
+            OkHttpClient client = createClient();
+            Request request = new Request.Builder()
+                    .url(url)
+                    .build();
+
+            try {
+                Response response = client.newCall(request).execute();
+                return response.body().byteStream();
+            } catch (SocketTimeoutException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
+
 
         @Override
         protected void onPostExecute(Podcast podcast) {
             bindView(podcast);
         }
     }
+
+    private OkHttpClient createClient() {
+        return new OkHttpClient.Builder()
+                .addInterceptor(new ChuckInterceptor(this))
+                .build();
+    }
+
 }
