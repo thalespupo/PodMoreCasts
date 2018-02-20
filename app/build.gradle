@@ -18,6 +18,14 @@ android {
     }
 }
 
+ext {
+    parcelerLibVersion = '1.1.9'
+    retrofit2LibVersion = '2.3.0'
+    firebaseLibVersion = '11.8.0'
+    chuckLibVersion = '1.1.0'
+    exoplayerLibVersion = '2.6.1'
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:26.1.0'
@@ -26,20 +34,20 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'org.parceler:parceler-api:1.1.9'
-    annotationProcessor 'org.parceler:parceler:1.1.9'
-    compile 'com.squareup.retrofit2:retrofit:2.3.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+    compile "org.parceler:parceler-api:${parcelerLibVersion}"
+    annotationProcessor "org.parceler:parceler:${parcelerLibVersion}"
+    compile "com.squareup.retrofit2:retrofit:${retrofit2LibVersion}"
+    compile "com.squareup.retrofit2:converter-gson:${retrofit2LibVersion}"
     compile 'com.google.code.gson:gson:2.8.2'
-    compile 'com.google.firebase:firebase-core:11.8.0'
+    compile "com.google.firebase:firebase-core:${firebaseLibVersion}"
     implementation 'com.firebaseui:firebase-ui-auth:3.2.1'
-    compile 'com.google.firebase:firebase-database:11.8.0'
-    debugCompile 'com.readystatesoftware.chuck:library:1.1.0'
-    releaseCompile 'com.readystatesoftware.chuck:library-no-op:1.1.0'
-    compile 'com.google.firebase:firebase-auth:11.8.0'
+    compile "com.google.firebase:firebase-database:${firebaseLibVersion}"
+    debugCompile "com.readystatesoftware.chuck:library:${chuckLibVersion}"
+    releaseCompile "com.readystatesoftware.chuck:library-no-op:${chuckLibVersion}"
+    compile "com.google.firebase:firebase-auth:${firebaseLibVersion}"
     compile 'com.google.android.gms:play-services-auth:11.8.0'
-    compile 'com.google.android.exoplayer:exoplayer-core:2.6.1'
-    compile 'com.google.android.exoplayer:exoplayer-ui:2.6.1'
+    compile "com.google.android.exoplayer:exoplayer-core:${exoplayerLibVersion}"
+    compile "com.google.android.exoplayer:exoplayer-ui:${exoplayerLibVersion}"
     implementation "android.arch.lifecycle:extensions:1.1.0"
     compile 'com.facebook.stetho:stetho:1.5.0'
 }
