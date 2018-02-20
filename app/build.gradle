@@ -40,6 +40,8 @@ dependencies {
     compile 'com.google.android.gms:play-services-auth:11.8.0'
     compile 'com.google.android.exoplayer:exoplayer-core:2.6.1'
     compile 'com.google.android.exoplayer:exoplayer-ui:2.6.1'
+    implementation "android.arch.lifecycle:extensions:1.1.0"
+    compile 'com.facebook.stetho:stetho:1.5.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

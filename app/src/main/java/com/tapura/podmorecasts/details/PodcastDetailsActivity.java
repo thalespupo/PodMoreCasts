@@ -1,9 +1,12 @@
 package com.tapura.podmorecasts.details;
 
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
@@ -35,13 +39,13 @@ import static com.tapura.podmorecasts.discover.DiscoverPodcastActivity.FEED_URL_
 
 public class PodcastDetailsActivity extends AppCompatActivity {
 
-    private static final String PODCAST_KEY = "podcast";
-    private static final String FEED_LOADED_KEY = "feed_loaded";
     private Podcast mPodcast;
     private RecyclerView mRecyclerView;
     private EpisodesAdapter mAdapter;
+    private FloatingActionButton fab;
+    private ProgressBar progressBar;
 
-    private boolean mFeedLoaded = false;
+    private PodcastDetailsViewModel mModel;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,11 +68,19 @@ public class PodcastDetailsActivity extends AppCompatActivity {
             mPodcast.setFeedUrl(feedUrl);
         }
 
-        if (savedInstanceState != null) {
-            onResumeRotate(savedInstanceState);
-        } else {
-            new DownloadAndParseFeedTask().execute(feedUrl);
-        }
+        // Livedata
+        mModel = ViewModelProviders.of(this).get(PodcastDetailsViewModel.class);
+
+        final Observer<Podcast> observer = new Observer<Podcast>() {
+            @Override
+            public void onChanged(@Nullable Podcast podcast) {
+                bindView(podcast);
+            }
+        };
+
+        mModel.getCurrentPodcast(this, feedUrl).observe(this, observer);
+
+        startLoadingScheme();
     }
 
     public void favoritePodcast(View view) {
@@ -79,15 +91,15 @@ public class PodcastDetailsActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "Error, please check!!", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     private void bindView(Podcast podcast) {
+        stopLoadingScheme();
+
         if (podcast == null) {
             Toast.makeText(this, "Podcast Null!!", Toast.LENGTH_LONG).show();
             return;
         }
-        mFeedLoaded = true;
         podcast.setFeedUrl(mPodcast.getFeedUrl());
         mPodcast = podcast;
 
@@ -100,80 +112,21 @@ public class PodcastDetailsActivity extends AppCompatActivity {
                 .load(mPodcast.getImagePath())
                 .into(ivThumbnail);
 
-        //TextView tvAuthor = findViewById(R.id.text_view_podcast_author);
-        //TextView tvSummary = findViewById(R.id.text_view_podcast_summary);
-
-        //tvAuthor.setText(mPodcast.getAuthor());
-        //tvSummary.setText(mPodcast.getSummary());
-
         mAdapter.setList(mPodcast.getEpisodes());
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putParcelable(PODCAST_KEY, Parcels.wrap(mPodcast));
-        outState.putBoolean(FEED_LOADED_KEY, mFeedLoaded);
-        super.onSaveInstanceState(outState);
+    private void startLoadingScheme() {
+        progressBar = findViewById(R.id.layout_loading_progressbar);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
-    private void onResumeRotate(Bundle bundle) {
-        mPodcast = Parcels.unwrap(bundle.getParcelable(PODCAST_KEY));
-        mFeedLoaded = bundle.getBoolean(FEED_LOADED_KEY);
-        if (mFeedLoaded) {
-            bindView(mPodcast);
-        } else {
-            new DownloadAndParseFeedTask().execute(mPodcast.getFeedUrl());
-        }
+    private void stopLoadingScheme() {
+        fab = findViewById(R.id.fab_add_favorite);
+        fab.setVisibility(View.VISIBLE);
 
+        mRecyclerView.setVisibility(View.VISIBLE);
+
+        progressBar = findViewById(R.id.layout_loading_progressbar);
+        progressBar.setVisibility(View.GONE);
     }
-
-    public class DownloadAndParseFeedTask extends AsyncTask<String, Integer, Podcast> {
-        @Override
-        protected Podcast doInBackground(String... strings) {
-
-            InputStream inputStream = null;//getApplicationContext().getResources().openRawResource(R.raw.fakedata);
-            try {
-                inputStream = downloadXml(strings[0]);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            FeedParser parser = new FeedParser();
-            Podcast podcast = null;
-            try {
-                podcast = parser.parse(inputStream);
-            } catch (XmlPullParserException | IOException e) {
-                e.printStackTrace();
-            }
-            return podcast;
-        }
-
-        private InputStream downloadXml(String url) throws IOException {
-            OkHttpClient client = createClient();
-            Request request = new Request.Builder()
-                    .url(url)
-                    .build();
-
-            try {
-                Response response = client.newCall(request).execute();
-                return response.body().byteStream();
-            } catch (SocketTimeoutException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-
-        @Override
-        protected void onPostExecute(Podcast podcast) {
-            bindView(podcast);
-        }
-    }
-
-    private OkHttpClient createClient() {
-        return new OkHttpClient.Builder()
-                .addInterceptor(new ChuckInterceptor(this))
-                .build();
-    }
-
 }

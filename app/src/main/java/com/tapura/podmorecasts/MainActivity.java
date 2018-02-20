@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void startPodMoreCastsEntryPoint() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         String userId = null;
         if (user != null) {
             userId = user.getUid();
