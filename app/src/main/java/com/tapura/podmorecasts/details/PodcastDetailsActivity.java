@@ -3,7 +3,6 @@ package com.tapura.podmorecasts.details;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -17,23 +16,10 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.squareup.picasso.Picasso;
 import com.tapura.podmorecasts.R;
 import com.tapura.podmorecasts.database.FirebaseDb;
 import com.tapura.podmorecasts.model.Podcast;
-import com.tapura.podmorecasts.parser.FeedParser;
-
-import org.parceler.Parcels;
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.SocketTimeoutException;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 import static com.tapura.podmorecasts.discover.DiscoverPodcastActivity.FEED_URL_KEY;
 

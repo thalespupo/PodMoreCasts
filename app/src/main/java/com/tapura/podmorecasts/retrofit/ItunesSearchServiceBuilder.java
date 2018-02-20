@@ -3,7 +3,6 @@ package com.tapura.podmorecasts.retrofit;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.readystatesoftware.chuck.ChuckInterceptor;
 

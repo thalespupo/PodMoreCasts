@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 
-import com.tapura.podmorecasts.R;
-
 /**
  * Created by thale on 12/02/2018.
  */

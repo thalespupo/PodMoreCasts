@@ -32,7 +32,7 @@ class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.EpisodeViewHo
 
     @Override
     public int getItemCount() {
-        return mList != null ? mList.size() : 0 ;
+        return mList != null ? mList.size() : 0;
     }
 
     public List<Episode> getList() {
@@ -46,6 +46,7 @@ class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.EpisodeViewHo
 
     public class EpisodeViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle;
+
         public EpisodeViewHolder(View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.text_view_episode_title);

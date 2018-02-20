@@ -14,8 +14,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.google.android.gms.internal.zzdmy.checkNotNull;
-
 public class FeedParser {
 
     private static final String ns = null;
