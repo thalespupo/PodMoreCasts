@@ -10,12 +10,12 @@ import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.tapura.podmorecasts.database.UserControlSharedPrefs;
-import com.tapura.podmorecasts.discover.DiscoverPodcastActivity;
+import com.tapura.podmorecasts.main.MainActivity;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class SplashActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 123;
 
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
             throw new SecurityException("No user ID found in Firebase database OR null User");
         } else {
             UserControlSharedPrefs.setUserId(this, userId);
-            Intent intent = new Intent(this, DiscoverPodcastActivity.class);
+            Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();
         }

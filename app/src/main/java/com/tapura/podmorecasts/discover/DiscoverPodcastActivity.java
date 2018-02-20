@@ -2,11 +2,17 @@ package com.tapura.podmorecasts.discover;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.SearchView;
 
 import com.tapura.podmorecasts.R;
@@ -24,7 +30,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DiscoverPodcastActivity extends AppCompatActivity implements PodcastDiscoveredAdapter.PodcastDiscoveredOnClickListener {
+public class DiscoverPodcastActivity extends Fragment implements PodcastDiscoveredAdapter.PodcastDiscoveredOnClickListener {
 
     private static final String TAG = DiscoverPodcastActivity.class.getCanonicalName();
     private static final String PODCAST_LIST_KEY = "podcast_list_key";
@@ -35,26 +41,32 @@ public class DiscoverPodcastActivity extends AppCompatActivity implements Podcas
     private SearchView mSearchView;
     private ItunesSearchService mSearchService;
 
+    public DiscoverPodcastActivity () {
+
+    }
+
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_discover_podcast);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d("thales", "onCreateView: ");
+        View view = inflater.inflate(R.layout.activity_discover_podcast, container, false);
 
-        mGridView = findViewById(R.id.recycler_view_podcasts_discovered_list);
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        mGridView = view.findViewById(R.id.recycler_view_podcasts_discovered_list);
 
-        mAdapter = new PodcastDiscoveredAdapter(this, this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+
+        mAdapter = new PodcastDiscoveredAdapter(getContext(), this);
 
         mGridView.setAdapter(mAdapter);
         mGridView.setLayoutManager(layoutManager);
         mGridView.setHasFixedSize(true);
 
-        mSearchService = ItunesSearchServiceBuilder.build(this);
+        mSearchService = ItunesSearchServiceBuilder.build(getContext());
 
-        mSearchView = findViewById(R.id.search_view);
+        mSearchView = view.findViewById(R.id.search_view);
 
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
@@ -93,6 +105,8 @@ public class DiscoverPodcastActivity extends AppCompatActivity implements Podcas
         if (savedInstanceState != null) {
             handleRotate(savedInstanceState);
         }
+
+        return view;
     }
 
     private void handleRotate(Bundle savedInstanceState) {
@@ -109,8 +123,9 @@ public class DiscoverPodcastActivity extends AppCompatActivity implements Podcas
     @Override
     public void onClick(int pos) {
         String feedUrl = mAdapter.getList().get(pos).getFeedUrl();
-        Intent intent = new Intent(this, PodcastDetailsActivity.class);
+        Intent intent = new Intent(getContext(), PodcastDetailsActivity.class);
         intent.putExtra(FEED_URL_KEY, feedUrl);
         startActivity(intent);
     }
+
 }

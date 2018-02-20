@@ -3,14 +3,14 @@
     package="com.tapura.podmorecasts">
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/SplashTheme"
-        android:name=".MyApplication">
-        <activity android:name=".MainActivity">
+        android:theme="@style/SplashTheme">
+        <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -18,16 +18,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".discover.DiscoverPodcastActivity"
-            android:label="@string/title_activity_discover_podcast"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".details.PodcastDetailsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".player.PlayerTestActivity"
             android:label="@string/title_activity_player_test"
-            android:theme="@style/SplashTheme"></activity>
+            android:theme="@style/SplashTheme" />
+        <activity android:name=".main.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
