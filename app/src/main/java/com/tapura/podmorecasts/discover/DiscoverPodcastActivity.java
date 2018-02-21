@@ -38,21 +38,21 @@ public class DiscoverPodcastActivity extends Fragment implements PodcastDiscover
 
     private PodcastDiscoveredAdapter mAdapter;
     private RecyclerView mGridView;
-    private SearchView mSearchView;
     private ItunesSearchService mSearchService;
 
     public DiscoverPodcastActivity () {
 
     }
 
+    public interface PodcastClickListener {
+        void onPodcastClick(String feed);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d("thales", "onCreateView: ");
-        View view = inflater.inflate(R.layout.activity_discover_podcast, container, false);
-
-        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+        View view = inflater.inflate(R.layout.content_discover_podcast, container, false);
 
         mGridView = view.findViewById(R.id.recycler_view_podcasts_discovered_list);
 
@@ -66,47 +66,34 @@ public class DiscoverPodcastActivity extends Fragment implements PodcastDiscover
 
         mSearchService = ItunesSearchServiceBuilder.build(getContext());
 
-        mSearchView = view.findViewById(R.id.search_view);
-
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                if (mSearchService != null) {
-                    mSearchService.getPodcasts("podcast", query).enqueue(new Callback<ItunesResponse>() {
-                        @Override
-                        public void onResponse(Call<ItunesResponse> call, Response<ItunesResponse> response) {
-                            if (response.isSuccessful()) {
-                                ItunesResponse itunesResponse = response.body();
-                                if (itunesResponse != null) {
-                                    mAdapter.setPodcastList(itunesResponse.getResults());
-                                }
-                            } else {
-                                Log.d(TAG, "onResponse is no successful: " + response.message());
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<ItunesResponse> call, Throwable t) {
-                            Log.d(TAG, "onFailure: " + t.getMessage());
-                        }
-                    });
-                }
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-
-        });
-
         if (savedInstanceState != null) {
             handleRotate(savedInstanceState);
         }
 
         return view;
+    }
+
+    public void searchFeedByQuery(String query) {
+        if (mSearchService != null) {
+            mSearchService.getPodcasts("podcast", query).enqueue(new Callback<ItunesResponse>() {
+                @Override
+                public void onResponse(Call<ItunesResponse> call, Response<ItunesResponse> response) {
+                    if (response.isSuccessful()) {
+                        ItunesResponse itunesResponse = response.body();
+                        if (itunesResponse != null) {
+                            mAdapter.setPodcastList(itunesResponse.getResults());
+                        }
+                    } else {
+                        Log.d(TAG, "onResponse is no successful: " + response.message());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ItunesResponse> call, Throwable t) {
+                    Log.d(TAG, "onFailure: " + t.getMessage());
+                }
+            });
+        }
     }
 
     private void handleRotate(Bundle savedInstanceState) {
@@ -123,9 +110,8 @@ public class DiscoverPodcastActivity extends Fragment implements PodcastDiscover
     @Override
     public void onClick(int pos) {
         String feedUrl = mAdapter.getList().get(pos).getFeedUrl();
-        Intent intent = new Intent(getContext(), PodcastDetailsActivity.class);
-        intent.putExtra(FEED_URL_KEY, feedUrl);
-        startActivity(intent);
+        if (getActivity() != null) {
+            ((PodcastClickListener)getActivity()).onPodcastClick(feedUrl);
+        }
     }
-
 }
