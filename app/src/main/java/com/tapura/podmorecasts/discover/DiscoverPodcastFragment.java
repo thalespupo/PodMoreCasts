@@ -1,23 +1,18 @@
 package com.tapura.podmorecasts.discover;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
-import android.widget.SearchView;
 
 import com.tapura.podmorecasts.R;
-import com.tapura.podmorecasts.details.PodcastDetailsActivity;
 import com.tapura.podmorecasts.model.ItunesResponse;
 import com.tapura.podmorecasts.model.ItunesResultsItem;
 import com.tapura.podmorecasts.retrofit.ItunesSearchService;
@@ -32,9 +27,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DiscoverPodcastActivity extends Fragment implements PodcastDiscoveredAdapter.PodcastDiscoveredOnClickListener {
+public class DiscoverPodcastFragment extends Fragment implements PodcastDiscoveredAdapter.PodcastDiscoveredOnClickListener {
 
-    private static final String TAG = DiscoverPodcastActivity.class.getCanonicalName();
+    private static final String TAG = DiscoverPodcastFragment.class.getCanonicalName();
     private static final String PODCAST_LIST_KEY = "podcast_list_key";
     public static final String FEED_URL_KEY = "feed_url";
 
@@ -43,7 +38,7 @@ public class DiscoverPodcastActivity extends Fragment implements PodcastDiscover
     private ItunesSearchService mSearchService;
     private ProgressBar progressBar;
 
-    public DiscoverPodcastActivity () {
+    public DiscoverPodcastFragment() {
 
     }
 

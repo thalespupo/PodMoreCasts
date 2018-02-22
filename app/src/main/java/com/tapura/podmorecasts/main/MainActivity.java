@@ -8,18 +8,17 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ProgressBar;
 
 import com.tapura.podmorecasts.R;
 import com.tapura.podmorecasts.details.PodcastDetailsActivity;
-import com.tapura.podmorecasts.discover.DiscoverPodcastActivity;
+import com.tapura.podmorecasts.discover.DiscoverPodcastFragment;
 
-import static com.tapura.podmorecasts.discover.DiscoverPodcastActivity.FEED_URL_KEY;
+import static com.tapura.podmorecasts.discover.DiscoverPodcastFragment.FEED_URL_KEY;
 
-public class MainActivity extends AppCompatActivity implements DiscoverPodcastActivity.PodcastClickListener {
+public class MainActivity extends AppCompatActivity implements DiscoverPodcastFragment.PodcastClickListener {
 
-    private DiscoverPodcastActivity mDiscoverFragment;
+    private DiscoverPodcastFragment mDiscoverFragment;
     private ProgressBar progressBar;
 
     @Override
@@ -32,13 +31,13 @@ public class MainActivity extends AppCompatActivity implements DiscoverPodcastAc
         setSupportActionBar(toolbar);
 
         if (savedInstanceState == null) {
-            mDiscoverFragment = new DiscoverPodcastActivity();
+            mDiscoverFragment = new DiscoverPodcastFragment();
 
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.main_fragment, mDiscoverFragment)
                     .commit();
         } else {
-            mDiscoverFragment = (DiscoverPodcastActivity) getSupportFragmentManager().findFragmentById(R.id.main_fragment);
+            mDiscoverFragment = (DiscoverPodcastFragment) getSupportFragmentManager().findFragmentById(R.id.main_fragment);
         }
     }
 

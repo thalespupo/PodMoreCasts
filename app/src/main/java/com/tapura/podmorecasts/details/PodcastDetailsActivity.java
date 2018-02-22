@@ -21,7 +21,7 @@ import com.tapura.podmorecasts.R;
 import com.tapura.podmorecasts.database.FirebaseDb;
 import com.tapura.podmorecasts.model.Podcast;
 
-import static com.tapura.podmorecasts.discover.DiscoverPodcastActivity.FEED_URL_KEY;
+import static com.tapura.podmorecasts.discover.DiscoverPodcastFragment.FEED_URL_KEY;
 
 public class PodcastDetailsActivity extends AppCompatActivity {
 
