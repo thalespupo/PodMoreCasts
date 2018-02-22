@@ -1,9 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+     android:layout_width="match_parent">
+
+<android.support.v7.widget.RecyclerView
     android:id="@+id/recycler_view_podcasts_discovered_list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="?attr/actionBarSize"
     app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:id="@+id/layout_loading_progressbar"
+        android:indeterminate="true"
+        android:visibility="gone"/>
+
+</FrameLayout>

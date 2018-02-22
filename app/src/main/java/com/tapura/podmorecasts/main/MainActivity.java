@@ -8,6 +8,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.tapura.podmorecasts.R;
 import com.tapura.podmorecasts.details.PodcastDetailsActivity;
@@ -18,6 +20,7 @@ import static com.tapura.podmorecasts.discover.DiscoverPodcastActivity.FEED_URL_
 public class MainActivity extends AppCompatActivity implements DiscoverPodcastActivity.PodcastClickListener {
 
     private DiscoverPodcastActivity mDiscoverFragment;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

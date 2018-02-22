@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 
 import com.tapura.podmorecasts.R;
@@ -24,6 +25,7 @@ import com.tapura.podmorecasts.retrofit.ItunesSearchServiceBuilder;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -39,6 +41,7 @@ public class DiscoverPodcastActivity extends Fragment implements PodcastDiscover
     private PodcastDiscoveredAdapter mAdapter;
     private RecyclerView mGridView;
     private ItunesSearchService mSearchService;
+    private ProgressBar progressBar;
 
     public DiscoverPodcastActivity () {
 
@@ -74,6 +77,8 @@ public class DiscoverPodcastActivity extends Fragment implements PodcastDiscover
     }
 
     public void searchFeedByQuery(String query) {
+        startLoadingScheme();
+        mAdapter.setPodcastList(new ArrayList<ItunesResultsItem>());
         if (mSearchService != null) {
             mSearchService.getPodcasts("podcast", query).enqueue(new Callback<ItunesResponse>() {
                 @Override
@@ -83,13 +88,16 @@ public class DiscoverPodcastActivity extends Fragment implements PodcastDiscover
                         if (itunesResponse != null) {
                             mAdapter.setPodcastList(itunesResponse.getResults());
                         }
+                        stopLoadingScheme();
                     } else {
                         Log.d(TAG, "onResponse is no successful: " + response.message());
+                        stopLoadingScheme();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<ItunesResponse> call, Throwable t) {
+                    stopLoadingScheme();
                     Log.d(TAG, "onFailure: " + t.getMessage());
                 }
             });
@@ -113,5 +121,15 @@ public class DiscoverPodcastActivity extends Fragment implements PodcastDiscover
         if (getActivity() != null) {
             ((PodcastClickListener)getActivity()).onPodcastClick(feedUrl);
         }
+    }
+
+    private void startLoadingScheme() {
+        progressBar = getActivity().findViewById(R.id.layout_loading_progressbar);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void stopLoadingScheme() {
+        progressBar = getActivity().findViewById(R.id.layout_loading_progressbar);
+        progressBar.setVisibility(View.GONE);
     }
 }

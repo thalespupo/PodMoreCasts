@@ -16,5 +16,14 @@
         android:theme="@style/AppTheme.AppBarOverlay"
         app:popupTheme="@style/AppTheme.PopupOverlay" />
 
+    <ProgressBar
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:id="@+id/layout_loading_progressbar"
+        android:indeterminate="true"
+        android:visibility="gone"/>
+
 
 </android.support.design.widget.CoordinatorLayout>
