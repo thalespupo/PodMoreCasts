@@ -27,6 +27,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.tapura.podmorecasts.main.MainActivity.QUERY_KEY;
+
 public class DiscoverPodcastFragment extends Fragment implements PodcastDiscoveredAdapter.PodcastDiscoveredOnClickListener {
 
     private static final String TAG = DiscoverPodcastFragment.class.getCanonicalName();
@@ -68,34 +70,38 @@ public class DiscoverPodcastFragment extends Fragment implements PodcastDiscover
             handleRotate(savedInstanceState);
         }
 
+        searchFeedByQuery(getArguments().getString(QUERY_KEY));
+
         return view;
     }
 
     public void searchFeedByQuery(String query) {
         startLoadingScheme();
-        mAdapter.setPodcastList(new ArrayList<ItunesResultsItem>());
-        if (mSearchService != null) {
-            mSearchService.getPodcasts("podcast", query).enqueue(new Callback<ItunesResponse>() {
-                @Override
-                public void onResponse(Call<ItunesResponse> call, Response<ItunesResponse> response) {
-                    if (response.isSuccessful()) {
-                        ItunesResponse itunesResponse = response.body();
-                        if (itunesResponse != null) {
-                            mAdapter.setPodcastList(itunesResponse.getResults());
+        if (mAdapter != null){
+            mAdapter.setPodcastList(new ArrayList<ItunesResultsItem>());
+            if (mSearchService != null) {
+                mSearchService.getPodcasts("podcast", query).enqueue(new Callback<ItunesResponse>() {
+                    @Override
+                    public void onResponse(Call<ItunesResponse> call, Response<ItunesResponse> response) {
+                        if (response.isSuccessful()) {
+                            ItunesResponse itunesResponse = response.body();
+                            if (itunesResponse != null) {
+                                mAdapter.setPodcastList(itunesResponse.getResults());
+                            }
+                            stopLoadingScheme();
+                        } else {
+                            Log.d(TAG, "onResponse is no successful: " + response.message());
+                            stopLoadingScheme();
                         }
-                        stopLoadingScheme();
-                    } else {
-                        Log.d(TAG, "onResponse is no successful: " + response.message());
-                        stopLoadingScheme();
                     }
-                }
 
-                @Override
-                public void onFailure(Call<ItunesResponse> call, Throwable t) {
-                    stopLoadingScheme();
-                    Log.d(TAG, "onFailure: " + t.getMessage());
-                }
-            });
+                    @Override
+                    public void onFailure(Call<ItunesResponse> call, Throwable t) {
+                        stopLoadingScheme();
+                        Log.d(TAG, "onFailure: " + t.getMessage());
+                    }
+                });
+            }
         }
     }
 
@@ -119,12 +125,16 @@ public class DiscoverPodcastFragment extends Fragment implements PodcastDiscover
     }
 
     private void startLoadingScheme() {
-        progressBar = getActivity().findViewById(R.id.layout_loading_progressbar);
-        progressBar.setVisibility(View.VISIBLE);
+        if (getActivity() != null) {
+            progressBar = getActivity().findViewById(R.id.layout_loading_progressbar);
+            progressBar.setVisibility(View.VISIBLE);
+        }
     }
 
     private void stopLoadingScheme() {
-        progressBar = getActivity().findViewById(R.id.layout_loading_progressbar);
-        progressBar.setVisibility(View.GONE);
+        if (getActivity() != null) {
+            progressBar = getActivity().findViewById(R.id.layout_loading_progressbar);
+            progressBar.setVisibility(View.GONE);
+        }
     }
 }

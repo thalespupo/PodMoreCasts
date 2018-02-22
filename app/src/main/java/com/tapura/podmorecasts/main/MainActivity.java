@@ -13,12 +13,18 @@ import android.widget.ProgressBar;
 import com.tapura.podmorecasts.R;
 import com.tapura.podmorecasts.details.PodcastDetailsActivity;
 import com.tapura.podmorecasts.discover.DiscoverPodcastFragment;
+import com.tapura.podmorecasts.favorite.FavoritePodcastFragment;
+
+import java.util.function.DoubleUnaryOperator;
 
 import static com.tapura.podmorecasts.discover.DiscoverPodcastFragment.FEED_URL_KEY;
 
 public class MainActivity extends AppCompatActivity implements DiscoverPodcastFragment.PodcastClickListener {
 
+    public static final String QUERY_KEY = "query";
+    private FavoritePodcastFragment mFavoriteFragment;
     private DiscoverPodcastFragment mDiscoverFragment;
+
     private ProgressBar progressBar;
 
     @Override
@@ -31,13 +37,13 @@ public class MainActivity extends AppCompatActivity implements DiscoverPodcastFr
         setSupportActionBar(toolbar);
 
         if (savedInstanceState == null) {
-            mDiscoverFragment = new DiscoverPodcastFragment();
+            mFavoriteFragment = new FavoritePodcastFragment();
 
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.main_fragment, mDiscoverFragment)
+                    .add(R.id.main_fragment, mFavoriteFragment)
                     .commit();
         } else {
-            mDiscoverFragment = (DiscoverPodcastFragment) getSupportFragmentManager().findFragmentById(R.id.main_fragment);
+            mFavoriteFragment = (FavoritePodcastFragment) getSupportFragmentManager().findFragmentById(R.id.main_fragment);
         }
     }
 
@@ -51,7 +57,16 @@ public class MainActivity extends AppCompatActivity implements DiscoverPodcastFr
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                mDiscoverFragment.searchFeedByQuery(query);
+                mDiscoverFragment = new DiscoverPodcastFragment();
+                Bundle b = new Bundle();
+                b.putString(QUERY_KEY, query);
+                DiscoverPodcastFragment fragment = new DiscoverPodcastFragment();
+                fragment.setArguments(b);
+                getSupportFragmentManager().beginTransaction()
+                        .addToBackStack(null)
+                        .replace(R.id.main_fragment, fragment)
+                        .commit();
+
                 searchView.clearFocus();
                 return true;
             }
