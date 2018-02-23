@@ -4,10 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 
-/**
- * Created by thale on 12/02/2018.
- */
-
 public class UserControlSharedPrefs {
 
     private static final String SHARED_PREF_KEY = "podmorecasts_pref";

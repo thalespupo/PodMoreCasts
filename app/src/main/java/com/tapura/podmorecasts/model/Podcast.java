@@ -16,6 +16,8 @@ public class Podcast {
 
     private String imagePath;
 
+    private String thumbnailPath;
+
     private List<Episode> episodes;
 
     private String feedUrl;
@@ -34,6 +36,10 @@ public class Podcast {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public void setThumbnailPath(String thumbnailPath) {
+        this.thumbnailPath = thumbnailPath;
     }
 
     public void setEpisodes(List<Episode> episodes) {
@@ -58,6 +64,10 @@ public class Podcast {
 
     public String getImagePath() {
         return imagePath;
+    }
+
+    public String getThumbnailPath() {
+        return thumbnailPath;
     }
 
     public List<Episode> getEpisodes() {

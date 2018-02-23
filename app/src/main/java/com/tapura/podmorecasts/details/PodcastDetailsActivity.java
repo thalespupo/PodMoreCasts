@@ -21,7 +21,8 @@ import com.tapura.podmorecasts.R;
 import com.tapura.podmorecasts.database.FirebaseDb;
 import com.tapura.podmorecasts.model.Podcast;
 
-import static com.tapura.podmorecasts.discover.DiscoverPodcastFragment.FEED_URL_KEY;
+import static com.tapura.podmorecasts.main.MainActivity.FEED_URL_KEY;
+import static com.tapura.podmorecasts.main.MainActivity.THUMBNAIL_KEY;
 
 public class PodcastDetailsActivity extends AppCompatActivity {
 
@@ -49,9 +50,13 @@ public class PodcastDetailsActivity extends AppCompatActivity {
         mRecyclerView.setHasFixedSize(true);
 
         String feedUrl = getIntent().getStringExtra(FEED_URL_KEY);
+        String thumbnail = getIntent().getStringExtra(THUMBNAIL_KEY);
         mPodcast = new Podcast();
         if (!TextUtils.isEmpty(feedUrl)) {
             mPodcast.setFeedUrl(feedUrl);
+        }
+        if (!TextUtils.isEmpty(thumbnail)) {
+            mPodcast.setThumbnailPath(thumbnail);
         }
 
         // Livedata
@@ -87,6 +92,7 @@ public class PodcastDetailsActivity extends AppCompatActivity {
             return;
         }
         podcast.setFeedUrl(mPodcast.getFeedUrl());
+        podcast.setThumbnailPath(mPodcast.getThumbnailPath());
         mPodcast = podcast;
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

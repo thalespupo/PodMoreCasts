@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +34,6 @@ public class DiscoverPodcastFragment extends Fragment implements PodcastDiscover
 
     private static final String TAG = DiscoverPodcastFragment.class.getCanonicalName();
     private static final String PODCAST_LIST_KEY = "podcast_list_key";
-    public static final String FEED_URL_KEY = "feed_url";
 
     private PodcastDiscoveredAdapter mAdapter;
     private RecyclerView mGridView;
@@ -45,13 +45,13 @@ public class DiscoverPodcastFragment extends Fragment implements PodcastDiscover
     }
 
     public interface PodcastClickListener {
-        void onPodcastClick(String feed);
+        void onPodcastClick(String feed, String thumbnail);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d("thales", "onCreateView: ");
+        Log.d(TAG, "onCreateView: ");
         View view = inflater.inflate(R.layout.content_discover_podcast, container, false);
 
         mGridView = view.findViewById(R.id.recycler_view_podcasts_discovered_list);
@@ -70,7 +70,12 @@ public class DiscoverPodcastFragment extends Fragment implements PodcastDiscover
             handleRotate(savedInstanceState);
         }
 
-        searchFeedByQuery(getArguments().getString(QUERY_KEY));
+        if (getArguments() != null){
+            String query = getArguments().getString(QUERY_KEY);
+            if (!TextUtils.isEmpty(query)) {
+                searchFeedByQuery(getArguments().getString(QUERY_KEY));
+            }
+        }
 
         return view;
     }
@@ -111,7 +116,7 @@ public class DiscoverPodcastFragment extends Fragment implements PodcastDiscover
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         outState.putParcelable(PODCAST_LIST_KEY, Parcels.wrap(mAdapter.getList()));
         super.onSaveInstanceState(outState);
     }
@@ -119,8 +124,9 @@ public class DiscoverPodcastFragment extends Fragment implements PodcastDiscover
     @Override
     public void onClick(int pos) {
         String feedUrl = mAdapter.getList().get(pos).getFeedUrl();
+        String thumbnail = mAdapter.getList().get(pos).getArtworkUrl600();
         if (getActivity() != null) {
-            ((PodcastClickListener)getActivity()).onPodcastClick(feedUrl);
+            ((PodcastClickListener)getActivity()).onPodcastClick(feedUrl, thumbnail);
         }
     }
 

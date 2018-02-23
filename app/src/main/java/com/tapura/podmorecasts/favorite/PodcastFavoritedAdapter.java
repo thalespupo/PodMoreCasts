@@ -40,9 +40,10 @@ class PodcastFavoritedAdapter extends RecyclerView.Adapter<PodcastFavoritedAdapt
     @Override
     public void onBindViewHolder(DiscoveredViewHolder holder, int position) {
         Podcast item = mList.get(position);
-        String stringImage = item.getImagePath();
+        String stringImage = item.getThumbnailPath();
         Picasso.with(mContext)
                 .load(stringImage)
+                .placeholder(mContext.getDrawable(R.drawable.ic_headset_black))
                 .into(holder.ivThumbnail);
     }
 

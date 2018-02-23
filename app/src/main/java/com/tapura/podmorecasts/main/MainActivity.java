@@ -8,30 +8,31 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ProgressBar;
 
 import com.tapura.podmorecasts.R;
 import com.tapura.podmorecasts.details.PodcastDetailsActivity;
 import com.tapura.podmorecasts.discover.DiscoverPodcastFragment;
 import com.tapura.podmorecasts.favorite.FavoritePodcastFragment;
 
-import java.util.function.DoubleUnaryOperator;
+public class MainActivity extends AppCompatActivity implements DiscoverPodcastFragment.PodcastClickListener, FavoritePodcastFragment.FavoriteClickListener {
 
-import static com.tapura.podmorecasts.discover.DiscoverPodcastFragment.FEED_URL_KEY;
-
-public class MainActivity extends AppCompatActivity implements DiscoverPodcastFragment.PodcastClickListener {
+    private static final String TAG = MainActivity.class.getCanonicalName();
 
     public static final String QUERY_KEY = "query";
+    public static final String THUMBNAIL_KEY = "thumbnail";
+    public static final String FEED_URL_KEY = "feed_url";
+
     private FavoritePodcastFragment mFavoriteFragment;
     private DiscoverPodcastFragment mDiscoverFragment;
 
-    private ProgressBar progressBar;
+    private MenuItem searchItem;
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d("thales", "onCreate: ");
+        Log.d(TAG, "onCreate: ");
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -51,8 +52,8 @@ public class MainActivity extends AppCompatActivity implements DiscoverPodcastFr
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) searchItem.getActionView();
+        searchItem = menu.findItem(R.id.action_search);
+        searchView = (SearchView) searchItem.getActionView();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -60,15 +61,15 @@ public class MainActivity extends AppCompatActivity implements DiscoverPodcastFr
                 mDiscoverFragment = new DiscoverPodcastFragment();
                 Bundle b = new Bundle();
                 b.putString(QUERY_KEY, query);
-                DiscoverPodcastFragment fragment = new DiscoverPodcastFragment();
-                fragment.setArguments(b);
+
+                mDiscoverFragment.setArguments(b);
                 getSupportFragmentManager().beginTransaction()
                         .addToBackStack(null)
-                        .replace(R.id.main_fragment, fragment)
+                        .replace(R.id.main_fragment, mDiscoverFragment)
                         .commit();
 
-                searchView.clearFocus();
-                return true;
+                getCurrentFocus();
+                return false;
             }
 
             @Override
@@ -78,13 +79,37 @@ public class MainActivity extends AppCompatActivity implements DiscoverPodcastFr
             }
         });
 
+        searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                onBackPressed();
+                return true;
+            }
+        });
+
         return true;
     }
 
     @Override
-    public void onPodcastClick(String feed) {
+    public void onPodcastClick(String feed, String thumbnail) {
+        Intent intent = new Intent(this, PodcastDetailsActivity.class);
+        intent.putExtra(FEED_URL_KEY, feed);
+        intent.putExtra(THUMBNAIL_KEY, thumbnail);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onFavoritePodcastClick(String feed) {
+        // TODO retreive information in PodcastDetailsActivity
+        /*
         Intent intent = new Intent(this, PodcastDetailsActivity.class);
         intent.putExtra(FEED_URL_KEY, feed);
         startActivity(intent);
+        */
     }
 }

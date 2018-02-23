@@ -46,7 +46,7 @@ public class PodcastDetailsViewModel extends ViewModel {
         @Override
         protected Podcast doInBackground(String... strings) {
 
-            InputStream inputStream = null;//getApplicationContext().getResources().openRawResource(R.raw.fakedata);
+            InputStream inputStream = null;
             try {
                 inputStream = downloadXml(strings[0]);
             } catch (IOException e) {

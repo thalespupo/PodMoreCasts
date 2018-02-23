@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -26,15 +27,6 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-         /*Intent intent = new Intent(this, PodcastDetailsActivity.class);
-        startActivity(intent);
-        finish();*/
-
-         /*
-        Intent intent = new Intent(this, DiscoverPodcastActivity.class);
-        startActivity(intent);
-        finish();
-        */
 
         String loggedUserId = UserControlSharedPrefs.getAlreadyLoggedUserId(this);
 
@@ -71,17 +63,18 @@ public class SplashActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_SIGN_IN) {
-            IdpResponse response = IdpResponse.fromResultIntent(data);
-
             if (resultCode == RESULT_OK) {
                 // Successfully signed in
                 startPodMoreCastsEntryPoint();
                 // ...
             } else {
+                Toast.makeText(this, "Error in Firebase loggin", Toast.LENGTH_SHORT).show();
                 finish();
                 // Sign in failed, check response for error code
                 // ...
             }
+        } else {
+            Toast.makeText(this, "No sign in done, to use the app you must enter with e-mail, or Google account", Toast.LENGTH_SHORT).show();
         }
     }
 }
