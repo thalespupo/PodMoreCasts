@@ -21,6 +21,9 @@ import java.util.List;
 public class FavoritePodcastFragment extends Fragment implements PodcastFavoritedAdapter.PodcastFavoritedOnClickListener, FirebaseDb.PodcastFromFirebaseListener {
 
     private static final String TAG = FavoritePodcastFragment.class.getCanonicalName();
+    private static final String PODCAST_LIST_KEY = "podcast_list_key";
+    public static final String FEED_URL_KEY = "feed_url";
+    public static String fragTag = "favorite";
 
     private PodcastFavoritedAdapter mAdapter;
     private RecyclerView mGridView;

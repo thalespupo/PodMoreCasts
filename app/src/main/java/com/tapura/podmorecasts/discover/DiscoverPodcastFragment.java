@@ -34,6 +34,8 @@ public class DiscoverPodcastFragment extends Fragment implements PodcastDiscover
 
     private static final String TAG = DiscoverPodcastFragment.class.getCanonicalName();
     private static final String PODCAST_LIST_KEY = "podcast_list_key";
+    public static final String FEED_URL_KEY = "feed_url";
+    public static String fragTag = "discover";
 
     private PodcastDiscoveredAdapter mAdapter;
     private RecyclerView mGridView;

@@ -41,10 +41,11 @@ public class MainActivity extends AppCompatActivity implements DiscoverPodcastFr
             mFavoriteFragment = new FavoritePodcastFragment();
 
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.main_fragment, mFavoriteFragment)
+                    .add(R.id.main_fragment, mFavoriteFragment, FavoritePodcastFragment.fragTag)
                     .commit();
         } else {
-            mFavoriteFragment = (FavoritePodcastFragment) getSupportFragmentManager().findFragmentById(R.id.main_fragment);
+            mDiscoverFragment = (DiscoverPodcastFragment) getSupportFragmentManager().findFragmentByTag(DiscoverPodcastFragment.fragTag);
+            mFavoriteFragment = (FavoritePodcastFragment) getSupportFragmentManager().findFragmentByTag(FavoritePodcastFragment.fragTag);
         }
     }
 
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements DiscoverPodcastFr
                 mDiscoverFragment.setArguments(b);
                 getSupportFragmentManager().beginTransaction()
                         .addToBackStack(null)
-                        .replace(R.id.main_fragment, mDiscoverFragment)
+                        .replace(R.id.main_fragment, mDiscoverFragment, DiscoverPodcastFragment.fragTag)
                         .commit();
 
                 getCurrentFocus();
@@ -112,4 +113,5 @@ public class MainActivity extends AppCompatActivity implements DiscoverPodcastFr
         startActivity(intent);
         */
     }
+
 }
