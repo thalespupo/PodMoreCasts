@@ -3,6 +3,7 @@ package com.tapura.podmorecasts.details;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -21,18 +22,20 @@ import com.tapura.podmorecasts.R;
 import com.tapura.podmorecasts.database.FirebaseDb;
 import com.tapura.podmorecasts.model.Podcast;
 
+import static com.tapura.podmorecasts.main.MainActivity.FAVORITE_KEY;
 import static com.tapura.podmorecasts.main.MainActivity.FEED_URL_KEY;
 import static com.tapura.podmorecasts.main.MainActivity.THUMBNAIL_KEY;
 
-public class PodcastDetailsActivity extends AppCompatActivity {
+public class PodcastDetailsActivity extends AppCompatActivity implements FirebaseDb.PodcastFromFirebaseListener {
+
 
     private Podcast mPodcast;
     private RecyclerView mRecyclerView;
     private EpisodesAdapter mAdapter;
     private FloatingActionButton fab;
     private ProgressBar progressBar;
-
     private PodcastDetailsViewModel mModel;
+    private boolean isFavorite = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,6 +52,7 @@ public class PodcastDetailsActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
 
+        isFavorite = getIntent().getBooleanExtra(FAVORITE_KEY, false);
         String feedUrl = getIntent().getStringExtra(FEED_URL_KEY);
         String thumbnail = getIntent().getStringExtra(THUMBNAIL_KEY);
         mPodcast = new Podcast();
@@ -59,6 +63,21 @@ public class PodcastDetailsActivity extends AppCompatActivity {
             mPodcast.setThumbnailPath(thumbnail);
         }
 
+        mAdapter.isFavorite = isFavorite;
+
+        if (isFavorite) {
+            loadFavorite(feedUrl);
+        } else {
+            loadPodcastFeed(feedUrl);
+        }
+        startLoadingScheme();
+    }
+
+    private void loadFavorite(String feedUrl) {
+        FirebaseDb.getPodcast(this, feedUrl, this);
+    }
+
+    private void loadPodcastFeed(String feedUrl) {
         // Livedata
         mModel = ViewModelProviders.of(this).get(PodcastDetailsViewModel.class);
 
@@ -120,5 +139,10 @@ public class PodcastDetailsActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.layout_loading_progressbar);
         progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onLoadedPodcast(Podcast podcast) {
+        bindView(podcast);
     }
 }

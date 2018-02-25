@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity implements DiscoverPodcastFr
     public static final String QUERY_KEY = "query";
     public static final String THUMBNAIL_KEY = "thumbnail";
     public static final String FEED_URL_KEY = "feed_url";
+    public static final String FAVORITE_KEY = "favorite";
 
     private FavoritePodcastFragment mFavoriteFragment;
     private DiscoverPodcastFragment mDiscoverFragment;
@@ -106,12 +107,10 @@ public class MainActivity extends AppCompatActivity implements DiscoverPodcastFr
 
     @Override
     public void onFavoritePodcastClick(String feed) {
-        // TODO retreive information in PodcastDetailsActivity
-        /*
         Intent intent = new Intent(this, PodcastDetailsActivity.class);
         intent.putExtra(FEED_URL_KEY, feed);
+        intent.putExtra(FAVORITE_KEY, true);
         startActivity(intent);
-        */
     }
 
 }

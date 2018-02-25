@@ -48,7 +48,7 @@ public class FirebaseDb {
         return true;
     }
 
-    public static boolean getList(Context context, final PodcastFromFirebaseListener callback) {
+    public static boolean getList(Context context, final PodcastListFromFirebaseListener callback) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -73,7 +73,7 @@ public class FirebaseDb {
                 for (DataSnapshot data :dataSnapshot.getChildren()) {
                     list.add(data.getValue(Podcast.class));
                 }
-                callback.onLoadedPodcasts(list);
+                callback.onLoadedPodcastList(list);
             }
 
             @Override
@@ -85,8 +85,46 @@ public class FirebaseDb {
         return true;
     }
 
+    public static boolean getPodcast(Context context, String feedUrl, final PodcastFromFirebaseListener callback) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        String uid;
+        if (currentUser == null) {
+            uid = UserControlSharedPrefs.getAlreadyLoggedUserId(context);
+        } else {
+            uid = currentUser.getUid();
+        }
+
+        if (uid == null) {
+            return false;
+        }
+
+        int hashCode = feedUrl.hashCode();
+
+        DatabaseReference userRef = database.getReference(USER_REF).child(uid).child(String.valueOf(hashCode));
+
+        // Attach a listener to read the data at our posts reference
+        userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                callback.onLoadedPodcast(dataSnapshot.getValue(Podcast.class));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                System.out.println("The read failed: " + databaseError.getCode());
+            }
+        });
+        return true;
+    }
+
+
+    public interface PodcastListFromFirebaseListener {
+        void onLoadedPodcastList(List<Podcast> podcasts);
+    }
 
     public interface PodcastFromFirebaseListener {
-        void onLoadedPodcasts(List<Podcast> podcasts);
+        void onLoadedPodcast(Podcast podcast);
     }
 }

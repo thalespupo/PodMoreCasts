@@ -18,7 +18,7 @@ import com.tapura.podmorecasts.model.Podcast;
 
 import java.util.List;
 
-public class FavoritePodcastFragment extends Fragment implements PodcastFavoritedAdapter.PodcastFavoritedOnClickListener, FirebaseDb.PodcastFromFirebaseListener {
+public class FavoritePodcastFragment extends Fragment implements PodcastFavoritedAdapter.PodcastFavoritedOnClickListener, FirebaseDb.PodcastListFromFirebaseListener {
 
     private static final String TAG = FavoritePodcastFragment.class.getCanonicalName();
     private static final String PODCAST_LIST_KEY = "podcast_list_key";
@@ -34,7 +34,7 @@ public class FavoritePodcastFragment extends Fragment implements PodcastFavorite
     }
 
     @Override
-    public void onLoadedPodcasts(List<Podcast> podcasts) {
+    public void onLoadedPodcastList(List<Podcast> podcasts) {
         mAdapter.setPodcastList(podcasts);
         stopLoadingScheme();
     }
