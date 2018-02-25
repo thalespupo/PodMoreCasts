@@ -28,21 +28,7 @@ public class FeedParser {
     private static final String EPISODE_LINK_TAG = "enclosure";
     private static final String DESCRIPTION_TAG = "description";
 
-    private PodcastParserListener mCallback;
-
-    public interface PodcastParserListener {
-        void onItemLoaded(Object o, PodcastItemType itemType);
-    }
-
-    public enum PodcastItemType {
-        TITLE, SUMMARY, AUTHOR, IMAGE, EPISODE
-    }
-
-    public FeedParser(PodcastParserListener callback) {
-        mCallback = callback;
-    }
-
-    public void parse(InputStream in) throws XmlPullParserException, IOException {
+    public Podcast parse(InputStream in) throws XmlPullParserException, IOException {
         if (in == null) {
             throw new IOException("InputStream null, some error occurred in download");
         }
@@ -51,7 +37,7 @@ public class FeedParser {
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(in, null);
             parser.nextTag();
-            readFeed(parser);
+            return readFeed(parser);
         } finally {
             in.close();
         }
@@ -74,7 +60,8 @@ public class FeedParser {
         }
     }
 
-    private void readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
+    private Podcast readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
+        Podcast podcast = null;
 
         parser.require(XmlPullParser.START_TAG, ns, RSS_TAG);
         while (parser.next() != XmlPullParser.END_TAG) {
@@ -83,15 +70,21 @@ public class FeedParser {
             }
             String name = parser.getName();
             if (name.equals(CHANNEL_TAG)) {
-                readPodcast(parser);
+                podcast = readPodcast(parser);
             } else {
                 skip(parser);
             }
         }
+        return podcast;
     }
 
-    private void readPodcast(XmlPullParser parser) throws IOException, XmlPullParserException {
+    private Podcast readPodcast(XmlPullParser parser) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, ns, CHANNEL_TAG);
+        String title = null;
+        String summary = null;
+        String author = null;
+        String imagePath = null;
+        List<Episode> episodes = new ArrayList<>();
 
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
@@ -100,25 +93,34 @@ public class FeedParser {
             String name = parser.getName();
             switch (name) {
                 case TITLE_TAG:
-                    mCallback.onItemLoaded(readSimple(parser, TITLE_TAG), PodcastItemType.TITLE);
+                    title = readSimple(parser, TITLE_TAG);
                     break;
                 case SUMMARY_TAG:
-                    mCallback.onItemLoaded(readSimple(parser, SUMMARY_TAG), PodcastItemType.SUMMARY);
+                    summary = readSimple(parser, SUMMARY_TAG);
                     break;
                 case AUTHOR_TAG:
-                    mCallback.onItemLoaded(readSimple(parser, AUTHOR_TAG), PodcastItemType.AUTHOR);
+                    author = readSimple(parser, AUTHOR_TAG);
                     break;
                 case IMAGE_TAG:
-                    mCallback.onItemLoaded(readImage(parser), PodcastItemType.IMAGE);
+                    imagePath = readImage(parser);
                     break;
                 case EPISODE_TAG:
-                    mCallback.onItemLoaded(readEpisode(parser), PodcastItemType.EPISODE);
+                    episodes.add(readEpisode(parser));
                     break;
                 default:
                     skip(parser);
                     break;
             }
         }
+
+        Podcast podcast = new Podcast();
+        podcast.setTitle(title);
+        podcast.setSummary(summary);
+        podcast.setAuthor(author);
+        podcast.setImagePath(imagePath);
+        podcast.setEpisodes(episodes);
+
+        return podcast;
     }
 
     private Episode readEpisode(XmlPullParser parser) throws IOException, XmlPullParserException {

@@ -71,7 +71,7 @@ public class PodcastDetailsActivity extends AppCompatActivity {
 
         mModel.getCurrentPodcast(this, feedUrl).observe(this, observer);
 
-        //startLoadingScheme();
+        startLoadingScheme();
     }
 
     public void favoritePodcast(View view) {
@@ -85,7 +85,7 @@ public class PodcastDetailsActivity extends AppCompatActivity {
     }
 
     private void bindView(Podcast podcast) {
-        //stopLoadingScheme();
+        stopLoadingScheme();
 
         if (podcast == null) {
             Toast.makeText(this, "Podcast Null!!", Toast.LENGTH_LONG).show();
