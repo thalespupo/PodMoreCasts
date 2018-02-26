@@ -89,7 +89,9 @@ public class MainActivity extends AppCompatActivity implements DiscoverPodcastFr
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                onBackPressed();
+                if (mDiscoverFragment != null && mDiscoverFragment.isVisible()){
+                    onBackPressed();
+                }
                 return true;
             }
         });
