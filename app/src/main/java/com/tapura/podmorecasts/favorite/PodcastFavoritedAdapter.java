@@ -33,7 +33,7 @@ class PodcastFavoritedAdapter extends RecyclerView.Adapter<PodcastFavoritedAdapt
     @Override
     public DiscoveredViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View v = inflater.inflate(R.layout.list_item_podcast, parent, false);
+        View v = inflater.inflate(R.layout.grid_item_podcast, parent, false);
         return new DiscoveredViewHolder(v);
     }
 

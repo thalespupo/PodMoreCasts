@@ -1,5 +1,6 @@
 package com.tapura.podmorecasts.details;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,7 +17,23 @@ import java.util.List;
 class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.EpisodeViewHolder> {
 
     private List<Episode> mList;
+    private Context mContext;
+    private OnDownloadClickListener mCallback;
     public boolean isFavorite;
+
+    public interface OnDownloadClickListener {
+        void onDownloadClick(int pos, DownloadListener listener);
+    }
+
+    public interface DownloadListener {
+        void onDownloadComplete();
+        void onDownloadFailed();
+    }
+
+    public EpisodesAdapter(Context context, OnDownloadClickListener callback) {
+        mContext = context;
+        mCallback = callback;
+    }
 
     @Override
     public EpisodeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -50,7 +67,7 @@ class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.EpisodeViewHo
         notifyDataSetChanged();
     }
 
-    public class EpisodeViewHolder extends RecyclerView.ViewHolder {
+    public class EpisodeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, DownloadListener {
         TextView tvTitle;
         ImageView ivDownload;
 
@@ -58,6 +75,25 @@ class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.EpisodeViewHo
             super(itemView);
             tvTitle = itemView.findViewById(R.id.text_view_episode_title);
             ivDownload = itemView.findViewById(R.id.image_view_download);
+
+            ivDownload.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            ivDownload.setImageResource(R.drawable.ic_file_download_red);
+            mCallback.onDownloadClick(getAdapterPosition(), this);
+
+        }
+
+        @Override
+        public void onDownloadComplete() {
+            ivDownload.setImageResource(R.drawable.ic_done_green);
+        }
+
+        @Override
+        public void onDownloadFailed() {
+            ivDownload.setImageResource(R.drawable.ic_file_download_black);
         }
     }
 }

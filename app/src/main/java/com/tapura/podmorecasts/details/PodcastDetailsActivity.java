@@ -1,10 +1,12 @@
 package com.tapura.podmorecasts.details;
 
 
+import android.app.DownloadManager;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +14,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -20,13 +23,15 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.tapura.podmorecasts.R;
 import com.tapura.podmorecasts.database.FirebaseDb;
+import com.tapura.podmorecasts.model.Episode;
 import com.tapura.podmorecasts.model.Podcast;
 
-import static com.tapura.podmorecasts.main.MainActivity.FAVORITE_KEY;
+import java.io.File;
+
 import static com.tapura.podmorecasts.main.MainActivity.FEED_URL_KEY;
 import static com.tapura.podmorecasts.main.MainActivity.THUMBNAIL_KEY;
 
-public class PodcastDetailsActivity extends AppCompatActivity implements FirebaseDb.PodcastFromFirebaseListener {
+public class PodcastDetailsActivity extends AppCompatActivity implements FirebaseDb.PodcastFromFirebaseListener, EpisodesAdapter.OnDownloadClickListener {
 
 
     private Podcast mPodcast;
@@ -35,7 +40,6 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Firebas
     private FloatingActionButton fab;
     private ProgressBar progressBar;
     private PodcastDetailsViewModel mModel;
-    private boolean isFavorite = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,13 +50,12 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Firebas
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 
-        mAdapter = new EpisodesAdapter();
+        mAdapter = new EpisodesAdapter(this, this);
 
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
 
-        isFavorite = getIntent().getBooleanExtra(FAVORITE_KEY, false);
         String feedUrl = getIntent().getStringExtra(FEED_URL_KEY);
         String thumbnail = getIntent().getStringExtra(THUMBNAIL_KEY);
         mPodcast = new Podcast();
@@ -63,17 +66,12 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Firebas
             mPodcast.setThumbnailPath(thumbnail);
         }
 
-        mAdapter.isFavorite = isFavorite;
+        tryToLoadFavorite(feedUrl);
 
-        if (isFavorite) {
-            loadFavorite(feedUrl);
-        } else {
-            loadPodcastFeed(feedUrl);
-        }
         startLoadingScheme();
     }
 
-    private void loadFavorite(String feedUrl) {
+    private void tryToLoadFavorite(String feedUrl) {
         FirebaseDb.getPodcast(this, feedUrl, this);
     }
 
@@ -84,13 +82,13 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Firebas
         final Observer<Podcast> observer = new Observer<Podcast>() {
             @Override
             public void onChanged(@Nullable Podcast podcast) {
+                mAdapter.isFavorite = false;
                 bindView(podcast);
             }
         };
 
         mModel.getCurrentPodcast(this, feedUrl).observe(this, observer);
 
-        startLoadingScheme();
     }
 
     public void favoritePodcast(View view) {
@@ -143,6 +141,61 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Firebas
 
     @Override
     public void onLoadedPodcast(Podcast podcast) {
+        if (podcast == null) {
+            // We don't have any podcast in firebase, so it is not a favorite podcast
+            // The podcast will be search by the feed URL
+            loadPodcastFeed(mPodcast.getFeedUrl());
+            return;
+        }
+        mAdapter.isFavorite = true;
         bindView(podcast);
     }
+
+    @Override
+    public void onDownloadClick(int pos, EpisodesAdapter.DownloadListener listener) {
+        DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+        Episode episode = mPodcast.getEpisodes().get(pos);
+
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(episode.getEpisodeLink()));
+        request.setTitle("Episode download");
+        request.setDescription(episode.getTitle());
+
+        handlePermissions();
+
+        String fileName = extractNameFrom(episode.getEpisodeLink());
+
+        Log.d("THALES", "onDownloadClick: file name: " + fileName);
+
+        String filePath = File.separator + getPackageName() + File.separator + mPodcast.getTitle() + File.separator;
+        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_PODCASTS, filePath + fileName);
+
+        if (downloadManager != null) {
+            downloadManager.enqueue(request);
+        } else {
+            Toast.makeText(this, "manager null", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    /**
+     * We will split the episode linke, and get the last part with '.mp3' suffix
+     *
+     * @param episodeLink
+     * @return file name
+     */
+    private String extractNameFrom(String episodeLink) {
+        String[] strings = episodeLink.split("/");
+
+        Log.d("THALES", "extractNameFrom: String URL:" + episodeLink);
+        for (String s : strings) {
+            Log.d("THALES", "extractNameFrom: String: " + s);
+        }
+
+        return strings[strings.length - 1];
+    }
+
+    private void handlePermissions() {
+        // TODO
+    }
+
 }
