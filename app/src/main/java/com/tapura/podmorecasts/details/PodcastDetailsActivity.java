@@ -15,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -31,8 +32,9 @@ import java.io.File;
 import static com.tapura.podmorecasts.main.MainActivity.FEED_URL_KEY;
 import static com.tapura.podmorecasts.main.MainActivity.THUMBNAIL_KEY;
 
-public class PodcastDetailsActivity extends AppCompatActivity implements FirebaseDb.PodcastFromFirebaseListener, EpisodesAdapter.OnDownloadClickListener {
+public class PodcastDetailsActivity extends AppCompatActivity implements EpisodesAdapter.OnDownloadClickListener {
 
+    private static final String TAG = PodcastDetailsActivity.class.getCanonicalName();
 
     private Podcast mPodcast;
     private RecyclerView mRecyclerView;
@@ -66,33 +68,32 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Firebas
             mPodcast.setThumbnailPath(thumbnail);
         }
 
-        tryToLoadFavorite(feedUrl);
+        createViewModel(feedUrl);
 
         startLoadingScheme();
     }
 
-    private void tryToLoadFavorite(String feedUrl) {
-        FirebaseDb.getPodcast(this, feedUrl, this);
-    }
-
-    private void loadPodcastFeed(String feedUrl) {
-        // Livedata
+    private void createViewModel(String feedUrl) {
         mModel = ViewModelProviders.of(this).get(PodcastDetailsViewModel.class);
 
-        final Observer<Podcast> observer = new Observer<Podcast>() {
+        final Observer<Pair<Podcast, Boolean>> observer = new Observer<Pair<Podcast, Boolean>>() {
             @Override
-            public void onChanged(@Nullable Podcast podcast) {
-                mAdapter.isFavorite = false;
-                bindView(podcast);
+            public void onChanged(@Nullable Pair<Podcast, Boolean> pair) {
+                if (pair != null) {
+                    mAdapter.isFavorite = pair.second;
+                    bindView(pair.first);
+                } else {
+                    Log.e(TAG, "ViewModel onChanged: the podcast info comes null");
+                }
             }
         };
 
-        mModel.getCurrentPodcast(this, feedUrl).observe(this, observer);
-
+        mModel.getCurrentPodcast(feedUrl).observe(this, observer);
     }
 
     public void favoritePodcast(View view) {
-        boolean result = FirebaseDb.insert(mPodcast, this);
+        FirebaseDb db = new FirebaseDb();
+        boolean result = db.insert(mPodcast, this);
 
         if (result) {
             Toast.makeText(this, "The Podcast " + mPodcast.getTitle() + " was added!", Toast.LENGTH_SHORT).show();
@@ -137,18 +138,6 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Firebas
 
         progressBar = findViewById(R.id.layout_loading_progressbar);
         progressBar.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onLoadedPodcast(Podcast podcast) {
-        if (podcast == null) {
-            // We don't have any podcast in firebase, so it is not a favorite podcast
-            // The podcast will be search by the feed URL
-            loadPodcastFeed(mPodcast.getFeedUrl());
-            return;
-        }
-        mAdapter.isFavorite = true;
-        bindView(podcast);
     }
 
     @Override

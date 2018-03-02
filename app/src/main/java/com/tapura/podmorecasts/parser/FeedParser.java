@@ -206,4 +206,7 @@ public class FeedParser {
         }
         return result;
     }
+
+    // Improve - In future, I need to parse the feed while downloading it, to show to the user the episodes in RecyclerView while downloading all the feed stuff
+    // Link to help https://stackoverflow.com/questions/3028306/download-a-file-with-android-and-showing-the-progress-in-a-progressdialog
 }

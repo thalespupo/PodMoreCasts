@@ -11,14 +11,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.tapura.podmorecasts.R;
 import com.tapura.podmorecasts.database.FirebaseDb;
 import com.tapura.podmorecasts.model.Podcast;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class FavoritePodcastFragment extends Fragment implements PodcastFavoritedAdapter.PodcastFavoritedOnClickListener, FirebaseDb.PodcastListFromFirebaseListener {
+public class FavoritePodcastFragment extends Fragment implements PodcastFavoritedAdapter.PodcastFavoritedOnClickListener, ValueEventListener {
 
     private static final String TAG = FavoritePodcastFragment.class.getCanonicalName();
     private static final String PODCAST_LIST_KEY = "podcast_list_key";
@@ -28,15 +33,25 @@ public class FavoritePodcastFragment extends Fragment implements PodcastFavorite
     private PodcastFavoritedAdapter mAdapter;
     private RecyclerView mGridView;
     private ProgressBar progressBar;
+    private FirebaseDb firebaseDb;
 
     public FavoritePodcastFragment() {
 
     }
 
     @Override
-    public void onLoadedPodcastList(List<Podcast> podcasts) {
-        mAdapter.setPodcastList(podcasts);
+    public void onDataChange(DataSnapshot dataSnapshot) {
+        List<Podcast> list = new ArrayList<>();
+        for (DataSnapshot data :dataSnapshot.getChildren()) {
+            list.add(data.getValue(Podcast.class));
+        }
+        mAdapter.setPodcastList(list);
         stopLoadingScheme();
+    }
+
+    @Override
+    public void onCancelled(DatabaseError databaseError) {
+        Toast.makeText(getActivity(), "List not loaded", Toast.LENGTH_SHORT).show();
     }
 
     public interface FavoriteClickListener {
@@ -59,7 +74,9 @@ public class FavoritePodcastFragment extends Fragment implements PodcastFavorite
         mGridView.setLayoutManager(layoutManager);
         mGridView.setHasFixedSize(true);
 
-        FirebaseDb.getList(getContext(), this);
+        firebaseDb = new FirebaseDb();
+
+        firebaseDb.attachPodcastListListener(getActivity(), this);
         startLoadingScheme();
         return view;
     }
@@ -70,7 +87,12 @@ public class FavoritePodcastFragment extends Fragment implements PodcastFavorite
         if (getActivity() != null) {
             ((FavoriteClickListener) getActivity()).onFavoritePodcastClick(feedUrl);
         }
+    }
 
+    @Override
+    public void onLongClick(int pos) {
+        String feedUrl = mAdapter.getList().get(pos).getFeedUrl();
+        firebaseDb.remove(getActivity(), feedUrl);
     }
 
     private void startLoadingScheme() {
