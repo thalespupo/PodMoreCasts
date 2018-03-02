@@ -63,7 +63,6 @@ public class MainActivity extends AppCompatActivity implements DiscoverPodcastFr
                 mDiscoverFragment = new DiscoverPodcastFragment();
                 Bundle b = new Bundle();
                 b.putString(QUERY_KEY, query);
-
                 mDiscoverFragment.setArguments(b);
                 getSupportFragmentManager().beginTransaction()
                         .addToBackStack(null)
@@ -89,8 +88,8 @@ public class MainActivity extends AppCompatActivity implements DiscoverPodcastFr
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                if (mDiscoverFragment != null && mDiscoverFragment.isVisible()){
-                    onBackPressed();
+                if (mDiscoverFragment != null && mDiscoverFragment.isVisible()) {
+                    getSupportFragmentManager().popBackStack();
                 }
                 return true;
             }
