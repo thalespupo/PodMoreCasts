@@ -4,6 +4,7 @@ package com.tapura.podmorecasts.details;
 import android.app.DownloadManager;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -42,6 +43,7 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
     private FloatingActionButton fab;
     private ProgressBar progressBar;
     private PodcastDetailsViewModel mModel;
+    private DownloadEpisodeReceiver mReceiver;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,6 +69,9 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
         if (!TextUtils.isEmpty(thumbnail)) {
             mPodcast.setThumbnailPath(thumbnail);
         }
+
+        mReceiver = new DownloadEpisodeReceiver();
+        registerReceiver(mReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
         createViewModel(feedUrl);
 
@@ -159,11 +164,10 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_PODCASTS, filePath + fileName);
 
         if (downloadManager != null) {
-            downloadManager.enqueue(request);
+            mReceiver.setRefId(downloadManager.enqueue(request));
         } else {
             Toast.makeText(this, "manager null", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     /**
@@ -187,4 +191,11 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
         // TODO
     }
 
+    @Override
+    protected void onDestroy() {
+        if (mReceiver != null) {
+            unregisterReceiver(mReceiver);
+        }
+        super.onDestroy();
+    }
 }
