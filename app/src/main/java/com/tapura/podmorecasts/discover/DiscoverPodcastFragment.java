@@ -1,5 +1,7 @@
 package com.tapura.podmorecasts.discover;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,19 +16,9 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.tapura.podmorecasts.R;
-import com.tapura.podmorecasts.model.ItunesResponse;
 import com.tapura.podmorecasts.model.ItunesResultsItem;
-import com.tapura.podmorecasts.retrofit.ItunesSearchService;
-import com.tapura.podmorecasts.retrofit.ItunesSearchServiceBuilder;
 
-import org.parceler.Parcels;
-
-import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import static com.tapura.podmorecasts.main.MainActivity.QUERY_KEY;
 
@@ -39,8 +31,9 @@ public class DiscoverPodcastFragment extends Fragment implements PodcastDiscover
 
     private PodcastDiscoveredAdapter mAdapter;
     private RecyclerView mGridView;
-    private ItunesSearchService mSearchService;
     private ProgressBar progressBar;
+    private PodcastDiscoveredViewModel mModel;
+    private Observer<List<ItunesResultsItem>> mObserver;
 
     public DiscoverPodcastFragment() {
 
@@ -66,13 +59,10 @@ public class DiscoverPodcastFragment extends Fragment implements PodcastDiscover
         mGridView.setLayoutManager(layoutManager);
         mGridView.setHasFixedSize(true);
 
-        mSearchService = ItunesSearchServiceBuilder.build(getContext());
+        createObserver();
+        createViewModel();
 
-        if (savedInstanceState != null) {
-            handleRotate(savedInstanceState);
-        }
-
-        if (getArguments() != null){
+        if (getArguments() != null) {
             String query = getArguments().getString(QUERY_KEY);
             if (!TextUtils.isEmpty(query)) {
                 searchFeedByQuery(getArguments().getString(QUERY_KEY));
@@ -82,45 +72,28 @@ public class DiscoverPodcastFragment extends Fragment implements PodcastDiscover
         return view;
     }
 
+    private void createObserver() {
+        mObserver = new Observer<List<ItunesResultsItem>>() {
+
+            @Override
+            public void onChanged(@Nullable List<ItunesResultsItem> itunesResultsItems) {
+                if (itunesResultsItems != null && !itunesResultsItems.isEmpty()) {
+                    mAdapter.setPodcastList(itunesResultsItems);
+                    stopLoadingScheme();
+                }
+            }
+        };
+    }
+
+    private void createViewModel() {
+        mModel = ViewModelProviders.of(this).get(PodcastDiscoveredViewModel.class);
+        mModel.getCurrentList().observe(this, mObserver);
+    }
+
     public void searchFeedByQuery(String query) {
         startLoadingScheme();
-        if (mAdapter != null){
-            mAdapter.setPodcastList(new ArrayList<ItunesResultsItem>());
-            if (mSearchService != null) {
-                mSearchService.getPodcasts("podcast", query).enqueue(new Callback<ItunesResponse>() {
-                    @Override
-                    public void onResponse(Call<ItunesResponse> call, Response<ItunesResponse> response) {
-                        if (response.isSuccessful()) {
-                            ItunesResponse itunesResponse = response.body();
-                            if (itunesResponse != null) {
-                                mAdapter.setPodcastList(itunesResponse.getResults());
-                            }
-                            stopLoadingScheme();
-                        } else {
-                            Log.d(TAG, "onResponse is no successful: " + response.message());
-                            stopLoadingScheme();
-                        }
-                    }
+        mModel.getCurrentList(query).observe(this, mObserver);
 
-                    @Override
-                    public void onFailure(Call<ItunesResponse> call, Throwable t) {
-                        stopLoadingScheme();
-                        Log.d(TAG, "onFailure: " + t.getMessage());
-                    }
-                });
-            }
-        }
-    }
-
-    private void handleRotate(Bundle savedInstanceState) {
-        List<ItunesResultsItem> list = Parcels.unwrap(savedInstanceState.getParcelable(PODCAST_LIST_KEY));
-        mAdapter.setPodcastList(list);
-    }
-
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putParcelable(PODCAST_LIST_KEY, Parcels.wrap(mAdapter.getList()));
-        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -128,7 +101,7 @@ public class DiscoverPodcastFragment extends Fragment implements PodcastDiscover
         String feedUrl = mAdapter.getList().get(pos).getFeedUrl();
         String thumbnail = mAdapter.getList().get(pos).getArtworkUrl600();
         if (getActivity() != null) {
-            ((PodcastClickListener)getActivity()).onPodcastClick(feedUrl, thumbnail);
+            ((PodcastClickListener) getActivity()).onPodcastClick(feedUrl, thumbnail);
         }
     }
 
