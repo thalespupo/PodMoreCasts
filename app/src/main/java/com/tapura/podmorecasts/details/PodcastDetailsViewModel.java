@@ -33,15 +33,13 @@ public class PodcastDetailsViewModel extends ViewModel implements ValueEventList
     // Pair is a Podcast object, and the source type: true = Firebase, false = DownloadTask
     private MutableLiveData<Pair<Podcast, Boolean>> mCurrentPodcast;
     private FirebaseDb firebaseDb;
-    private Context mAppContext;
     private String currentFeed;
 
     public MutableLiveData<Pair<Podcast, Boolean>> getCurrentPodcast(String feed) {
         if (mCurrentPodcast == null) {
-            mAppContext = MyApplication.getApp();
             mCurrentPodcast = new MutableLiveData<>();
             firebaseDb = getFirebaseDatabaseInstance();
-            firebaseDb.attachPodcastListener(mAppContext, feed, this);
+            firebaseDb.attachPodcastListener(MyApplication.getApp(), feed, this);
         }
         currentFeed = feed;
         return mCurrentPodcast;
@@ -63,19 +61,19 @@ public class PodcastDetailsViewModel extends ViewModel implements ValueEventList
         if (dataSnapshot.exists()) {
             onLoadedPodcast(dataSnapshot.getValue(Podcast.class));
         } else {
-            new DownloadAndParseFeedTask(mAppContext).execute(currentFeed);
+            new DownloadAndParseFeedTask(MyApplication.getApp()).execute(currentFeed);
         }
     }
 
     @Override
     public void onCancelled(DatabaseError databaseError) {
-        new DownloadAndParseFeedTask(mAppContext).execute(currentFeed);
+        new DownloadAndParseFeedTask(MyApplication.getApp()).execute(currentFeed);
     }
 
     @Override
     protected void onCleared() {
         if (firebaseDb != null) {
-            firebaseDb.detachPodcastListener(mAppContext, currentFeed, this);
+            firebaseDb.detachPodcastListener(MyApplication.getApp(), currentFeed, this);
         }
         super.onCleared();
     }
