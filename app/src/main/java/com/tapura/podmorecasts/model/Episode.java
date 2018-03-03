@@ -1,9 +1,5 @@
 package com.tapura.podmorecasts.model;
 
-
-import org.parceler.Parcel;
-
-@Parcel
 public class Episode {
 
     private String title;

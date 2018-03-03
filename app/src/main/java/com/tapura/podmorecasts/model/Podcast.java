@@ -1,11 +1,7 @@
 package com.tapura.podmorecasts.model;
 
-
-import org.parceler.Parcel;
-
 import java.util.List;
 
-@Parcel
 public class Podcast {
 
     private String title;
@@ -77,5 +73,4 @@ public class Podcast {
     public String getFeedUrl() {
         return feedUrl;
     }
-
 }
