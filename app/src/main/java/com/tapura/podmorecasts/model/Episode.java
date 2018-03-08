@@ -9,7 +9,7 @@ public class Episode {
     private String pathInDisk;
     private long episodeLength;
     private long trackPosition;
-    private boolean alreadyListened;
+    private EpisodeMediaState episodeState;
 
     public String getTitle() {
         return title;
@@ -67,11 +67,11 @@ public class Episode {
         this.trackPosition = trackPosition;
     }
 
-    public boolean isAlreadyListened() {
-        return alreadyListened;
+    public EpisodeMediaState getEpisodeState() {
+        return episodeState;
     }
 
-    public void setAlreadyListened(boolean alreadyListened) {
-        this.alreadyListened = alreadyListened;
+    public void setEpisodeState(EpisodeMediaState episodeState) {
+        this.episodeState = episodeState;
     }
 }

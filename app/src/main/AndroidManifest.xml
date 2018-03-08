@@ -33,6 +33,13 @@
         <activity
             android:name=".main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <receiver android:name=".download.DownloadEpisodeReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

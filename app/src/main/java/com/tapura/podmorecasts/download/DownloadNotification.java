@@ -1,11 +1,10 @@
-package com.tapura.podmorecasts.details;
+package com.tapura.podmorecasts.download;
+
 
 import android.app.DownloadManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
@@ -13,23 +12,11 @@ import android.util.Log;
 
 import com.tapura.podmorecasts.R;
 
-public class DownloadEpisodeReceiver extends BroadcastReceiver {
+public class DownloadNotification {
 
-    private static final String TAG = DownloadEpisodeReceiver.class.getCanonicalName();
+    private static final String TAG = DownloadNotification.class.getSimpleName();
+
     private static final String NOTIFICATION_CHANNEL_ID = "download_episode_channel_id_01";
-    private long refId;
-
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals(DownloadManager.ACTION_DOWNLOAD_COMPLETE)) {
-            long referenceId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-            if (referenceId == refId) {
-                createNotificationChannel(context);
-                createNotification(context);
-            }
-        }
-    }
 
     private void createNotificationChannel(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -48,22 +35,33 @@ public class DownloadEpisodeReceiver extends BroadcastReceiver {
         }
     }
 
-    private void createNotification(Context context) {
+    public void createNotification(Context context, int downloadStatus, long refId) {
+        createNotificationChannel(context);
         Log.e(TAG, "Download finished, ID:" + refId);
+
+        String notificationText;
+
+        switch (downloadStatus) {
+            case DownloadManager.STATUS_FAILED:
+                notificationText = "Download failed, please try again";
+                break;
+            case DownloadManager.STATUS_SUCCESSFUL:
+                notificationText = "Download completed";
+                break;
+            default:
+                notificationText = "Unknown status = " + downloadStatus;
+        }
+
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context, NOTIFICATION_CHANNEL_ID)
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle("PodMoreCasts")
-                        .setContentText("Download completed");
+                        .setContentText(notificationText);
 
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (notificationManager != null) {
             notificationManager.notify(1, mBuilder.build());
         }
-    }
-
-    public void setRefId(long refId) {
-        this.refId = refId;
     }
 }

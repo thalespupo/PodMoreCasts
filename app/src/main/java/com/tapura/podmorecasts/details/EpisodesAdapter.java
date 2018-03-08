@@ -11,10 +11,11 @@ import android.widget.TextView;
 
 import com.tapura.podmorecasts.R;
 import com.tapura.podmorecasts.model.Episode;
+import com.tapura.podmorecasts.model.EpisodeMediaState;
 
 import java.util.List;
 
-class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.EpisodeViewHolder> {
+public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.EpisodeViewHolder> {
 
     private List<Episode> mList;
     private Context mContext;
@@ -22,12 +23,7 @@ class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.EpisodeViewHo
     public boolean isFavorite;
 
     public interface OnDownloadClickListener {
-        void onDownloadClick(int pos, DownloadListener listener);
-    }
-
-    public interface DownloadListener {
-        void onDownloadComplete();
-        void onDownloadFailed();
+        void onDownloadClick(int pos);
     }
 
     public EpisodesAdapter(Context context, OnDownloadClickListener callback) {
@@ -49,8 +45,9 @@ class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.EpisodeViewHo
         holder.tvTitle.setText(mList.get(position).getTitle());
         if (isFavorite) {
             holder.ivDownload.setVisibility(View.VISIBLE);
+            Episode epi = mList.get(position);
+            holder.ivDownload.setImageResource(holder.getDownloadIcon(epi.getEpisodeState()));
         }
-
     }
 
     @Override
@@ -67,7 +64,7 @@ class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.EpisodeViewHo
         notifyDataSetChanged();
     }
 
-    public class EpisodeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, DownloadListener {
+    public class EpisodeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView tvTitle;
         ImageView ivDownload;
 
@@ -75,25 +72,25 @@ class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.EpisodeViewHo
             super(itemView);
             tvTitle = itemView.findViewById(R.id.text_view_episode_title);
             ivDownload = itemView.findViewById(R.id.image_view_download);
-
             ivDownload.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            ivDownload.setImageResource(R.drawable.ic_file_download_red);
-            mCallback.onDownloadClick(getAdapterPosition(), this);
-
+            mCallback.onDownloadClick(getAdapterPosition());
         }
 
-        @Override
-        public void onDownloadComplete() {
-            ivDownload.setImageResource(R.drawable.ic_done_green);
-        }
-
-        @Override
-        public void onDownloadFailed() {
-            ivDownload.setImageResource(R.drawable.ic_file_download_black);
+        private int getDownloadIcon(EpisodeMediaState episodeState) {
+            switch (episodeState) {
+                case COMPLETED:
+                    return R.drawable.ic_done_green;
+                case DOWNLOADING:
+                    return R.drawable.ic_file_download_red;
+                case NOT_IN_DISK:
+                    return R.drawable.ic_file_download_black;
+                default:
+                    return -1;
+            }
         }
     }
 }

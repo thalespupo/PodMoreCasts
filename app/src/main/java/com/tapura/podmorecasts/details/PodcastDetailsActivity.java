@@ -1,11 +1,10 @@
 package com.tapura.podmorecasts.details;
 
 
-import android.app.DownloadManager;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.IntentFilter;
-import android.net.Uri;
+import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
@@ -25,10 +24,10 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.tapura.podmorecasts.R;
 import com.tapura.podmorecasts.database.FirebaseDb;
+import com.tapura.podmorecasts.download.DownloadEpisodeReceiver;
+import com.tapura.podmorecasts.download.DownloadUtils;
 import com.tapura.podmorecasts.model.Episode;
 import com.tapura.podmorecasts.model.Podcast;
-
-import java.io.File;
 
 import static com.tapura.podmorecasts.main.MainActivity.FEED_URL_KEY;
 import static com.tapura.podmorecasts.main.MainActivity.THUMBNAIL_KEY;
@@ -70,8 +69,6 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
             mPodcast.setThumbnailPath(thumbnail);
         }
 
-        mReceiver = new DownloadEpisodeReceiver();
-        registerReceiver(mReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
         createViewModel(feedUrl);
 
@@ -118,7 +115,7 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
         podcast.setThumbnailPath(mPodcast.getThumbnailPath());
         mPodcast = podcast;
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(mPodcast.getTitle());
 
         ImageView ivThumbnail = findViewById(R.id.thumbnail);
@@ -146,56 +143,42 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
     }
 
     @Override
-    public void onDownloadClick(int pos, EpisodesAdapter.DownloadListener listener) {
-        DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+    public void onDownloadClick(int pos) {
         Episode episode = mPodcast.getEpisodes().get(pos);
 
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(episode.getEpisodeLink()));
-        request.setTitle("Episode download");
-        request.setDescription(episode.getTitle());
-
-        handlePermissions();
-
-        String fileName = extractNameFrom(episode.getEpisodeLink());
-
-        Log.d("THALES", "onDownloadClick: file name: " + fileName);
-
-        String filePath = File.separator + getPackageName() + File.separator + mPodcast.getTitle() + File.separator;
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_PODCASTS, filePath + fileName);
-
-        if (downloadManager != null) {
-            mReceiver.setRefId(downloadManager.enqueue(request));
-        } else {
-            Toast.makeText(this, "manager null", Toast.LENGTH_SHORT).show();
+        switch (episode.getEpisodeState()) {
+            case DOWNLOADING:
+                stopDownload(pos);
+                break;
+            case NOT_IN_DISK:
+                startDownload(pos);
+                break;
+            case COMPLETED:
+                openFile(episode);
         }
     }
 
-    /**
-     * We will split the episode linke, and get the last part with '.mp3' suffix
-     *
-     * @param episodeLink
-     * @return file name
-     */
-    private String extractNameFrom(String episodeLink) {
-        String[] strings = episodeLink.split("/");
-
-        Log.d("THALES", "extractNameFrom: String URL:" + episodeLink);
-        for (String s : strings) {
-            Log.d("THALES", "extractNameFrom: String: " + s);
-        }
-
-        return strings[strings.length - 1];
+    private void startDownload(int pos) {
+        Intent intent = DownloadUtils.createIntentForDownload(this, mPodcast.getFeedUrl(), pos);
+        DownloadUtils utils = new DownloadUtils();
+        utils.runCommand(this, intent);
     }
 
-    private void handlePermissions() {
-        // TODO
+    private void stopDownload(int pos) {
+        Intent intent = DownloadUtils.createIntentForCancel(this, mPodcast.getFeedUrl(), pos);
+        DownloadUtils utils = new DownloadUtils();
+        utils.runCommand(this, intent);
     }
 
-    @Override
-    protected void onDestroy() {
-        if (mReceiver != null) {
-            unregisterReceiver(mReceiver);
+    private void openFile(Episode episode) {
+        MediaPlayer mp = new MediaPlayer();
+
+        try {
+            mp.setDataSource(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PODCASTS) + episode.getPathInDisk());
+            mp.prepare();
+            mp.start();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        super.onDestroy();
     }
 }
