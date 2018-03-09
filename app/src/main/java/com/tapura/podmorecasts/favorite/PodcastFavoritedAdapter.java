@@ -21,7 +21,6 @@ class PodcastFavoritedAdapter extends RecyclerView.Adapter<PodcastFavoritedAdapt
 
     public interface PodcastFavoritedOnClickListener {
         void onClick(int pos);
-        void onLongClick(int pos);
     }
 
     private PodcastFavoritedOnClickListener mCallback;
@@ -63,25 +62,18 @@ class PodcastFavoritedAdapter extends RecyclerView.Adapter<PodcastFavoritedAdapt
     }
 
 
-    public class DiscoveredViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener {
+    public class DiscoveredViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         ImageView ivThumbnail;
 
         public DiscoveredViewHolder(View itemView) {
             super(itemView);
             ivThumbnail = itemView.findViewById(R.id.image_view_podcast_item);
             itemView.setOnClickListener(this);
-            itemView.setOnLongClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
             mCallback.onClick(getAdapterPosition());
-        }
-
-        @Override
-        public boolean onLongClick(View v) {
-            mCallback.onLongClick(getAdapterPosition());
-            return true;
         }
     }
 }

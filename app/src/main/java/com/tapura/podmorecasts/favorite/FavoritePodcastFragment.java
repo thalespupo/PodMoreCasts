@@ -87,12 +87,6 @@ public class FavoritePodcastFragment extends Fragment implements PodcastFavorite
         }
     }
 
-    @Override
-    public void onLongClick(int pos) {
-        String feedUrl = mAdapter.getList().get(pos).getFeedUrl();
-        firebaseDb.remove(getActivity(), feedUrl);
-    }
-
     private void startLoadingScheme() {
         if (getActivity() != null) {
             progressBar = getActivity().findViewById(R.id.layout_loading_progressbar);
