@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.util.Pair;
 
 import com.google.firebase.database.DataSnapshot;
@@ -34,10 +35,12 @@ public class PodcastDetailsViewModel extends ViewModel implements ValueEventList
     private MutableLiveData<Pair<Podcast, Boolean>> mCurrentPodcast;
     private FirebaseDb firebaseDb;
     private String currentFeed;
+    private boolean wasLoaded;
 
     public MutableLiveData<Pair<Podcast, Boolean>> getCurrentPodcast(String feed) {
         if (mCurrentPodcast == null) {
             mCurrentPodcast = new MutableLiveData<>();
+            wasLoaded = false;
             firebaseDb = getFirebaseDatabaseInstance();
             firebaseDb.attachPodcastListener(MyApplication.getApp(), feed, this);
         }
@@ -54,12 +57,20 @@ public class PodcastDetailsViewModel extends ViewModel implements ValueEventList
 
     private void onLoadedPodcast(Podcast podcast) {
         mCurrentPodcast.setValue(new Pair<>(podcast, true));
+        wasLoaded = true;
     }
 
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
+        Log.d(TAG, "onDataChange: dataSnapshot" + dataSnapshot);
         if (dataSnapshot.exists()) {
             onLoadedPodcast(dataSnapshot.getValue(Podcast.class));
+        } else if (wasLoaded) {
+            Pair<Podcast, Boolean> alreadyLoaded = mCurrentPodcast.getValue();
+            if (alreadyLoaded != null) {
+                mCurrentPodcast.setValue(new Pair<>(alreadyLoaded.first, false));
+            }
+
         } else {
             new DownloadAndParseFeedTask(MyApplication.getApp()).execute(currentFeed);
         }
@@ -123,6 +134,7 @@ public class PodcastDetailsViewModel extends ViewModel implements ValueEventList
         @Override
         protected void onPostExecute(Podcast podcast) {
             mCurrentPodcast.setValue(new Pair<>(podcast, false));
+            wasLoaded = true;
         }
 
         private OkHttpClient createClient(Context mContext) {

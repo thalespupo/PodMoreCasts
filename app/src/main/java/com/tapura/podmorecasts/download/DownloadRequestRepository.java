@@ -59,15 +59,13 @@ public class DownloadRequestRepository {
     }
 
     public void remove(long id) {
-        DownloadRequest chosen = null;
         for (DownloadRequest r : mRequests) {
             if (r.getRefId() == id) {
-                chosen = r;
-                break;
+                mRequests.remove(r);
+                flush();
+                return;
             }
         }
-        mRequests.remove(chosen);
-        flush();
     }
 
     private void flush() {
@@ -80,5 +78,15 @@ public class DownloadRequestRepository {
         }
 
         editor.apply();
+    }
+
+    public long[] getAllId(String feed) {
+        return mRequests.stream().filter(req -> req.getFeed().equals(feed)).mapToLong(DownloadRequest::getRefId).toArray();
+    }
+
+    public void remove(long[] ids) {
+        for (long id : ids) {
+            remove(id);
+        }
     }
 }

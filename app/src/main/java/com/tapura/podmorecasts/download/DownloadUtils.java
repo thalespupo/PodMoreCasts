@@ -28,59 +28,35 @@ public class DownloadUtils {
 
     private static final String TAG = DownloadUtils.class.getSimpleName();
 
-    private static final String ACTION_DOWNLOAD = "download";
-    private static final String ACTION_CANCEL = "cancel";
-
-    private static final String EXTRA_FEED = "feed";
-    private static final String EXTRA_EPISODE_INDEX = "index";
+    private final EpisodeDownloadListener mCallback;
     private DownloadRequestRepository mRepository;
     private Context mContext;
 
-    public void runCommand(@NonNull Context context, @NonNull Intent intent) {
+    public DownloadUtils(Context context, EpisodeDownloadListener listener) {
         mContext = context;
-        String action = intent.getAction();
-        if (action != null) {
-            mRepository = new DownloadRequestRepository(mContext);
-            String feed = intent.getStringExtra(EXTRA_FEED);
-            final int epiIndex = intent.getIntExtra(EXTRA_EPISODE_INDEX, -1);
-            if (TextUtils.isEmpty(feed) && epiIndex == -1) {
-                return;
-            }
-            FirebaseDb db = new FirebaseDb();
-            switch (action) {
-                case ACTION_DOWNLOAD:
-                    db.getPodcast(mContext, feed, new ValueEventListener() {
-
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            startDownload(dataSnapshot.getValue(Podcast.class), epiIndex);
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
-                    break;
-                case ACTION_CANCEL:
-                    stopDownload(feed, epiIndex);
-                    break;
-                default:
-                    Log.wtf(TAG, "unknown action");
-            }
-        }
+        mCallback = listener;
+        mRepository = new DownloadRequestRepository(mContext);
     }
 
-    private void stopDownload(String feed, int epiIndex) {
-        long id = mRepository.getId(feed, epiIndex);
+    public void stopDownload(String feed, int epiIndex) {
         DownloadManager manager = (DownloadManager) mContext.getSystemService(DOWNLOAD_SERVICE);
         if (manager != null) {
-            manager.remove(id);
+            if (epiIndex == -1) { // cancelAll
+                long[] ids = mRepository.getAllId(feed);
+                manager.remove(ids);
+                mRepository.remove(ids);
+                mCallback.onCancelAllDownload();
+            } else {
+                long id = mRepository.getId(feed, epiIndex);
+                manager.remove(id);
+                mRepository.remove(id);
+                mCallback.onCancelDownload(epiIndex);
+            }
         }
-        mRepository.remove(id);
+
     }
 
-    private void startDownload(Podcast podcast, int pos) {
+    public void startDownload(Podcast podcast, int pos) {
         Episode episode = podcast.getEpisodes().get(pos);
         DownloadManager downloadManager = (DownloadManager) mContext.getSystemService(DOWNLOAD_SERVICE);
 
@@ -107,26 +83,6 @@ public class DownloadUtils {
         } else {
             Toast.makeText(mContext, "manager null", Toast.LENGTH_SHORT).show();
         }
-    }
-
-
-    public static Intent createIntentForDownload(@NonNull Context context, @NonNull String feed, int episodePos) {
-        Intent i = new Intent(context, DownloadUtils.class);
-        i.setAction(ACTION_DOWNLOAD);
-
-        i.putExtra(EXTRA_FEED, feed);
-        i.putExtra(EXTRA_EPISODE_INDEX, episodePos);
-
-        return i;
-    }
-
-    public static Intent createIntentForCancel(@NonNull Context context, @NonNull String feed, int episodePos) {
-        Intent i = new Intent(context, DownloadUtils.class);
-        i.setAction(ACTION_CANCEL);
-
-        i.putExtra(EXTRA_FEED, feed);
-        i.putExtra(EXTRA_EPISODE_INDEX, episodePos);
-
-        return i;
+        mCallback.onStartDownload(pos);
     }
 }
