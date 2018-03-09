@@ -4,8 +4,6 @@ package com.tapura.podmorecasts.database;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
@@ -127,14 +125,6 @@ public class FirebaseDb {
 
         DatabaseReference podcastRef = database.getReference(USER_REF).child(uid).child(String.valueOf(hashCode));
         podcastRef.addListenerForSingleValueEvent(listener);
-    }
-
-    public interface FirebasePodcastListListener {
-        void onLoadedPodcastList(List<Podcast> podcasts);
-    }
-
-    public interface FirebasePodcastListener {
-        void onLoadedPodcast(Podcast podcast);
     }
 
     private String getUser(Context context) {
