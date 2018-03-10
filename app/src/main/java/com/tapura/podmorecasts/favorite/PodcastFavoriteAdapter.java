@@ -14,31 +14,31 @@ import com.tapura.podmorecasts.model.Podcast;
 
 import java.util.List;
 
-class PodcastFavoritedAdapter extends RecyclerView.Adapter<PodcastFavoritedAdapter.DiscoveredViewHolder> {
+class PodcastFavoriteAdapter extends RecyclerView.Adapter<PodcastFavoriteAdapter.FavoriteViewHolder> {
 
     private List<Podcast> mList;
     private Context mContext;
 
-    public interface PodcastFavoritedOnClickListener {
+    public interface PodcastFavoriteOnClickListener {
         void onClick(int pos);
     }
 
-    private PodcastFavoritedOnClickListener mCallback;
+    private PodcastFavoriteOnClickListener mCallback;
 
-    public PodcastFavoritedAdapter(Context context, PodcastFavoritedOnClickListener listener) {
+    public PodcastFavoriteAdapter(Context context, PodcastFavoriteOnClickListener listener) {
         mContext = context;
         mCallback = listener;
     }
 
     @Override
-    public DiscoveredViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public FavoriteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View v = inflater.inflate(R.layout.grid_item_podcast, parent, false);
-        return new DiscoveredViewHolder(v);
+        return new FavoriteViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(DiscoveredViewHolder holder, int position) {
+    public void onBindViewHolder(FavoriteViewHolder holder, int position) {
         Podcast item = mList.get(position);
         String stringImage = item.getThumbnailPath();
         Picasso.with(mContext)
@@ -62,10 +62,10 @@ class PodcastFavoritedAdapter extends RecyclerView.Adapter<PodcastFavoritedAdapt
     }
 
 
-    public class DiscoveredViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class FavoriteViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         ImageView ivThumbnail;
 
-        public DiscoveredViewHolder(View itemView) {
+        public FavoriteViewHolder(View itemView) {
             super(itemView);
             ivThumbnail = itemView.findViewById(R.id.image_view_podcast_item);
             itemView.setOnClickListener(this);

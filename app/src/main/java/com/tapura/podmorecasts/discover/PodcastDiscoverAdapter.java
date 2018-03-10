@@ -15,31 +15,31 @@ import com.tapura.podmorecasts.model.ItunesResultsItem;
 
 import java.util.List;
 
-class PodcastDiscoveredAdapter extends RecyclerView.Adapter<PodcastDiscoveredAdapter.DiscoveredViewHolder> {
+class PodcastDiscoverAdapter extends RecyclerView.Adapter<PodcastDiscoverAdapter.DiscoverViewHolder> {
 
     private List<ItunesResultsItem> mList;
     private Context mContext;
 
-    public interface PodcastDiscoveredOnClickListener {
+    public interface PodcastDiscoverOnClickListener {
         void onClick(int pos);
     }
 
-    private PodcastDiscoveredOnClickListener mCallback;
+    private PodcastDiscoverOnClickListener mCallback;
 
-    public PodcastDiscoveredAdapter(Context context, PodcastDiscoveredOnClickListener listener) {
+    public PodcastDiscoverAdapter(Context context, PodcastDiscoverOnClickListener listener) {
         mContext = context;
         mCallback = listener;
     }
 
     @Override
-    public DiscoveredViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public DiscoverViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View v = inflater.inflate(R.layout.list_item_podcast, parent, false);
-        return new DiscoveredViewHolder(v);
+        return new DiscoverViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(DiscoveredViewHolder holder, int position) {
+    public void onBindViewHolder(DiscoverViewHolder holder, int position) {
         ItunesResultsItem item = mList.get(position);
         String stringImage = item.getArtworkUrl600();
         Picasso.with(mContext)
@@ -67,13 +67,13 @@ class PodcastDiscoveredAdapter extends RecyclerView.Adapter<PodcastDiscoveredAda
     }
 
 
-    public class DiscoveredViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class DiscoverViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView ivThumbnail;
         TextView tvPodcastName;
         TextView tvPodcastAuthorName;
         TextView tvPodcastGenre;
 
-        public DiscoveredViewHolder(View itemView) {
+        public DiscoverViewHolder(View itemView) {
             super(itemView);
             ivThumbnail = itemView.findViewById(R.id.image_view_podcast_item);
             tvPodcastName = itemView.findViewById(R.id.text_view_podcast_name);

@@ -22,17 +22,17 @@ import java.util.List;
 
 import static com.tapura.podmorecasts.main.MainActivity.QUERY_KEY;
 
-public class DiscoverPodcastFragment extends Fragment implements PodcastDiscoveredAdapter.PodcastDiscoveredOnClickListener {
+public class DiscoverPodcastFragment extends Fragment implements PodcastDiscoverAdapter.PodcastDiscoverOnClickListener {
 
     private static final String TAG = DiscoverPodcastFragment.class.getCanonicalName();
     private static final String PODCAST_LIST_KEY = "podcast_list_key";
     public static final String FEED_URL_KEY = "feed_url";
     public static String fragTag = "discover";
 
-    private PodcastDiscoveredAdapter mAdapter;
+    private PodcastDiscoverAdapter mAdapter;
     private RecyclerView mGridView;
     private ProgressBar progressBar;
-    private PodcastDiscoveredViewModel mModel;
+    private PodcastDiscoverViewModel mModel;
     private Observer<List<ItunesResultsItem>> mObserver;
 
     public DiscoverPodcastFragment() {
@@ -49,11 +49,11 @@ public class DiscoverPodcastFragment extends Fragment implements PodcastDiscover
         Log.d(TAG, "onCreateView: ");
         View view = inflater.inflate(R.layout.content_discover_podcast, container, false);
 
-        mGridView = view.findViewById(R.id.recycler_view_podcasts_discovered_list);
+        mGridView = view.findViewById(R.id.recycler_view_podcasts_discover_list);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 
-        mAdapter = new PodcastDiscoveredAdapter(getContext(), this);
+        mAdapter = new PodcastDiscoverAdapter(getContext(), this);
 
         mGridView.setAdapter(mAdapter);
         mGridView.setLayoutManager(layoutManager);
@@ -86,7 +86,7 @@ public class DiscoverPodcastFragment extends Fragment implements PodcastDiscover
     }
 
     private void createViewModel() {
-        mModel = ViewModelProviders.of(this).get(PodcastDiscoveredViewModel.class);
+        mModel = ViewModelProviders.of(this).get(PodcastDiscoverViewModel.class);
         mModel.getCurrentList().observe(this, mObserver);
     }
 

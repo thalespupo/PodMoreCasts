@@ -23,12 +23,12 @@ import com.tapura.podmorecasts.model.Podcast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FavoritePodcastFragment extends Fragment implements PodcastFavoritedAdapter.PodcastFavoritedOnClickListener, ValueEventListener {
+public class FavoritePodcastFragment extends Fragment implements PodcastFavoriteAdapter.PodcastFavoriteOnClickListener, ValueEventListener {
 
     private static final String TAG = FavoritePodcastFragment.class.getCanonicalName();
     public static String fragTag = "favorite";
 
-    private PodcastFavoritedAdapter mAdapter;
+    private PodcastFavoriteAdapter mAdapter;
     private RecyclerView mGridView;
     private ProgressBar progressBar;
     private FirebaseDb firebaseDb;
@@ -62,11 +62,11 @@ public class FavoritePodcastFragment extends Fragment implements PodcastFavorite
         Log.d(TAG, "onCreateView: ");
         View view = inflater.inflate(R.layout.content_favorite_podcast, container, false);
 
-        mGridView = view.findViewById(R.id.recycler_view_podcasts_favorited_list);
+        mGridView = view.findViewById(R.id.recycler_view_podcasts_favorite_list);
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
 
-        mAdapter = new PodcastFavoritedAdapter(getContext(), this);
+        mAdapter = new PodcastFavoriteAdapter(getContext(), this);
 
         mGridView.setAdapter(mAdapter);
         mGridView.setLayoutManager(layoutManager);

@@ -1,6 +1,5 @@
 package com.tapura.podmorecasts.discover;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.support.annotation.NonNull;
@@ -18,9 +17,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PodcastDiscoveredViewModel extends ViewModel {
+public class PodcastDiscoverViewModel extends ViewModel {
 
-    private static final String TAG = PodcastDiscoveredViewModel.class.getCanonicalName();
+    private static final String TAG = PodcastDiscoverViewModel.class.getCanonicalName();
 
     private MutableLiveData<List<ItunesResultsItem>> mCurrentList;
     private ItunesSearchService mSearchService;
