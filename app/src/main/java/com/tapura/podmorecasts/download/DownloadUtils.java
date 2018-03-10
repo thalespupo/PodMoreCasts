@@ -41,8 +41,10 @@ public class DownloadUtils {
         if (manager != null) {
             if (epiIndex == -1) { // cancelAll
                 long[] ids = mRepository.getAllId(feed);
-                manager.remove(ids);
-                mRepository.remove(ids);
+                if (ids != null && ids.length > 0) {
+                    manager.remove(ids);
+                    mRepository.remove(ids);
+                }
             } else {
                 long id = mRepository.getId(feed, epiIndex);
                 manager.remove(id);
