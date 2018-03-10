@@ -13,7 +13,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,6 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.tapura.podmorecasts.MyLog;
 import com.tapura.podmorecasts.R;
 import com.tapura.podmorecasts.database.FirebaseDb;
 import com.tapura.podmorecasts.download.DownloadUtils;
@@ -31,8 +31,6 @@ import static com.tapura.podmorecasts.main.MainActivity.FEED_URL_KEY;
 import static com.tapura.podmorecasts.main.MainActivity.THUMBNAIL_KEY;
 
 public class PodcastDetailsActivity extends AppCompatActivity implements EpisodesAdapter.OnDownloadClickListener {
-
-    private static final String TAG = PodcastDetailsActivity.class.getCanonicalName();
 
     private Podcast mPodcast;
     private RecyclerView mRecyclerView;
@@ -50,7 +48,7 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 
-        mAdapter = new EpisodesAdapter(this, this);
+        mAdapter = new EpisodesAdapter(this);
 
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(layoutManager);
@@ -82,7 +80,7 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
                     bindView(pair.first);
                 } else {
 
-                    Log.e(TAG, "ViewModel onChanged: the podcast info comes null");
+                    MyLog.e(this.getClass(), "ViewModel onChanged: the podcast info comes null");
                 }
             }
         };

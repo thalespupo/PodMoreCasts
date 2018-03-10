@@ -3,9 +3,9 @@ package com.tapura.podmorecasts.discover;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.tapura.podmorecasts.MyApplication;
+import com.tapura.podmorecasts.MyLog;
 import com.tapura.podmorecasts.model.ItunesResponse;
 import com.tapura.podmorecasts.model.ItunesResultsItem;
 import com.tapura.podmorecasts.retrofit.ItunesSearchService;
@@ -18,8 +18,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class PodcastDiscoverViewModel extends ViewModel {
-
-    private static final String TAG = PodcastDiscoverViewModel.class.getCanonicalName();
 
     private MutableLiveData<List<ItunesResultsItem>> mCurrentList;
     private ItunesSearchService mSearchService;
@@ -45,13 +43,13 @@ public class PodcastDiscoverViewModel extends ViewModel {
                         mCurrentList.setValue(itunesResponse.getResults());
                     }
                 } else {
-                    Log.d(TAG, "onResponse is no successful: " + response.message());
+                    MyLog.d(getClass(), "onResponse is no successful: " + response.message());
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ItunesResponse> call, @NonNull Throwable t) {
-                Log.d(TAG, "onFailure: " + t.getMessage());
+                MyLog.d(getClass(), "onFailure: " + t.getMessage());
             }
         });
 

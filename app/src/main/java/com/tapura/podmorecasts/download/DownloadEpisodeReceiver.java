@@ -5,11 +5,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.util.Log;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.tapura.podmorecasts.MyLog;
 import com.tapura.podmorecasts.Utils;
 import com.tapura.podmorecasts.database.FirebaseDb;
 import com.tapura.podmorecasts.model.EpisodeMediaState;
@@ -19,7 +19,6 @@ import java.io.File;
 
 public class DownloadEpisodeReceiver extends BroadcastReceiver {
 
-    private static final String TAG = DownloadEpisodeReceiver.class.getCanonicalName();
     private DownloadRequestRepository mRepository;
 
     public DownloadEpisodeReceiver() {
@@ -28,9 +27,9 @@ public class DownloadEpisodeReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         mRepository = new DownloadRequestRepository(context);
-        Log.d(TAG, "onReceive");
+        MyLog.d(getClass(), "onReceive");
         if (intent.getAction().equals(DownloadManager.ACTION_DOWNLOAD_COMPLETE)) {
-            Log.d(TAG, "onReceive: ACTION_DOWNLOAD_COMPLETE");
+            MyLog.d(getClass(), "onReceive: ACTION_DOWNLOAD_COMPLETE");
             long referenceId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
             onDownloadCompleted(context, referenceId);
         }
@@ -51,7 +50,7 @@ public class DownloadEpisodeReceiver extends BroadcastReceiver {
         if (c != null) {
             if (c.moveToNext()) {
                 int downloadStatus = c.getInt(c.getColumnIndex(DownloadManager.COLUMN_STATUS));
-                Log.d(TAG, "c.moveToNext(): downloadStatus " + downloadStatus);
+                MyLog.d(getClass(), "c.moveToNext(): downloadStatus " + downloadStatus);
                 notification.createNotification(context, downloadStatus, refId);
                 updateDatabase(context, downloadStatus, refId);
                 return;
@@ -74,13 +73,13 @@ public class DownloadEpisodeReceiver extends BroadcastReceiver {
                 Podcast podcast = dataSnapshot.getValue(Podcast.class);
                 switch (downloadStatus) {
                     case DownloadManager.STATUS_FAILED:
-                        Log.d(TAG, "updateDatabase: FAILED");
+                        MyLog.d(getClass(), "updateDatabase: FAILED");
                         podcast.getEpisodes().get(episodePos).setEpisodeState(EpisodeMediaState.NOT_IN_DISK);
                         db.insert(podcast, context);
                         mRepository.remove(refId);
                         break;
                     case DownloadManager.STATUS_SUCCESSFUL:
-                        Log.d(TAG, "updateDatabase: SUCCESSFUL");
+                        MyLog.d(getClass(), "updateDatabase: SUCCESSFUL");
                         String filePath = Utils.EPISODES_PATH + podcast.getTitle() + File.separator;
                         String fileName = Utils.extractNameFrom(podcast.getEpisodes().get(episodePos).getEpisodeLink());
                         podcast.getEpisodes().get(episodePos).setPathInDisk(filePath + fileName);

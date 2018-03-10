@@ -3,17 +3,11 @@ package com.tapura.podmorecasts.download;
 
 import android.app.DownloadManager;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
+import com.tapura.podmorecasts.MyLog;
 import com.tapura.podmorecasts.Utils;
 import com.tapura.podmorecasts.database.FirebaseDb;
 import com.tapura.podmorecasts.model.Episode;
@@ -65,7 +59,7 @@ public class DownloadUtils {
 
         String fileName = Utils.extractNameFrom(episode.getEpisodeLink());
 
-        Log.d("THALES", "onDownloadClick: file name: " + fileName);
+        MyLog.d(getClass(), "onDownloadClick: file name: " + fileName);
 
         String filePath = Utils.EPISODES_PATH + podcast.getTitle() + File.separator;
         request.setDestinationInExternalPublicDir(Environment.DIRECTORY_PODCASTS, filePath + fileName);

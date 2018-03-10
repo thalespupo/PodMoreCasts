@@ -9,8 +9,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.tapura.podmorecasts.model.Podcast;
 
-import java.util.List;
-
 public class FirebaseDb {
 
     private static final String TAG = FirebaseDb.class.getCanonicalName();

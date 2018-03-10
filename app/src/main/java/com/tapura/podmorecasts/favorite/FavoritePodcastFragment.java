@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,7 @@ import android.widget.Toast;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.tapura.podmorecasts.MyLog;
 import com.tapura.podmorecasts.R;
 import com.tapura.podmorecasts.database.FirebaseDb;
 import com.tapura.podmorecasts.model.Podcast;
@@ -25,7 +25,6 @@ import java.util.List;
 
 public class FavoritePodcastFragment extends Fragment implements PodcastFavoriteAdapter.PodcastFavoriteOnClickListener, ValueEventListener {
 
-    private static final String TAG = FavoritePodcastFragment.class.getCanonicalName();
     public static String fragTag = "favorite";
 
     private PodcastFavoriteAdapter mAdapter;
@@ -59,7 +58,7 @@ public class FavoritePodcastFragment extends Fragment implements PodcastFavorite
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView: ");
+        MyLog.d(getClass(), "onCreateView: ");
         View view = inflater.inflate(R.layout.content_favorite_podcast, container, false);
 
         mGridView = view.findViewById(R.id.recycler_view_podcasts_favorite_list);

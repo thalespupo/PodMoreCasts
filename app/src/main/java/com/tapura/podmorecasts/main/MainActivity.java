@@ -5,18 +5,16 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.tapura.podmorecasts.MyLog;
 import com.tapura.podmorecasts.R;
 import com.tapura.podmorecasts.details.PodcastDetailsActivity;
 import com.tapura.podmorecasts.discover.DiscoverPodcastFragment;
 import com.tapura.podmorecasts.favorite.FavoritePodcastFragment;
 
 public class MainActivity extends AppCompatActivity implements DiscoverPodcastFragment.PodcastClickListener, FavoritePodcastFragment.FavoriteClickListener {
-
-    private static final String TAG = MainActivity.class.getCanonicalName();
 
     public static final String QUERY_KEY = "query";
     public static final String THUMBNAIL_KEY = "thumbnail";
@@ -33,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements DiscoverPodcastFr
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d(TAG, "onCreate: ");
+        MyLog.d(getClass(), "onCreate: ");
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

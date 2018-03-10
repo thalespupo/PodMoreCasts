@@ -8,13 +8,11 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
+import com.tapura.podmorecasts.MyLog;
 import com.tapura.podmorecasts.R;
 
 public class DownloadNotification {
-
-    private static final String TAG = DownloadNotification.class.getSimpleName();
 
     private static final String NOTIFICATION_CHANNEL_ID = "download_episode_channel_id_01";
 
@@ -37,7 +35,7 @@ public class DownloadNotification {
 
     public void createNotification(Context context, int downloadStatus, long refId) {
         createNotificationChannel(context);
-        Log.e(TAG, "Download finished, ID:" + refId);
+        MyLog.e(getClass(), "Download finished, ID:" + refId);
 
         String notificationText;
 

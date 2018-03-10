@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tapura.podmorecasts.MyLog;
 import com.tapura.podmorecasts.R;
 import com.tapura.podmorecasts.model.Episode;
 import com.tapura.podmorecasts.model.EpisodeMediaState;
@@ -18,7 +19,6 @@ import java.util.List;
 public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.EpisodeViewHolder> {
 
     private List<Episode> mList;
-    private Context mContext;
     private OnDownloadClickListener mCallback;
     public boolean isFavorite;
 
@@ -26,8 +26,7 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.Episod
         void onDownloadClick(int pos);
     }
 
-    public EpisodesAdapter(Context context, OnDownloadClickListener callback) {
-        mContext = context;
+    public EpisodesAdapter(OnDownloadClickListener callback) {
         mCallback = callback;
     }
 
@@ -35,7 +34,7 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.Episod
     public EpisodeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View v = inflater.inflate(R.layout.list_item_episode, parent, false);
-        Log.d("THALES", "onCreateViewHolder ");
+        MyLog.d(this.getClass(), "onCreateViewHolder ");
         return new EpisodeViewHolder(v);
     }
 
@@ -78,6 +77,7 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.Episod
 
         @Override
         public void onClick(View v) {
+            MyLog.d(this.getClass(), "onClick: ");
             mCallback.onDownloadClick(getAdapterPosition());
         }
 
