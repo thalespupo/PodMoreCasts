@@ -69,15 +69,23 @@ public class DownloadRequestRepository {
     }
 
     private void flush() {
-        SharedPreferences sharedPref = mContext.getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        Gson gson = new Gson();
-        for (DownloadRequest request : mRequests) {
-            String stringRequest = gson.toJson(request);
-            editor.putString(String.valueOf(request.getRefId()), stringRequest);
+        SharedPreferences sharedPrefForClear = mContext.getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editorForClear = sharedPrefForClear.edit();
+
+        editorForClear.clear();
+
+        if (editorForClear.commit()) {
+            SharedPreferences sharedPref = mContext.getSharedPreferences(SHARED_PREF_KEY, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            Gson gson = new Gson();
+            for (DownloadRequest request : mRequests) {
+                String stringRequest = gson.toJson(request);
+                editor.putString(String.valueOf(request.getRefId()), stringRequest);
+            }
+
+            editor.apply();
         }
 
-        editor.apply();
     }
 
     public long[] getAllId(String feed) {

@@ -24,14 +24,13 @@ import com.squareup.picasso.Picasso;
 import com.tapura.podmorecasts.R;
 import com.tapura.podmorecasts.database.FirebaseDb;
 import com.tapura.podmorecasts.download.DownloadUtils;
-import com.tapura.podmorecasts.download.EpisodeDownloadListener;
 import com.tapura.podmorecasts.model.Episode;
 import com.tapura.podmorecasts.model.Podcast;
 
 import static com.tapura.podmorecasts.main.MainActivity.FEED_URL_KEY;
 import static com.tapura.podmorecasts.main.MainActivity.THUMBNAIL_KEY;
 
-public class PodcastDetailsActivity extends AppCompatActivity implements EpisodesAdapter.OnDownloadClickListener, EpisodeDownloadListener {
+public class PodcastDetailsActivity extends AppCompatActivity implements EpisodesAdapter.OnDownloadClickListener {
 
     private static final String TAG = PodcastDetailsActivity.class.getCanonicalName();
 
@@ -66,7 +65,6 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
         if (!TextUtils.isEmpty(thumbnail)) {
             mPodcast.setThumbnailPath(thumbnail);
         }
-
 
         createViewModel(feedUrl);
 
@@ -164,18 +162,12 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
     }
 
     private void startDownload(int pos) {
-        EpisodesAdapter.EpisodeViewHolder viewHolder = (EpisodesAdapter.EpisodeViewHolder) mRecyclerView.findViewHolderForAdapterPosition(pos);
-        viewHolder.ivDownload.setOnClickListener(null);
-
-        DownloadUtils utils = new DownloadUtils(this, this);
+        DownloadUtils utils = new DownloadUtils(this);
         utils.startDownload(mPodcast, pos);
     }
 
     private void stopDownload(int pos) {
-        EpisodesAdapter.EpisodeViewHolder viewHolder = (EpisodesAdapter.EpisodeViewHolder) mRecyclerView.findViewHolderForAdapterPosition(pos);
-        viewHolder.ivDownload.setOnClickListener(null);
-
-        DownloadUtils utils = new DownloadUtils(this, this);
+        DownloadUtils utils = new DownloadUtils(this);
         utils.stopDownload(mPodcast.getFeedUrl(), pos);
     }
 
@@ -192,25 +184,8 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
     }
 
     private void stopAllDownload() {
-        DownloadUtils utils = new DownloadUtils(this, this);
+        DownloadUtils utils = new DownloadUtils(this);
         utils.stopDownload(mPodcast.getFeedUrl(), -1);
         mRecyclerView.setEnabled(false);
-    }
-
-    @Override
-    public void onCancelDownload(int epiIndex) {
-        EpisodesAdapter.EpisodeViewHolder viewHolder = (EpisodesAdapter.EpisodeViewHolder) mRecyclerView.findViewHolderForAdapterPosition(epiIndex);
-        viewHolder.ivDownload.setOnClickListener(viewHolder);
-    }
-
-    @Override
-    public void onCancelAllDownload() {
-        mRecyclerView.setEnabled(true);
-    }
-
-    @Override
-    public void onStartDownload(int epiIndex) {
-        EpisodesAdapter.EpisodeViewHolder viewHolder = (EpisodesAdapter.EpisodeViewHolder) mRecyclerView.findViewHolderForAdapterPosition(epiIndex);
-        viewHolder.ivDownload.setOnClickListener(viewHolder);
     }
 }

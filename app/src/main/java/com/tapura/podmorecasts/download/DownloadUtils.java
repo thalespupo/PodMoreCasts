@@ -28,13 +28,11 @@ public class DownloadUtils {
 
     private static final String TAG = DownloadUtils.class.getSimpleName();
 
-    private final EpisodeDownloadListener mCallback;
     private DownloadRequestRepository mRepository;
     private Context mContext;
 
-    public DownloadUtils(Context context, EpisodeDownloadListener listener) {
+    public DownloadUtils(Context context) {
         mContext = context;
-        mCallback = listener;
         mRepository = new DownloadRequestRepository(mContext);
     }
 
@@ -45,12 +43,9 @@ public class DownloadUtils {
                 long[] ids = mRepository.getAllId(feed);
                 manager.remove(ids);
                 mRepository.remove(ids);
-                mCallback.onCancelAllDownload();
             } else {
                 long id = mRepository.getId(feed, epiIndex);
                 manager.remove(id);
-                mRepository.remove(id);
-                mCallback.onCancelDownload(epiIndex);
             }
         }
 
@@ -83,6 +78,5 @@ public class DownloadUtils {
         } else {
             Toast.makeText(mContext, "manager null", Toast.LENGTH_SHORT).show();
         }
-        mCallback.onStartDownload(pos);
     }
 }

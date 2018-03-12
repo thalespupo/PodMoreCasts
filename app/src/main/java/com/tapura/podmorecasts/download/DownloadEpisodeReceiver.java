@@ -77,6 +77,7 @@ public class DownloadEpisodeReceiver extends BroadcastReceiver {
                         Log.d(TAG, "updateDatabase: FAILED");
                         podcast.getEpisodes().get(episodePos).setEpisodeState(EpisodeMediaState.NOT_IN_DISK);
                         db.insert(podcast, context);
+                        mRepository.remove(refId);
                         break;
                     case DownloadManager.STATUS_SUCCESSFUL:
                         Log.d(TAG, "updateDatabase: SUCCESSFUL");
@@ -85,6 +86,7 @@ public class DownloadEpisodeReceiver extends BroadcastReceiver {
                         podcast.getEpisodes().get(episodePos).setPathInDisk(filePath + fileName);
                         podcast.getEpisodes().get(episodePos).setEpisodeState(EpisodeMediaState.COMPLETED);
                         db.insert(podcast, context);
+                        mRepository.remove(refId);
                         break;
                     default:
                         // Nothing to do
