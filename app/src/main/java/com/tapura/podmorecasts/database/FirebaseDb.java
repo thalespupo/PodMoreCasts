@@ -9,8 +9,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.tapura.podmorecasts.model.Podcast;
 
-import java.util.List;
-
 public class FirebaseDb {
 
     private static final String TAG = FirebaseDb.class.getCanonicalName();
@@ -113,12 +111,18 @@ public class FirebaseDb {
         podcastRef.removeEventListener(listener);
     }
 
-    public interface FirebasePodcastListListener {
-        void onLoadedPodcastList(List<Podcast> podcasts);
-    }
+    public void getPodcast(Context applicationContext, String feed, ValueEventListener listener) {
+        String uid = getUser(applicationContext);
+        if (TextUtils.isEmpty(uid)) {
+            return;
+        }
 
-    public interface FirebasePodcastListener {
-        void onLoadedPodcast(Podcast podcast);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        int hashCode = feed.hashCode();
+
+        DatabaseReference podcastRef = database.getReference(USER_REF).child(uid).child(String.valueOf(hashCode));
+        podcastRef.addListenerForSingleValueEvent(listener);
     }
 
     private String getUser(Context context) {

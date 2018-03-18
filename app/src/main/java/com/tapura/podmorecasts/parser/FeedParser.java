@@ -4,6 +4,7 @@ package com.tapura.podmorecasts.parser;
 import android.util.Xml;
 
 import com.tapura.podmorecasts.model.Episode;
+import com.tapura.podmorecasts.model.EpisodeMediaState;
 import com.tapura.podmorecasts.model.Podcast;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -161,6 +162,8 @@ public class FeedParser {
         episode.setLink(link);
         episode.setEpisodeLink(episodeLink);
         episode.setDescription(description);
+        // init value
+        episode.setEpisodeState(EpisodeMediaState.NOT_IN_DISK);
 
         return episode;
     }

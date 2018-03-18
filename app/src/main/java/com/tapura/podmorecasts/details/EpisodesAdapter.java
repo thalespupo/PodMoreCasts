@@ -9,29 +9,24 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tapura.podmorecasts.MyLog;
 import com.tapura.podmorecasts.R;
 import com.tapura.podmorecasts.model.Episode;
+import com.tapura.podmorecasts.model.EpisodeMediaState;
 
 import java.util.List;
 
-class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.EpisodeViewHolder> {
+public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.EpisodeViewHolder> {
 
     private List<Episode> mList;
-    private Context mContext;
     private OnDownloadClickListener mCallback;
     public boolean isFavorite;
 
     public interface OnDownloadClickListener {
-        void onDownloadClick(int pos, DownloadListener listener);
+        void onDownloadClick(int pos);
     }
 
-    public interface DownloadListener {
-        void onDownloadComplete();
-        void onDownloadFailed();
-    }
-
-    public EpisodesAdapter(Context context, OnDownloadClickListener callback) {
-        mContext = context;
+    public EpisodesAdapter(OnDownloadClickListener callback) {
         mCallback = callback;
     }
 
@@ -39,18 +34,20 @@ class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.EpisodeViewHo
     public EpisodeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View v = inflater.inflate(R.layout.list_item_episode, parent, false);
-        Log.d("THALES", "onCreateViewHolder ");
+        MyLog.d(this.getClass(), "onCreateViewHolder ");
         return new EpisodeViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(EpisodeViewHolder holder, int position) {
-        //Log.d("THALES", "onBindViewHolder pos:" + position);
         holder.tvTitle.setText(mList.get(position).getTitle());
         if (isFavorite) {
             holder.ivDownload.setVisibility(View.VISIBLE);
+            Episode epi = mList.get(position);
+            holder.ivDownload.setImageResource(holder.getDownloadIcon(epi.getEpisodeState()));
+        } else {
+            holder.ivDownload.setVisibility(View.INVISIBLE);
         }
-
     }
 
     @Override
@@ -67,7 +64,7 @@ class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.EpisodeViewHo
         notifyDataSetChanged();
     }
 
-    public class EpisodeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, DownloadListener {
+    public class EpisodeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView tvTitle;
         ImageView ivDownload;
 
@@ -75,25 +72,26 @@ class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.EpisodeViewHo
             super(itemView);
             tvTitle = itemView.findViewById(R.id.text_view_episode_title);
             ivDownload = itemView.findViewById(R.id.image_view_download);
-
             ivDownload.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            ivDownload.setImageResource(R.drawable.ic_file_download_red);
-            mCallback.onDownloadClick(getAdapterPosition(), this);
-
+            MyLog.d(this.getClass(), "onClick: ");
+            mCallback.onDownloadClick(getAdapterPosition());
         }
 
-        @Override
-        public void onDownloadComplete() {
-            ivDownload.setImageResource(R.drawable.ic_done_green);
-        }
-
-        @Override
-        public void onDownloadFailed() {
-            ivDownload.setImageResource(R.drawable.ic_file_download_black);
+        private int getDownloadIcon(EpisodeMediaState episodeState) {
+            switch (episodeState) {
+                case COMPLETED:
+                    return R.drawable.ic_done_green;
+                case DOWNLOADING:
+                    return R.drawable.ic_file_download_red;
+                case NOT_IN_DISK:
+                    return R.drawable.ic_file_download_black;
+                default:
+                    return -1;
+            }
         }
     }
 }

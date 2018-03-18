@@ -92,4 +92,8 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="title_activity_player_test">PlayerTestActivity</string>
+    <string name="label_pause">Pause</string>
+    <string name="label_play">Play</string>
+    <string name="label_previous">Previous track</string>
+    <string name="label_next">Next track</string>
 </resources>

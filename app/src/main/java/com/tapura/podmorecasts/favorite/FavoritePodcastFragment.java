@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,7 @@ import android.widget.Toast;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.tapura.podmorecasts.MyLog;
 import com.tapura.podmorecasts.R;
 import com.tapura.podmorecasts.database.FirebaseDb;
 import com.tapura.podmorecasts.model.Podcast;
@@ -23,14 +23,11 @@ import com.tapura.podmorecasts.model.Podcast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FavoritePodcastFragment extends Fragment implements PodcastFavoritedAdapter.PodcastFavoritedOnClickListener, ValueEventListener {
+public class FavoritePodcastFragment extends Fragment implements PodcastFavoriteAdapter.PodcastFavoriteOnClickListener, ValueEventListener {
 
-    private static final String TAG = FavoritePodcastFragment.class.getCanonicalName();
-    private static final String PODCAST_LIST_KEY = "podcast_list_key";
-    public static final String FEED_URL_KEY = "feed_url";
     public static String fragTag = "favorite";
 
-    private PodcastFavoritedAdapter mAdapter;
+    private PodcastFavoriteAdapter mAdapter;
     private RecyclerView mGridView;
     private ProgressBar progressBar;
     private FirebaseDb firebaseDb;
@@ -61,14 +58,14 @@ public class FavoritePodcastFragment extends Fragment implements PodcastFavorite
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView: ");
+        MyLog.d(getClass(), "onCreateView: ");
         View view = inflater.inflate(R.layout.content_favorite_podcast, container, false);
 
-        mGridView = view.findViewById(R.id.recycler_view_podcasts_favorited_list);
+        mGridView = view.findViewById(R.id.recycler_view_podcasts_favorite_list);
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
 
-        mAdapter = new PodcastFavoritedAdapter(getContext(), this);
+        mAdapter = new PodcastFavoriteAdapter(getContext(), this);
 
         mGridView.setAdapter(mAdapter);
         mGridView.setLayoutManager(layoutManager);
@@ -87,12 +84,6 @@ public class FavoritePodcastFragment extends Fragment implements PodcastFavorite
         if (getActivity() != null) {
             ((FavoriteClickListener) getActivity()).onFavoritePodcastClick(feedUrl);
         }
-    }
-
-    @Override
-    public void onLongClick(int pos) {
-        String feedUrl = mAdapter.getList().get(pos).getFeedUrl();
-        firebaseDb.remove(getActivity(), feedUrl);
     }
 
     private void startLoadingScheme() {

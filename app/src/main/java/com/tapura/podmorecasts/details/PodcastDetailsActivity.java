@@ -1,11 +1,9 @@
 package com.tapura.podmorecasts.details;
 
 
-import android.app.DownloadManager;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.IntentFilter;
-import android.net.Uri;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
@@ -15,7 +13,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
@@ -23,19 +20,17 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+import com.tapura.podmorecasts.MyLog;
 import com.tapura.podmorecasts.R;
 import com.tapura.podmorecasts.database.FirebaseDb;
+import com.tapura.podmorecasts.download.DownloadUtils;
 import com.tapura.podmorecasts.model.Episode;
 import com.tapura.podmorecasts.model.Podcast;
-
-import java.io.File;
 
 import static com.tapura.podmorecasts.main.MainActivity.FEED_URL_KEY;
 import static com.tapura.podmorecasts.main.MainActivity.THUMBNAIL_KEY;
 
 public class PodcastDetailsActivity extends AppCompatActivity implements EpisodesAdapter.OnDownloadClickListener {
-
-    private static final String TAG = PodcastDetailsActivity.class.getCanonicalName();
 
     private Podcast mPodcast;
     private RecyclerView mRecyclerView;
@@ -43,7 +38,6 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
     private FloatingActionButton fab;
     private ProgressBar progressBar;
     private PodcastDetailsViewModel mModel;
-    private DownloadEpisodeReceiver mReceiver;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -54,7 +48,7 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 
-        mAdapter = new EpisodesAdapter(this, this);
+        mAdapter = new EpisodesAdapter(this);
 
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(layoutManager);
@@ -69,9 +63,6 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
         if (!TextUtils.isEmpty(thumbnail)) {
             mPodcast.setThumbnailPath(thumbnail);
         }
-
-        mReceiver = new DownloadEpisodeReceiver();
-        registerReceiver(mReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
         createViewModel(feedUrl);
 
@@ -88,7 +79,8 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
                     mAdapter.isFavorite = pair.second;
                     bindView(pair.first);
                 } else {
-                    Log.e(TAG, "ViewModel onChanged: the podcast info comes null");
+
+                    MyLog.e(this.getClass(), "ViewModel onChanged: the podcast info comes null");
                 }
             }
         };
@@ -96,14 +88,20 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
         mModel.getCurrentPodcast(feedUrl).observe(this, observer);
     }
 
-    public void favoritePodcast(View view) {
+    public void onFabClick(View view) {
         FirebaseDb db = new FirebaseDb();
-        boolean result = db.insert(mPodcast, this);
-
-        if (result) {
-            Toast.makeText(this, "The Podcast " + mPodcast.getTitle() + " was added!", Toast.LENGTH_SHORT).show();
+        if (mAdapter.isFavorite) {
+            db.remove(this, mPodcast.getFeedUrl());
+            mAdapter.isFavorite = false;
+            stopAllDownload();
         } else {
-            Toast.makeText(this, "Error, please check!!", Toast.LENGTH_SHORT).show();
+            boolean result = db.insert(mPodcast, this);
+
+            if (result) {
+                Toast.makeText(this, "The Podcast " + mPodcast.getTitle() + " was added!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Error, please check!!", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -118,7 +116,7 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
         podcast.setThumbnailPath(mPodcast.getThumbnailPath());
         mPodcast = podcast;
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(mPodcast.getTitle());
 
         ImageView ivThumbnail = findViewById(R.id.thumbnail);
@@ -146,56 +144,46 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
     }
 
     @Override
-    public void onDownloadClick(int pos, EpisodesAdapter.DownloadListener listener) {
-        DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+    public void onDownloadClick(int pos) {
         Episode episode = mPodcast.getEpisodes().get(pos);
 
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(episode.getEpisodeLink()));
-        request.setTitle("Episode download");
-        request.setDescription(episode.getTitle());
-
-        handlePermissions();
-
-        String fileName = extractNameFrom(episode.getEpisodeLink());
-
-        Log.d("THALES", "onDownloadClick: file name: " + fileName);
-
-        String filePath = File.separator + getPackageName() + File.separator + mPodcast.getTitle() + File.separator;
-        request.setDestinationInExternalPublicDir(Environment.DIRECTORY_PODCASTS, filePath + fileName);
-
-        if (downloadManager != null) {
-            mReceiver.setRefId(downloadManager.enqueue(request));
-        } else {
-            Toast.makeText(this, "manager null", Toast.LENGTH_SHORT).show();
+        switch (episode.getEpisodeState()) {
+            case DOWNLOADING:
+                stopDownload(pos);
+                break;
+            case NOT_IN_DISK:
+                startDownload(pos);
+                break;
+            case COMPLETED:
+                openFile(episode);
         }
     }
 
-    /**
-     * We will split the episode linke, and get the last part with '.mp3' suffix
-     *
-     * @param episodeLink
-     * @return file name
-     */
-    private String extractNameFrom(String episodeLink) {
-        String[] strings = episodeLink.split("/");
-
-        Log.d("THALES", "extractNameFrom: String URL:" + episodeLink);
-        for (String s : strings) {
-            Log.d("THALES", "extractNameFrom: String: " + s);
-        }
-
-        return strings[strings.length - 1];
+    private void startDownload(int pos) {
+        DownloadUtils utils = new DownloadUtils(this);
+        utils.startDownload(mPodcast, pos);
     }
 
-    private void handlePermissions() {
-        // TODO
+    private void stopDownload(int pos) {
+        DownloadUtils utils = new DownloadUtils(this);
+        utils.stopDownload(mPodcast.getFeedUrl(), pos);
     }
 
-    @Override
-    protected void onDestroy() {
-        if (mReceiver != null) {
-            unregisterReceiver(mReceiver);
+    private void openFile(Episode episode) {
+        MediaPlayer mp = new MediaPlayer();
+
+        try {
+            mp.setDataSource(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PODCASTS) + episode.getPathInDisk());
+            mp.prepare();
+            mp.start();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        super.onDestroy();
+    }
+
+    private void stopAllDownload() {
+        DownloadUtils utils = new DownloadUtils(this);
+        utils.stopDownload(mPodcast.getFeedUrl(), -1);
+        mRecyclerView.setEnabled(false);
     }
 }
