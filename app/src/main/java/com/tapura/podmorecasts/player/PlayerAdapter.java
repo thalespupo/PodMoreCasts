@@ -7,7 +7,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.support.annotation.NonNull;
-import android.support.v4.media.MediaMetadataCompat;
+
+import com.tapura.podmorecasts.model.Episode;
 
 public abstract class PlayerAdapter {
 
@@ -42,9 +43,9 @@ public abstract class PlayerAdapter {
         mAudioFocusHelper = new AudioFocusHelper();
     }
 
-    public abstract void playFromMedia(MediaMetadataCompat metadata);
+    public abstract void playFromEpisode(Episode episode);
 
-    public abstract MediaMetadataCompat getCurrentMedia();
+    public abstract Episode getCurrentEpisode();
 
     public abstract boolean isPlaying();
 

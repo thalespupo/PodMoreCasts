@@ -8,12 +8,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.tapura.podmorecasts.model.Podcast;
+import com.tapura.podmorecasts.player.EpisodeListener;
+import com.tapura.podmorecasts.player.EpisodeValueEventList;
 
 public class FirebaseDb {
 
     private static final String TAG = FirebaseDb.class.getCanonicalName();
-
-    private static String USER_REF = "user";
+    private static final String EPISODES_LIST_REF = "episodes";
+    private static final String USER_REF = "user";
 
     static {
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
@@ -127,5 +129,49 @@ public class FirebaseDb {
 
     private String getUser(Context context) {
         return UserControlSharedPrefs.getAlreadyLoggedUserId(context);
+    }
+
+    public void attachEpisodeListener(Context context, EpisodeValueEventList listener) {
+        String feedUrl = listener.getFeedUrl();
+        int pos = listener.getPos();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        String uid = getUser(context);
+        if (TextUtils.isEmpty(uid)) {
+            return;
+        }
+
+        int hashCode = feedUrl.hashCode();
+
+        DatabaseReference podcastRef = database.getReference(USER_REF)
+                .child(uid)
+                .child(String.valueOf(hashCode))
+                .child(EPISODES_LIST_REF)
+                .child(String.valueOf(pos));
+
+        // Attach a listener to read the data at our posts reference
+        podcastRef.addValueEventListener(listener);
+    }
+
+    public void detachEpisodeListener(Context context, EpisodeValueEventList listener) {
+        String feedUrl = listener.getFeedUrl();
+        int pos = listener.getPos();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        String uid = getUser(context);
+        if (TextUtils.isEmpty(uid)) {
+            return;
+        }
+
+        int hashCode = feedUrl.hashCode();
+
+        DatabaseReference podcastRef = database.getReference(USER_REF)
+                .child(uid)
+                .child(String.valueOf(hashCode))
+                .child(EPISODES_LIST_REF)
+                .child(String.valueOf(pos));
+
+        // Attach a listener to read the data at our posts reference
+        podcastRef.removeEventListener(listener);
     }
 }

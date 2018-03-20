@@ -1,6 +1,13 @@
 package com.tapura.podmorecasts.player;
 
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.media.MediaBrowserCompat;
@@ -13,19 +20,27 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.tapura.podmorecasts.MyApplication;
 import com.tapura.podmorecasts.R;
+import com.tapura.podmorecasts.database.FirebaseDb;
 import com.tapura.podmorecasts.model.Episode;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.List;
 
-public class PlayerTestActivity extends AppCompatActivity {
+public class PlayerTestActivity extends AppCompatActivity implements EpisodeListener {
 
+    private static final String EXTRA_FEED_URL = "feed_url";
+    private static final String EXTRA_EPISODE_POS = "episode_pos";
     private ImageView mAlbumArt;
     private TextView mTitleTextView;
     private TextView mArtistTextView;
     private ImageView mMediaControlsImage;
     private MediaSeekBar mSeekBarAudio;
     private Episode mEpisode;
+    private FirebaseDb mDb;
+    private EpisodeValueEventList mEpisodeEventListener;
 
     private MediaBrowserHelper mMediaBrowserHelper;
 
@@ -49,6 +64,15 @@ public class PlayerTestActivity extends AppCompatActivity {
 
         mMediaBrowserHelper = new MediaBrowserConnection(this);
         mMediaBrowserHelper.registerCallback(new MediaBrowserListener());
+
+        String feedUrl = getIntent().getStringExtra(EXTRA_FEED_URL);
+        int pos = getIntent().getIntExtra(EXTRA_EPISODE_POS, -1);
+
+        mEpisodeEventListener = new EpisodeValueEventList(feedUrl, pos, this);
+
+        mDb = new FirebaseDb();
+        mDb.attachEpisodeListener(this, mEpisodeEventListener);
+
     }
 
     @Override
@@ -62,6 +86,26 @@ public class PlayerTestActivity extends AppCompatActivity {
         super.onStop();
         mSeekBarAudio.disconnectController();
         mMediaBrowserHelper.onStop();
+        if (mDb != null && mEpisodeEventListener != null) {
+            mDb.detachEpisodeListener(this, mEpisodeEventListener);
+        }
+    }
+
+    public static Intent createIntent(Context source, String feedUrl, int pos) {
+        Intent i = new Intent(source, PlayerTestActivity.class);
+        i.putExtra(EXTRA_FEED_URL, feedUrl);
+        i.putExtra(EXTRA_EPISODE_POS, pos);
+        return i;
+    }
+
+    @Override
+    public void onLoadEpisode(Episode episode) {
+
+    }
+
+    @Override
+    public void onError() {
+
     }
 
     /**
@@ -143,13 +187,25 @@ public class PlayerTestActivity extends AppCompatActivity {
             if (mediaMetadata == null) {
                 return;
             }
+
+            Bitmap image;
+
+            MediaMetadataRetriever mData=new MediaMetadataRetriever();
+
+            try{
+                byte art[]=mData.getEmbeddedPicture();
+                image=BitmapFactory.decodeByteArray(art, 0, art.length);
+            }
+            catch(Exception e)
+            {
+                image=null;
+            }
+
             mTitleTextView.setText(
                     mediaMetadata.getString(MediaMetadataCompat.METADATA_KEY_TITLE));
             mArtistTextView.setText(
                     mediaMetadata.getString(MediaMetadataCompat.METADATA_KEY_ARTIST));
-            mAlbumArt.setImageBitmap(MusicLibrary.getAlbumBitmap(
-                    PlayerTestActivity.this,
-                    mediaMetadata.getString(MediaMetadataCompat.METADATA_KEY_MEDIA_ID)));
+            mAlbumArt.setImageBitmap(artwork);
         }
 
         @Override
