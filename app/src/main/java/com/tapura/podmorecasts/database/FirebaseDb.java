@@ -8,8 +8,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.tapura.podmorecasts.model.Podcast;
-import com.tapura.podmorecasts.player.EpisodeListener;
-import com.tapura.podmorecasts.player.EpisodeValueEventList;
 
 public class FirebaseDb {
 

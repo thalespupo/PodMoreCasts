@@ -27,10 +27,6 @@
             android:name=".details.PodcastDetailsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".player.PlayerTestActivity"
-            android:label="@string/title_activity_player_test"
-            android:theme="@style/SplashTheme" />
-        <activity
             android:name=".main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
@@ -40,6 +36,12 @@
                 <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
             </intent-filter>
         </receiver>
+
+        <service android:name=".player.MediaPlaybackService">
+            <intent-filter>
+                <action android:name="android.media.browse.MediaBrowserService" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

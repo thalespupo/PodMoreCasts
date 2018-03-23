@@ -3,7 +3,6 @@ package com.tapura.podmorecasts.details;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
@@ -27,7 +26,6 @@ import com.tapura.podmorecasts.database.FirebaseDb;
 import com.tapura.podmorecasts.download.DownloadUtils;
 import com.tapura.podmorecasts.model.Episode;
 import com.tapura.podmorecasts.model.Podcast;
-import com.tapura.podmorecasts.player.PlayerTestActivity;
 
 import static com.tapura.podmorecasts.main.MainActivity.FEED_URL_KEY;
 import static com.tapura.podmorecasts.main.MainActivity.THUMBNAIL_KEY;
