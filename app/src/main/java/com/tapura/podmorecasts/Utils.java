@@ -12,4 +12,8 @@ public class Utils {
         MyLog.d(Utils.class, "extractNameFrom: String: " + strings[strings.length - 1]);
         return strings[strings.length - 1];
     }
+
+    public static String getAbsolutePath(String path) {
+        return EPISODES_PATH + path;
+    }
 }

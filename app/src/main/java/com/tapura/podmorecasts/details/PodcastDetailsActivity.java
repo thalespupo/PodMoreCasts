@@ -26,6 +26,7 @@ import com.tapura.podmorecasts.database.FirebaseDb;
 import com.tapura.podmorecasts.download.DownloadUtils;
 import com.tapura.podmorecasts.model.Episode;
 import com.tapura.podmorecasts.model.Podcast;
+import com.tapura.podmorecasts.player.MediaPlayerActivity;
 
 import static com.tapura.podmorecasts.main.MainActivity.FEED_URL_KEY;
 import static com.tapura.podmorecasts.main.MainActivity.THUMBNAIL_KEY;
@@ -155,7 +156,8 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
                 startDownload(pos);
                 break;
             case COMPLETED:
-                startActivity(PlayerTestActivity.createIntent(this, mPodcast.getFeedUrl(), pos));
+                startActivity(MediaPlayerActivity.createIntent(this, mPodcast.getFeedUrl(), pos));
+                finish();
         }
     }
 

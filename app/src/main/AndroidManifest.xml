@@ -30,18 +30,15 @@
             android:name=".main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <receiver android:name=".download.DownloadEpisodeReceiver"
+        <receiver
+            android:name=".download.DownloadEpisodeReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
             </intent-filter>
         </receiver>
 
-        <service android:name=".player.MediaPlaybackService">
-            <intent-filter>
-                <action android:name="android.media.browse.MediaBrowserService" />
-            </intent-filter>
-        </service>
+        <activity android:name=".player.MediaPlayerActivity" />
     </application>
 
 </manifest>

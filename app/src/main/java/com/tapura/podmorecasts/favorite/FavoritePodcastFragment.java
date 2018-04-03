@@ -39,7 +39,7 @@ public class FavoritePodcastFragment extends Fragment implements PodcastFavorite
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
         List<Podcast> list = new ArrayList<>();
-        for (DataSnapshot data :dataSnapshot.getChildren()) {
+        for (DataSnapshot data : dataSnapshot.getChildren()) {
             list.add(data.getValue(Podcast.class));
         }
         mAdapter.setPodcastList(list);
@@ -98,5 +98,13 @@ public class FavoritePodcastFragment extends Fragment implements PodcastFavorite
             progressBar = getActivity().findViewById(R.id.layout_loading_progressbar);
             progressBar.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (firebaseDb != null) {
+            firebaseDb.detachPodcastListListener(getActivity(), this);
+        }
+        super.onDestroy();
     }
 }

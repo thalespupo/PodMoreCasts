@@ -125,51 +125,43 @@ public class FirebaseDb {
         podcastRef.addListenerForSingleValueEvent(listener);
     }
 
-    private String getUser(Context context) {
-        return UserControlSharedPrefs.getAlreadyLoggedUserId(context);
-    }
-
-    public void attachEpisodeListener(Context context, EpisodeValueEventList listener) {
-        String feedUrl = listener.getFeedUrl();
-        int pos = listener.getPos();
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        String uid = getUser(context);
+    public void attachEpisodeListener(Context applicationContext, String feed, int pos, ValueEventListener listener) {
+        String uid = getUser(applicationContext);
         if (TextUtils.isEmpty(uid)) {
             return;
         }
 
-        int hashCode = feedUrl.hashCode();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        int hashCode = feed.hashCode();
 
         DatabaseReference podcastRef = database.getReference(USER_REF)
                 .child(uid)
                 .child(String.valueOf(hashCode))
                 .child(EPISODES_LIST_REF)
                 .child(String.valueOf(pos));
-
-        // Attach a listener to read the data at our posts reference
         podcastRef.addValueEventListener(listener);
     }
 
-    public void detachEpisodeListener(Context context, EpisodeValueEventList listener) {
-        String feedUrl = listener.getFeedUrl();
-        int pos = listener.getPos();
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        String uid = getUser(context);
+    public void detachEpisodeListener(Context applicationContext, String feed, int pos, ValueEventListener listener) {
+        String uid = getUser(applicationContext);
         if (TextUtils.isEmpty(uid)) {
             return;
         }
 
-        int hashCode = feedUrl.hashCode();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        int hashCode = feed.hashCode();
 
         DatabaseReference podcastRef = database.getReference(USER_REF)
                 .child(uid)
                 .child(String.valueOf(hashCode))
                 .child(EPISODES_LIST_REF)
                 .child(String.valueOf(pos));
-
-        // Attach a listener to read the data at our posts reference
         podcastRef.removeEventListener(listener);
+    }
+
+    private String getUser(Context context) {
+        return UserControlSharedPrefs.getAlreadyLoggedUserId(context);
     }
 }
