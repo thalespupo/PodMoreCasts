@@ -96,4 +96,8 @@
     <string name="label_play">Play</string>
     <string name="label_previous">Previous track</string>
     <string name="label_next">Next track</string>
+    <string name="rewind">Rewind</string>
+    <string name="forward">Forward</string>
+    <string name="pause">Pause</string>
+    <string name="play">Play</string>
 </resources>

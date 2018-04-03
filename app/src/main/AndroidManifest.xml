@@ -29,6 +29,7 @@
         <activity
             android:name=".main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".player.MediaPlayerActivity" />
 
         <receiver
             android:name=".download.DownloadEpisodeReceiver"
@@ -37,8 +38,11 @@
                 <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
             </intent-filter>
         </receiver>
-
-        <activity android:name=".player.MediaPlayerActivity" />
+        <receiver android:name=".player.MediaPlayerActivity$MediaReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

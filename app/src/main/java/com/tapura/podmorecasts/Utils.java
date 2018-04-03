@@ -1,6 +1,8 @@
 package com.tapura.podmorecasts;
 
 
+import android.os.Environment;
+
 import java.io.File;
 
 public class Utils {
@@ -14,6 +16,6 @@ public class Utils {
     }
 
     public static String getAbsolutePath(String path) {
-        return EPISODES_PATH + path;
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PODCASTS) + path;
     }
 }
