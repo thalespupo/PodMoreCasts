@@ -29,7 +29,8 @@
         <activity
             android:name=".main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".player.MediaPlayerActivity" />
+        <activity android:name=".player.MediaPlayerActivity"
+            android:launchMode="singleTop"/>
 
         <receiver
             android:name=".download.DownloadEpisodeReceiver"
