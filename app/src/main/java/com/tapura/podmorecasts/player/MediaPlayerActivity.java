@@ -54,6 +54,8 @@ public class MediaPlayerActivity extends AppCompatActivity implements View.OnCli
 
     private static final String EXTRA_FEED_URL = "extra_feed_url";
     private static final String EXTRA_EPISODE_POS = "extra_episode_pos";
+    private static final String SIS_PLAYER_POSITION = "sys_player_position";
+    private static final String SIS_PLAYER_PLAYING = "sys_player_playing";
     private FirebaseDb mDb;
     private Episode mEpisode;
     private String mFeed;
@@ -81,6 +83,8 @@ public class MediaPlayerActivity extends AppCompatActivity implements View.OnCli
     private PlaybackStateCompat.Builder mStateBuilder;
     private NotificationManager mNotificationManager;
     private Bitmap mOutdoor;
+    private long mPlaybackPosition;
+    private boolean mIsPlaying;
 
 
     public static Intent createIntent(Context context, String feedUrl, int pos) {
@@ -102,6 +106,18 @@ public class MediaPlayerActivity extends AppCompatActivity implements View.OnCli
         mDb.attachEpisodeListener(MyApplication.getApp(), mFeed, mEpisodePos, fbCallback);
 
         mPlayerView = findViewById(R.id.playerView);
+
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(SIS_PLAYER_POSITION)) {
+                mPlaybackPosition = savedInstanceState.getLong(SIS_PLAYER_POSITION);
+            }
+            if (savedInstanceState.containsKey(SIS_PLAYER_PLAYING)) {
+                mIsPlaying = savedInstanceState.getBoolean(SIS_PLAYER_PLAYING);
+            }
+        } else {
+            mPlaybackPosition = 0;
+            mIsPlaying = false;
+        }
     }
 
     @Override
@@ -119,6 +135,15 @@ public class MediaPlayerActivity extends AppCompatActivity implements View.OnCli
         mExoPlayer.stop();
         mExoPlayer.release();
         mExoPlayer = null;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (mExoPlayer != null) {
+            outState.putLong(SIS_PLAYER_POSITION, mExoPlayer.getCurrentPosition());
+            outState.putBoolean(SIS_PLAYER_PLAYING, mExoPlayer.getPlayWhenReady());
+        }
+        super.onSaveInstanceState(outState);
     }
 
     private void initializeUi() {
@@ -184,8 +209,9 @@ public class MediaPlayerActivity extends AppCompatActivity implements View.OnCli
             String userAgent = Util.getUserAgent(this, "PodMoreCasts");
             MediaSource mediaSource = new ExtractorMediaSource.Factory
                     (new DefaultDataSourceFactory(this, userAgent)).createMediaSource(mediaUri);
+            mExoPlayer.seekTo(mPlaybackPosition);
             mExoPlayer.prepare(mediaSource);
-            mExoPlayer.setPlayWhenReady(true);
+            mExoPlayer.setPlayWhenReady(mIsPlaying);
         }
     }
 
