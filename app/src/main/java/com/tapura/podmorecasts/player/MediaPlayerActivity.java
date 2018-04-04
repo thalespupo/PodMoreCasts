@@ -252,17 +252,19 @@ public class MediaPlayerActivity extends AppCompatActivity implements View.OnCli
 
         @Override
         public void onRewind() {
+            long rewindTime = getResources().getInteger(R.integer.rewind);
             long currentPos = mExoPlayer.getCurrentPosition();
-            if (currentPos <= 30_000) {
+            if (currentPos <= rewindTime) {
                 mExoPlayer.seekTo(0);
             } else {
-                mExoPlayer.seekTo(currentPos - 30_000);
+                mExoPlayer.seekTo(currentPos - rewindTime);
             }
         }
 
         @Override
         public void onFastForward() {
-            mExoPlayer.seekTo(mExoPlayer.getCurrentPosition() + 30_000);
+            long fastForward = getResources().getInteger(R.integer.fast_forward);
+            mExoPlayer.seekTo(mExoPlayer.getCurrentPosition() + fastForward);
         }
     }
 
