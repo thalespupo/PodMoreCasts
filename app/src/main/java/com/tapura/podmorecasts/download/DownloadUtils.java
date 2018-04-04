@@ -55,8 +55,6 @@ public class DownloadUtils {
         request.setTitle("Episode download");
         request.setDescription(episode.getTitle());
 
-        // TODO handlePermissions();
-
         String fileName = Utils.extractNameFrom(episode.getEpisodeLink());
 
         MyLog.d(getClass(), "onDownloadClick: file name: " + fileName);

@@ -3,11 +3,14 @@ package com.tapura.podmorecasts.details;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,7 +34,9 @@ import com.tapura.podmorecasts.player.MediaPlayerActivity;
 import static com.tapura.podmorecasts.main.MainActivity.FEED_URL_KEY;
 import static com.tapura.podmorecasts.main.MainActivity.THUMBNAIL_KEY;
 
-public class PodcastDetailsActivity extends AppCompatActivity implements EpisodesAdapter.OnDownloadClickListener {
+public class PodcastDetailsActivity extends AppCompatActivity implements EpisodesAdapter.OnDownloadClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
+
+    private static final int REQUEST_WRITE_PERMISSION = 1;
 
     private Podcast mPodcast;
     private RecyclerView mRecyclerView;
@@ -39,6 +44,7 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
     private FloatingActionButton fab;
     private ProgressBar progressBar;
     private PodcastDetailsViewModel mModel;
+    private int mSelectedPos;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -162,8 +168,8 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
     }
 
     private void startDownload(int pos) {
-        DownloadUtils utils = new DownloadUtils(this);
-        utils.startDownload(mPodcast, pos);
+        mSelectedPos = pos;
+        requestPermission();
     }
 
     private void stopDownload(int pos) {
@@ -187,5 +193,16 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
         DownloadUtils utils = new DownloadUtils(this);
         utils.stopDownload(mPodcast.getFeedUrl(), -1);
         mRecyclerView.setEnabled(false);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_WRITE_PERMISSION && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            new DownloadUtils(this).startDownload(mPodcast, mSelectedPos);
+        }
+    }
+
+    private void requestPermission() {
+        requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_PERMISSION);
     }
 }

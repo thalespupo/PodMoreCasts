@@ -76,7 +76,6 @@ public class MediaPlayerActivity extends AppCompatActivity implements View.OnCli
 
         }
     };
-
     private SimpleExoPlayer mExoPlayer;
     private SimpleExoPlayerView mPlayerView;
     private static MediaSessionCompat mMediaSession;
@@ -368,5 +367,4 @@ public class MediaPlayerActivity extends AppCompatActivity implements View.OnCli
             MediaButtonReceiver.handleIntent(mMediaSession, intent);
         }
     }
-
 }
