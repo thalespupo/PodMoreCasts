@@ -25,10 +25,9 @@ import java.util.List;
 
 public class FavoritePodcastFragment extends Fragment implements PodcastFavoriteAdapter.PodcastFavoriteOnClickListener, ValueEventListener {
 
-    public static String fragTag = "favorite";
+    public static final String fragTag = "favorite";
 
     private PodcastFavoriteAdapter mAdapter;
-    private RecyclerView mGridView;
     private ProgressBar progressBar;
     private FirebaseDb firebaseDb;
 
@@ -61,7 +60,7 @@ public class FavoritePodcastFragment extends Fragment implements PodcastFavorite
         MyLog.d(getClass(), "onCreateView: ");
         View view = inflater.inflate(R.layout.content_favorite_podcast, container, false);
 
-        mGridView = view.findViewById(R.id.recycler_view_podcasts_favorite_list);
+        RecyclerView mGridView = view.findViewById(R.id.recycler_view_podcasts_favorite_list);
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
 

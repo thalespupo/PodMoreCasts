@@ -19,7 +19,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 123;
 
-    List<AuthUI.IdpConfig> providers = Arrays.asList(
+    private final List<AuthUI.IdpConfig> providers = Arrays.asList(
             new AuthUI.IdpConfig.GoogleBuilder().build(),
             new AuthUI.IdpConfig.EmailBuilder().build());
 
@@ -67,7 +67,7 @@ public class SplashActivity extends AppCompatActivity {
                 startPodMoreCastsEntryPoint();
                 // ...
             } else {
-                Toast.makeText(this, "Error in Firebase loggin", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Error in Firebase login", Toast.LENGTH_SHORT).show();
                 finish();
                 // Sign in failed, check response for error code
                 // ...

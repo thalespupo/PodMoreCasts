@@ -31,7 +31,7 @@ public class MyLog {
         Log.wtf(getLogTag(c), msg);
     }
 
-    public static String getLogTag(Class c) {
+    private static String getLogTag(Class c) {
         return TAG + c.getSimpleName();
     }
 }

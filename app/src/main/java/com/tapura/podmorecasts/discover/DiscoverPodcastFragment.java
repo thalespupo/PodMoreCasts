@@ -24,10 +24,9 @@ import static com.tapura.podmorecasts.main.MainActivity.QUERY_KEY;
 
 public class DiscoverPodcastFragment extends Fragment implements PodcastDiscoverAdapter.PodcastDiscoverOnClickListener {
 
-    public static String fragTag = "discover";
+    public static final String fragTag = "discover";
 
     private PodcastDiscoverAdapter mAdapter;
-    private RecyclerView mGridView;
     private ProgressBar progressBar;
     private PodcastDiscoverViewModel mModel;
     private Observer<List<ItunesResultsItem>> mObserver;
@@ -46,7 +45,7 @@ public class DiscoverPodcastFragment extends Fragment implements PodcastDiscover
         MyLog.d(getClass(), "onCreateView: ");
         View view = inflater.inflate(R.layout.content_discover_podcast, container, false);
 
-        mGridView = view.findViewById(R.id.recycler_view_podcasts_discover_list);
+        RecyclerView mGridView = view.findViewById(R.id.recycler_view_podcasts_discover_list);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
 
@@ -70,14 +69,10 @@ public class DiscoverPodcastFragment extends Fragment implements PodcastDiscover
     }
 
     private void createObserver() {
-        mObserver = new Observer<List<ItunesResultsItem>>() {
-
-            @Override
-            public void onChanged(@Nullable List<ItunesResultsItem> itunesResultsItems) {
-                if (itunesResultsItems != null && !itunesResultsItems.isEmpty()) {
-                    mAdapter.setPodcastList(itunesResultsItems);
-                    stopLoadingScheme();
-                }
+        mObserver = itunesResultsItems -> {
+            if (itunesResultsItems != null && !itunesResultsItems.isEmpty()) {
+                mAdapter.setPodcastList(itunesResultsItems);
+                stopLoadingScheme();
             }
         };
     }
@@ -87,7 +82,7 @@ public class DiscoverPodcastFragment extends Fragment implements PodcastDiscover
         mModel.getCurrentList().observe(this, mObserver);
     }
 
-    public void searchFeedByQuery(String query) {
+    private void searchFeedByQuery(String query) {
         startLoadingScheme();
         mModel.getCurrentList(query).observe(this, mObserver);
 

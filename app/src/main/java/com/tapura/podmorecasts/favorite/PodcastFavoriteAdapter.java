@@ -17,13 +17,13 @@ import java.util.List;
 class PodcastFavoriteAdapter extends RecyclerView.Adapter<PodcastFavoriteAdapter.FavoriteViewHolder> {
 
     private List<Podcast> mList;
-    private Context mContext;
+    private final Context mContext;
 
     public interface PodcastFavoriteOnClickListener {
         void onClick(int pos);
     }
 
-    private PodcastFavoriteOnClickListener mCallback;
+    private final PodcastFavoriteOnClickListener mCallback;
 
     public PodcastFavoriteAdapter(Context context, PodcastFavoriteOnClickListener listener) {
         mContext = context;
@@ -45,6 +45,7 @@ class PodcastFavoriteAdapter extends RecyclerView.Adapter<PodcastFavoriteAdapter
                 .load(stringImage)
                 .placeholder(mContext.getDrawable(R.drawable.ic_headset_black))
                 .into(holder.ivThumbnail);
+        holder.ivThumbnail.setContentDescription(item.getTitle());
     }
 
     @Override
@@ -63,7 +64,7 @@ class PodcastFavoriteAdapter extends RecyclerView.Adapter<PodcastFavoriteAdapter
 
 
     public class FavoriteViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-        ImageView ivThumbnail;
+        final ImageView ivThumbnail;
 
         public FavoriteViewHolder(View itemView) {
             super(itemView);

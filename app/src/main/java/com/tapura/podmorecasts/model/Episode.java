@@ -7,8 +7,6 @@ public class Episode {
     private String episodeLink;
     private String description;
     private String pathInDisk;
-    private long episodeLength;
-    private long trackPosition;
     private EpisodeMediaState episodeState;
 
     public String getTitle() {
@@ -49,22 +47,6 @@ public class Episode {
 
     public void setPathInDisk(String pathInDisk) {
         this.pathInDisk = pathInDisk;
-    }
-
-    public long getEpisodeLength() {
-        return episodeLength;
-    }
-
-    public void setEpisodeLength(long episodeLength) {
-        this.episodeLength = episodeLength;
-    }
-
-    public long getTrackPosition() {
-        return trackPosition;
-    }
-
-    public void setTrackPosition(long trackPosition) {
-        this.trackPosition = trackPosition;
     }
 
     public EpisodeMediaState getEpisodeState() {

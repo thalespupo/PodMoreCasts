@@ -28,14 +28,15 @@ public class DownloadEpisodeReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         mRepository = new DownloadRequestRepository(context);
         MyLog.d(getClass(), "onReceive");
-        if (intent.getAction().equals(DownloadManager.ACTION_DOWNLOAD_COMPLETE)) {
+        String action = intent.getAction();
+        if (action != null && action.equals(DownloadManager.ACTION_DOWNLOAD_COMPLETE)) {
             MyLog.d(getClass(), "onReceive: ACTION_DOWNLOAD_COMPLETE");
             long referenceId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
             onDownloadCompleted(context, referenceId);
         }
     }
 
-    public void onDownloadCompleted(Context context, long refId) {
+    private void onDownloadCompleted(Context context, long refId) {
         DownloadManager manager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
         DownloadManager.Query query = new DownloadManager.Query();
         query.setFilterById(refId);
@@ -74,18 +75,22 @@ public class DownloadEpisodeReceiver extends BroadcastReceiver {
                 switch (downloadStatus) {
                     case DownloadManager.STATUS_FAILED:
                         MyLog.d(getClass(), "updateDatabase: FAILED");
-                        podcast.getEpisodes().get(episodePos).setEpisodeState(EpisodeMediaState.NOT_IN_DISK);
-                        db.insert(podcast, context);
-                        mRepository.remove(refId);
+                        if (podcast != null) {
+                            podcast.getEpisodes().get(episodePos).setEpisodeState(EpisodeMediaState.NOT_IN_DISK);
+                            db.insert(podcast, context);
+                            mRepository.remove(refId);
+                        }
                         break;
                     case DownloadManager.STATUS_SUCCESSFUL:
                         MyLog.d(getClass(), "updateDatabase: SUCCESSFUL");
-                        String filePath = Utils.EPISODES_PATH + podcast.getTitle() + File.separator;
-                        String fileName = Utils.extractNameFrom(podcast.getEpisodes().get(episodePos).getEpisodeLink());
-                        podcast.getEpisodes().get(episodePos).setPathInDisk(filePath + fileName);
-                        podcast.getEpisodes().get(episodePos).setEpisodeState(EpisodeMediaState.COMPLETED);
-                        db.insert(podcast, context);
-                        mRepository.remove(refId);
+                        if (podcast != null) {
+                            String filePath = Utils.EPISODES_PATH + podcast.getTitle() + File.separator;
+                            String fileName = Utils.extractNameFrom(podcast.getEpisodes().get(episodePos).getEpisodeLink());
+                            podcast.getEpisodes().get(episodePos).setPathInDisk(filePath + fileName);
+                            podcast.getEpisodes().get(episodePos).setEpisodeState(EpisodeMediaState.COMPLETED);
+                            db.insert(podcast, context);
+                            mRepository.remove(refId);
+                        }
                         break;
                     default:
                         // Nothing to do

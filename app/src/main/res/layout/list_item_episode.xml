@@ -29,6 +29,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_file_download_black"
-        android:visibility="invisible"/>
+        android:visibility="invisible"
+        android:contentDescription="@string/description_download_icon"/>
 
 </android.support.constraint.ConstraintLayout>

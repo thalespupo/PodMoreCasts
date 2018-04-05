@@ -20,10 +20,8 @@ import static android.content.Context.DOWNLOAD_SERVICE;
 
 public class DownloadUtils {
 
-    private static final String TAG = DownloadUtils.class.getSimpleName();
-
-    private DownloadRequestRepository mRepository;
-    private Context mContext;
+    private final DownloadRequestRepository mRepository;
+    private final Context mContext;
 
     public DownloadUtils(Context context) {
         mContext = context;

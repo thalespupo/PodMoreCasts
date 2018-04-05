@@ -11,7 +11,6 @@ import com.tapura.podmorecasts.model.Podcast;
 
 public class FirebaseDb {
 
-    private static final String TAG = FirebaseDb.class.getCanonicalName();
     private static final String EPISODES_LIST_REF = "episodes";
     private static final String USER_REF = "user";
 

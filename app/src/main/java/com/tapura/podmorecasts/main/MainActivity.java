@@ -19,13 +19,9 @@ public class MainActivity extends AppCompatActivity implements DiscoverPodcastFr
     public static final String QUERY_KEY = "query";
     public static final String THUMBNAIL_KEY = "thumbnail";
     public static final String FEED_URL_KEY = "feed_url";
-    public static final String FAVORITE_KEY = "favorite";
+    private static final String FAVORITE_KEY = "favorite";
 
-    private FavoritePodcastFragment mFavoriteFragment;
     private DiscoverPodcastFragment mDiscoverFragment;
-
-    private MenuItem searchItem;
-    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements DiscoverPodcastFr
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        FavoritePodcastFragment mFavoriteFragment;
         if (savedInstanceState == null) {
             mFavoriteFragment = new FavoritePodcastFragment();
 
@@ -52,8 +49,8 @@ public class MainActivity extends AppCompatActivity implements DiscoverPodcastFr
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
-        searchItem = menu.findItem(R.id.action_search);
-        searchView = (SearchView) searchItem.getActionView();
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

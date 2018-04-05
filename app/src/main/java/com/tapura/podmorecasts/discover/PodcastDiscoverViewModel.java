@@ -17,7 +17,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class PodcastDiscoverViewModel extends ViewModel {
+class PodcastDiscoverViewModel extends ViewModel {
 
     private MutableLiveData<List<ItunesResultsItem>> mCurrentList;
     private ItunesSearchService mSearchService;

@@ -4,9 +4,7 @@ package com.tapura.podmorecasts.details;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.pm.PackageManager;
-import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -41,9 +39,7 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
     private Podcast mPodcast;
     private RecyclerView mRecyclerView;
     private EpisodesAdapter mAdapter;
-    private FloatingActionButton fab;
     private ProgressBar progressBar;
-    private PodcastDetailsViewModel mModel;
     private int mSelectedPos;
 
     @Override
@@ -77,7 +73,7 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
     }
 
     private void createViewModel(String feedUrl) {
-        mModel = ViewModelProviders.of(this).get(PodcastDetailsViewModel.class);
+        PodcastDetailsViewModel mModel = ViewModelProviders.of(this).get(PodcastDetailsViewModel.class);
 
         final Observer<Pair<Podcast, Boolean>> observer = new Observer<Pair<Podcast, Boolean>>() {
             @Override
@@ -141,7 +137,7 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
     }
 
     private void stopLoadingScheme() {
-        fab = findViewById(R.id.fab_add_favorite);
+        FloatingActionButton fab = findViewById(R.id.fab_add_favorite);
         fab.setVisibility(View.VISIBLE);
 
         mRecyclerView.setVisibility(View.VISIBLE);
@@ -175,18 +171,6 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
     private void stopDownload(int pos) {
         DownloadUtils utils = new DownloadUtils(this);
         utils.stopDownload(mPodcast.getFeedUrl(), pos);
-    }
-
-    private void openFile(Episode episode) {
-        MediaPlayer mp = new MediaPlayer();
-
-        try {
-            mp.setDataSource(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PODCASTS) + episode.getPathInDisk());
-            mp.prepare();
-            mp.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private void stopAllDownload() {

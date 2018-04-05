@@ -18,13 +18,13 @@ import java.util.List;
 class PodcastDiscoverAdapter extends RecyclerView.Adapter<PodcastDiscoverAdapter.DiscoverViewHolder> {
 
     private List<ItunesResultsItem> mList;
-    private Context mContext;
+    private final Context mContext;
 
     public interface PodcastDiscoverOnClickListener {
         void onClick(int pos);
     }
 
-    private PodcastDiscoverOnClickListener mCallback;
+    private final PodcastDiscoverOnClickListener mCallback;
 
     public PodcastDiscoverAdapter(Context context, PodcastDiscoverOnClickListener listener) {
         mContext = context;
@@ -49,7 +49,7 @@ class PodcastDiscoverAdapter extends RecyclerView.Adapter<PodcastDiscoverAdapter
         holder.tvPodcastName.setText(item.getCollectionName());
         holder.tvPodcastAuthorName.setText(item.getArtistName());
         holder.tvPodcastGenre.setText(item.getPrimaryGenreName());
-
+        holder.ivThumbnail.setContentDescription(item.getCollectionName());
     }
 
     @Override
@@ -68,10 +68,10 @@ class PodcastDiscoverAdapter extends RecyclerView.Adapter<PodcastDiscoverAdapter
 
 
     public class DiscoverViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        ImageView ivThumbnail;
-        TextView tvPodcastName;
-        TextView tvPodcastAuthorName;
-        TextView tvPodcastGenre;
+        final ImageView ivThumbnail;
+        final TextView tvPodcastName;
+        final TextView tvPodcastAuthorName;
+        final TextView tvPodcastGenre;
 
         public DiscoverViewHolder(View itemView) {
             super(itemView);
