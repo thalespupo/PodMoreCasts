@@ -8,4 +8,7 @@
     <string name="description_download_icon">Download icon</string>
     <string name="title">Title</string>
     <string name="description_podcast_item">A podcast item</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="configure">Configure</string>
+    <string name="add_widget">Add widget</string>
 </resources>
