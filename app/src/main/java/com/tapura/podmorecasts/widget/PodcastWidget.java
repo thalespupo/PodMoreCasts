@@ -8,8 +8,13 @@ import android.widget.RemoteViews;
 
 import com.tapura.podmorecasts.MyLog;
 import com.tapura.podmorecasts.R;
+import com.tapura.podmorecasts.details.PodcastDetailsActivity;
 
 public class PodcastWidget extends AppWidgetProvider {
+    public static final String ACTION_OPEN_PODCAST = "com.tapura.podmorecasts.widget.OPEN_PODCAST";
+    public static final String EXTRA_ITEM = "com.tapura.podmorecasts.widget.EXTRA_ITEM";
+
+
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
@@ -25,6 +30,18 @@ public class PodcastWidget extends AppWidgetProvider {
         views.setEmptyView(R.id.list_view_podcasts, R.id.widget_empty_view);
 
         appWidgetManager.updateAppWidget(appWidgetId, views);
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        AppWidgetManager manager = AppWidgetManager.getInstance(context);
+        if (intent.getAction().equals(ACTION_OPEN_PODCAST)) {
+            int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+                    AppWidgetManager.INVALID_APPWIDGET_ID);
+            String feed = intent.getStringExtra(EXTRA_ITEM);
+            context.startActivity(PodcastDetailsActivity.createIntent(context, feed, null));
+        }
+        super.onReceive(context, intent);
     }
 
     @Override
