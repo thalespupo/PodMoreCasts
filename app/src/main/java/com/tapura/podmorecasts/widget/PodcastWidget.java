@@ -5,6 +5,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.widget.RemoteViews;
 
 import com.tapura.podmorecasts.MyLog;
@@ -17,8 +18,6 @@ public class PodcastWidget extends AppWidgetProvider {
     public static final String ACTION_OPEN_PODCAST = "com.tapura.podmorecasts.widget.OPEN_PODCAST";
     public static final String EXTRA_ITEM = "com.tapura.podmorecasts.widget.EXTRA_ITEM";
 
-
-
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
 
@@ -28,12 +27,19 @@ public class PodcastWidget extends AppWidgetProvider {
         views.setTextViewText(R.id.appwidget_text, context.getString(R.string.app_name));
 
         Intent appIntent = new Intent(context, MainActivity.class);
-        PendingIntent pendingIntentToApp = PendingIntent.getActivity(context, 0, appIntent, 0);
-        views.setOnClickPendingIntent(R.id.text_view_title, pendingIntentToApp);
+        PendingIntent pendingIntentToOpenApp = PendingIntent.getActivity(context, 0, appIntent, 0);
 
-        Intent intent = new Intent(context, WidgetService.class);
+        Intent itemIntent = new Intent(context, PodcastWidget.class);
+        itemIntent.setAction(ACTION_OPEN_PODCAST);
+        itemIntent.setData(Uri.parse(itemIntent.toUri(Intent.URI_INTENT_SCHEME)));
+        PendingIntent pendingIntentToOpenPodcast = PendingIntent.getBroadcast(context, 0, itemIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
 
-        views.setRemoteAdapter(R.id.list_view_podcasts, intent);
+        Intent serviceIntent = new Intent(context, WidgetService.class);
+
+        views.setOnClickPendingIntent(R.id.text_view_title, pendingIntentToOpenApp);
+        views.setPendingIntentTemplate(R.id.list_view_podcasts, pendingIntentToOpenPodcast);
+        views.setRemoteAdapter(R.id.list_view_podcasts, serviceIntent);
         views.setEmptyView(R.id.list_view_podcasts, R.id.widget_empty_view);
 
         appWidgetManager.updateAppWidget(appWidgetId, views);

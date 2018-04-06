@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Bundle;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
@@ -109,6 +110,13 @@ public class WidgetService extends RemoteViewsService {
 
             views.setTextViewText(R.id.text_view_podcast_author_name, podcast.getAuthor());
             views.setTextViewText(R.id.text_view_podcast_name, podcast.getTitle());
+
+            Bundle extras = new Bundle();
+            extras.putString(PodcastWidget.EXTRA_ITEM, podcast.getFeedUrl());
+            Intent fillInIntent = new Intent();
+            fillInIntent.putExtras(extras);
+            views.setOnClickFillInIntent(R.id.widget_list_item, fillInIntent);
+
             return views;
         }
 
