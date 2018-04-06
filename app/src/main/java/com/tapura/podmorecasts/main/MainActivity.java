@@ -17,9 +17,6 @@ import com.tapura.podmorecasts.favorite.FavoritePodcastFragment;
 public class MainActivity extends AppCompatActivity implements DiscoverPodcastFragment.PodcastClickListener, FavoritePodcastFragment.FavoriteClickListener {
 
     public static final String QUERY_KEY = "query";
-    public static final String THUMBNAIL_KEY = "thumbnail";
-    public static final String FEED_URL_KEY = "feed_url";
-    private static final String FAVORITE_KEY = "favorite";
 
     private DiscoverPodcastFragment mDiscoverFragment;
 
@@ -95,18 +92,12 @@ public class MainActivity extends AppCompatActivity implements DiscoverPodcastFr
 
     @Override
     public void onPodcastClick(String feed, String thumbnail) {
-        Intent intent = new Intent(this, PodcastDetailsActivity.class);
-        intent.putExtra(FEED_URL_KEY, feed);
-        intent.putExtra(THUMBNAIL_KEY, thumbnail);
-        startActivity(intent);
+        startActivity(PodcastDetailsActivity.createIntent(this, feed, thumbnail));
     }
 
     @Override
     public void onFavoritePodcastClick(String feed) {
-        Intent intent = new Intent(this, PodcastDetailsActivity.class);
-        intent.putExtra(FEED_URL_KEY, feed);
-        intent.putExtra(FAVORITE_KEY, true);
-        startActivity(intent);
+        startActivity(PodcastDetailsActivity.createIntent(this, feed, null));
     }
 
 }

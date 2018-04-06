@@ -3,6 +3,8 @@ package com.tapura.podmorecasts.details;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -29,18 +31,27 @@ import com.tapura.podmorecasts.model.Episode;
 import com.tapura.podmorecasts.model.Podcast;
 import com.tapura.podmorecasts.player.MediaPlayerActivity;
 
-import static com.tapura.podmorecasts.main.MainActivity.FEED_URL_KEY;
-import static com.tapura.podmorecasts.main.MainActivity.THUMBNAIL_KEY;
-
 public class PodcastDetailsActivity extends AppCompatActivity implements EpisodesAdapter.OnDownloadClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
     private static final int REQUEST_WRITE_PERMISSION = 1;
+
+    private static final String THUMBNAIL_KEY = "thumbnail";
+    private static final String FEED_URL_KEY = "feed_url";
 
     private Podcast mPodcast;
     private RecyclerView mRecyclerView;
     private EpisodesAdapter mAdapter;
     private ProgressBar progressBar;
     private int mSelectedPos;
+
+    public static Intent createIntent(Context context, String feedUrl, @Nullable String thumbnail) {
+        Intent intent = new Intent(context, PodcastDetailsActivity.class);
+        intent.putExtra(FEED_URL_KEY, feedUrl);
+        if (thumbnail != null) {
+            intent.putExtra(THUMBNAIL_KEY, thumbnail);
+        }
+        return intent;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
