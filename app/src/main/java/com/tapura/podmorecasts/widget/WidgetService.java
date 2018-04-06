@@ -7,19 +7,17 @@ import android.graphics.Bitmap;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 import com.tapura.podmorecasts.MyLog;
 import com.tapura.podmorecasts.R;
-import com.tapura.podmorecasts.database.FirebaseDb;
 import com.tapura.podmorecasts.model.Podcast;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+
+import static com.tapura.podmorecasts.widget.PodcastWidget.WIDGET_PODCASTS;
 
 public class WidgetService extends RemoteViewsService {
 
@@ -27,15 +25,20 @@ public class WidgetService extends RemoteViewsService {
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         MyLog.d(getClass(), "onGetViewFactory");
 
-        return new PodcastRemoteViewsFactory();
+        return new PodcastRemoteViewsFactory(intent);
     }
 
     private class PodcastRemoteViewsFactory implements RemoteViewsFactory {
         private Context mContext;
+        private List<Podcast> mPodcastList;
 
-        public PodcastRemoteViewsFactory() {
+        public PodcastRemoteViewsFactory(Intent intent) {
             MyLog.d(getClass(), "PodcastRemoteViewsFactory");
             mContext = getApplicationContext();
+            String podcastListJson = intent.getStringExtra(WIDGET_PODCASTS);
+            Gson gson = new Gson();
+            mPodcastList = gson.fromJson(podcastListJson, new TypeToken<List<Podcast>>() {
+            }.getType());
         }
 
         @Override

@@ -9,7 +9,7 @@ import android.widget.RemoteViews;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.tapura.podmorecasts.MyApplication;
+import com.google.gson.Gson;
 import com.tapura.podmorecasts.MyLog;
 import com.tapura.podmorecasts.R;
 import com.tapura.podmorecasts.database.FirebaseDb;
@@ -18,9 +18,9 @@ import com.tapura.podmorecasts.model.Podcast;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.firebase.ui.auth.AuthUI.getApplicationContext;
-
 public class PodcastWidget extends AppWidgetProvider {
+    public static final String WIDGET_PODCASTS = "widget_podcasts";
+    private Context mContext;
     private List<Podcast> mPodcastList;
     private FirebaseDb mDb;
     private ValueEventListener firebaseListener = new ValueEventListener() {
@@ -28,9 +28,15 @@ public class PodcastWidget extends AppWidgetProvider {
         public void onDataChange(DataSnapshot dataSnapshot) {
             mPodcastList = new ArrayList<>();
             if (dataSnapshot.exists()) {
+                Podcast podcast = new Podcast();
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    mPodcastList.add(data.getValue(Podcast.class));
+                    podcast = data.getValue(Podcast.class);
+                    podcast.setEpisodes(new ArrayList<>());
+                    mPodcastList.add(podcast);
                 }
+            }
+            for (int appWidgetId : mIds) {
+                updateAppWidget(mContext, mManager, appWidgetId, mPodcastList);
             }
         }
 
@@ -39,9 +45,11 @@ public class PodcastWidget extends AppWidgetProvider {
 
         }
     };
+    private AppWidgetManager mManager;
+    private int[] mIds;
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
-                                int appWidgetId) {
+                                int appWidgetId, List<Podcast> list) {
 
         MyLog.d(PodcastWidget.class, "updateAppWidget");
 
@@ -49,6 +57,9 @@ public class PodcastWidget extends AppWidgetProvider {
         views.setTextViewText(R.id.appwidget_text, context.getString(R.string.app_name));
 
         Intent intent = new Intent(context, WidgetService.class);
+        Gson gson = new Gson();
+        String podcastList = gson.toJson(list);
+        intent.putExtra(WIDGET_PODCASTS, podcastList);
 
         views.setRemoteAdapter(R.id.list_view_podcasts, intent);
         views.setEmptyView(R.id.list_view_podcasts, R.id.widget_empty_view);
@@ -58,20 +69,19 @@ public class PodcastWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        mContext = context;
+        mManager = appWidgetManager;
+        mIds = appWidgetIds;
         mDb = new FirebaseDb();
-        mDb.attachPodcastListListener(MyApplication.getApp(), firebaseListener);
+        mDb.attachPodcastListListener(mContext, firebaseListener);
         MyLog.d(getClass(), "onUpdate");
-        // There may be multiple widgets active, so update all of them
-        for (int appWidgetId : appWidgetIds) {
-            updateAppWidget(context, appWidgetManager, appWidgetId);
-        }
     }
 
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
         MyLog.d(getClass(), "onDeleted");
         if (mDb != null) {
-            mDb.detachPodcastListListener(MyApplication.getApp(), firebaseListener);
+            mDb.detachPodcastListListener(mContext, firebaseListener);
         }
 
     }
