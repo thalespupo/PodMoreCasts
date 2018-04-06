@@ -1,23 +1,26 @@
 package com.tapura.podmorecasts.widget;
 
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.tapura.podmorecasts.MyLog;
 import com.tapura.podmorecasts.R;
+import com.tapura.podmorecasts.database.FirebaseDb;
 import com.tapura.podmorecasts.model.Podcast;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-
-import static com.tapura.podmorecasts.widget.PodcastWidget.WIDGET_PODCASTS;
 
 public class WidgetService extends RemoteViewsService {
 
@@ -25,20 +28,42 @@ public class WidgetService extends RemoteViewsService {
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
         MyLog.d(getClass(), "onGetViewFactory");
 
-        return new PodcastRemoteViewsFactory(intent);
+        return new PodcastRemoteViewsFactory();
     }
 
     private class PodcastRemoteViewsFactory implements RemoteViewsFactory {
         private Context mContext;
         private List<Podcast> mPodcastList;
+        private FirebaseDb mDb;
+        private ValueEventListener firebaseListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                mPodcastList = new ArrayList<>();
+                if (dataSnapshot.exists()) {
+                    Podcast podcast;
+                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+                        podcast = data.getValue(Podcast.class);
+                        podcast.setEpisodes(new ArrayList<>());
+                        mPodcastList.add(podcast);
+                    }
+                    AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
+                    int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(mContext, PodcastWidget.class));
+                    AppWidgetManager.getInstance(mContext).notifyAppWidgetViewDataChanged(appWidgetIds, R.id.list_view_podcasts);
+                }
+            }
 
-        public PodcastRemoteViewsFactory(Intent intent) {
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        };
+
+        public PodcastRemoteViewsFactory() {
             MyLog.d(getClass(), "PodcastRemoteViewsFactory");
             mContext = getApplicationContext();
-            String podcastListJson = intent.getStringExtra(WIDGET_PODCASTS);
-            Gson gson = new Gson();
-            mPodcastList = gson.fromJson(podcastListJson, new TypeToken<List<Podcast>>() {
-            }.getType());
+
+            mDb = new FirebaseDb();
+            mDb.attachPodcastListListener(mContext, firebaseListener);
         }
 
         @Override
@@ -54,6 +79,9 @@ public class WidgetService extends RemoteViewsService {
         @Override
         public void onDestroy() {
             MyLog.d(getClass(), "onDestroy");
+            if (mDb != null) {
+                mDb.detachPodcastListListener(mContext, firebaseListener);
+            }
         }
 
         @Override
