@@ -73,7 +73,7 @@ public class SplashActivity extends AppCompatActivity {
                 // ...
             }
         } else {
-            Toast.makeText(this, "No sign in done, to use the app you must enter with e-mail, or Google account", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "No sign was done, to use the app you must enter with e-mail, or Google account", Toast.LENGTH_SHORT).show();
         }
     }
 }

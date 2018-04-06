@@ -26,6 +26,7 @@ import com.squareup.picasso.Picasso;
 import com.tapura.podmorecasts.MyLog;
 import com.tapura.podmorecasts.R;
 import com.tapura.podmorecasts.database.FirebaseDb;
+import com.tapura.podmorecasts.database.UserControlSharedPrefs;
 import com.tapura.podmorecasts.download.DownloadUtils;
 import com.tapura.podmorecasts.model.Episode;
 import com.tapura.podmorecasts.model.Podcast;
@@ -199,5 +200,13 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
 
     private void requestPermission() {
         requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_PERMISSION);
+    }
+
+    @Override
+    protected void onResume() {
+        if (!UserControlSharedPrefs.isUserLogged(this)) {
+            finish();
+        }
+        super.onResume();
     }
 }

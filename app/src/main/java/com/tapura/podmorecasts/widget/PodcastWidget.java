@@ -1,5 +1,6 @@
 package com.tapura.podmorecasts.widget;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
@@ -8,7 +9,9 @@ import android.widget.RemoteViews;
 
 import com.tapura.podmorecasts.MyLog;
 import com.tapura.podmorecasts.R;
+import com.tapura.podmorecasts.SplashActivity;
 import com.tapura.podmorecasts.details.PodcastDetailsActivity;
+import com.tapura.podmorecasts.main.MainActivity;
 
 public class PodcastWidget extends AppWidgetProvider {
     public static final String ACTION_OPEN_PODCAST = "com.tapura.podmorecasts.widget.OPEN_PODCAST";
@@ -24,6 +27,10 @@ public class PodcastWidget extends AppWidgetProvider {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.podcast_widget);
         views.setTextViewText(R.id.appwidget_text, context.getString(R.string.app_name));
 
+        Intent appIntent = new Intent(context, MainActivity.class);
+        PendingIntent pendingIntentToApp = PendingIntent.getActivity(context, 0, appIntent, 0);
+        views.setOnClickPendingIntent(R.id.text_view_title, pendingIntentToApp);
+
         Intent intent = new Intent(context, WidgetService.class);
 
         views.setRemoteAdapter(R.id.list_view_podcasts, intent);
@@ -34,10 +41,7 @@ public class PodcastWidget extends AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        AppWidgetManager manager = AppWidgetManager.getInstance(context);
         if (intent.getAction().equals(ACTION_OPEN_PODCAST)) {
-            int appWidgetId = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
-                    AppWidgetManager.INVALID_APPWIDGET_ID);
             String feed = intent.getStringExtra(EXTRA_ITEM);
             context.startActivity(PodcastDetailsActivity.createIntent(context, feed, null));
         }

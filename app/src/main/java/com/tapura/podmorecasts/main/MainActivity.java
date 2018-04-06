@@ -10,6 +10,7 @@ import android.view.MenuItem;
 
 import com.tapura.podmorecasts.MyLog;
 import com.tapura.podmorecasts.R;
+import com.tapura.podmorecasts.database.UserControlSharedPrefs;
 import com.tapura.podmorecasts.details.PodcastDetailsActivity;
 import com.tapura.podmorecasts.discover.DiscoverPodcastFragment;
 import com.tapura.podmorecasts.favorite.FavoritePodcastFragment;
@@ -100,4 +101,11 @@ public class MainActivity extends AppCompatActivity implements DiscoverPodcastFr
         startActivity(PodcastDetailsActivity.createIntent(this, feed, null));
     }
 
+    @Override
+    protected void onResume() {
+        if (!UserControlSharedPrefs.isUserLogged(this)) {
+            finish();
+        }
+        super.onResume();
+    }
 }
