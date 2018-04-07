@@ -5,9 +5,9 @@ import android.support.annotation.NonNull;
 
 public class DownloadRequest {
 
-    private long mRefId;
-    private String mFeed;
-    private int mEpisodePos;
+    private final long mRefId;
+    private final String mFeed;
+    private final int mEpisodePos;
 
     public DownloadRequest(long refId, @NonNull String feed, int episodePos) {
         this.mRefId = refId;

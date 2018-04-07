@@ -12,7 +12,7 @@ import android.support.v4.app.NotificationCompat;
 import com.tapura.podmorecasts.MyLog;
 import com.tapura.podmorecasts.R;
 
-public class DownloadNotification {
+class DownloadNotification {
 
     private static final String NOTIFICATION_CHANNEL_ID = "download_episode_channel_id_01";
 

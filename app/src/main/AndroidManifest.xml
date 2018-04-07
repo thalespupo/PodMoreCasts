@@ -27,19 +27,37 @@
             android:name=".details.PodcastDetailsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".player.PlayerTestActivity"
-            android:label="@string/title_activity_player_test"
-            android:theme="@style/SplashTheme" />
-        <activity
             android:name=".main.MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".player.MediaPlayerActivity"
+            android:launchMode="singleTop" />
 
-        <receiver android:name=".download.DownloadEpisodeReceiver"
+        <receiver
+            android:name=".download.DownloadEpisodeReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".player.MediaPlayerActivity$MediaReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".widget.PodcastWidget">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/podcast_widget_info" />
+        </receiver>
+        <service
+            android:name=".widget.WidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
     </application>
 
 </manifest>

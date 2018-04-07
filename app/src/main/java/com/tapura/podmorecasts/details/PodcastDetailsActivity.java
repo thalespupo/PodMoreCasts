@@ -3,11 +3,14 @@ package com.tapura.podmorecasts.details;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.media.MediaPlayer;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,21 +26,34 @@ import com.squareup.picasso.Picasso;
 import com.tapura.podmorecasts.MyLog;
 import com.tapura.podmorecasts.R;
 import com.tapura.podmorecasts.database.FirebaseDb;
+import com.tapura.podmorecasts.database.UserControlSharedPrefs;
 import com.tapura.podmorecasts.download.DownloadUtils;
 import com.tapura.podmorecasts.model.Episode;
 import com.tapura.podmorecasts.model.Podcast;
+import com.tapura.podmorecasts.player.MediaPlayerActivity;
 
-import static com.tapura.podmorecasts.main.MainActivity.FEED_URL_KEY;
-import static com.tapura.podmorecasts.main.MainActivity.THUMBNAIL_KEY;
+public class PodcastDetailsActivity extends AppCompatActivity implements EpisodesAdapter.OnDownloadClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
 
-public class PodcastDetailsActivity extends AppCompatActivity implements EpisodesAdapter.OnDownloadClickListener {
+    private static final int REQUEST_WRITE_PERMISSION = 1;
+
+    private static final String THUMBNAIL_KEY = "thumbnail";
+    private static final String FEED_URL_KEY = "feed_url";
 
     private Podcast mPodcast;
     private RecyclerView mRecyclerView;
     private EpisodesAdapter mAdapter;
-    private FloatingActionButton fab;
     private ProgressBar progressBar;
-    private PodcastDetailsViewModel mModel;
+    private int mSelectedPos;
+    private FloatingActionButton fab;
+
+    public static Intent createIntent(Context context, String feedUrl, @Nullable String thumbnail) {
+        Intent intent = new Intent(context, PodcastDetailsActivity.class);
+        intent.putExtra(FEED_URL_KEY, feedUrl);
+        if (thumbnail != null) {
+            intent.putExtra(THUMBNAIL_KEY, thumbnail);
+        }
+        return intent;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,6 +69,8 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
+
+        fab = findViewById(R.id.fab_add_favorite);
 
         String feedUrl = getIntent().getStringExtra(FEED_URL_KEY);
         String thumbnail = getIntent().getStringExtra(THUMBNAIL_KEY);
@@ -70,7 +88,7 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
     }
 
     private void createViewModel(String feedUrl) {
-        mModel = ViewModelProviders.of(this).get(PodcastDetailsViewModel.class);
+        PodcastDetailsViewModel mModel = ViewModelProviders.of(this).get(PodcastDetailsViewModel.class);
 
         final Observer<Pair<Podcast, Boolean>> observer = new Observer<Pair<Podcast, Boolean>>() {
             @Override
@@ -91,10 +109,12 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
     public void onFabClick(View view) {
         FirebaseDb db = new FirebaseDb();
         if (mAdapter.isFavorite) {
+            fab.setImageResource(R.drawable.ic_add);
             db.remove(this, mPodcast.getFeedUrl());
             mAdapter.isFavorite = false;
             stopAllDownload();
         } else {
+            fab.setImageResource(R.drawable.ic_close);
             boolean result = db.insert(mPodcast, this);
 
             if (result) {
@@ -111,6 +131,11 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
         if (podcast == null) {
             Toast.makeText(this, "Podcast Null!!", Toast.LENGTH_LONG).show();
             return;
+        }
+        if (mAdapter.isFavorite) {
+            fab.setImageResource(R.drawable.ic_close);
+        } else {
+            fab.setImageResource(R.drawable.ic_add);
         }
         podcast.setFeedUrl(mPodcast.getFeedUrl());
         podcast.setThumbnailPath(mPodcast.getThumbnailPath());
@@ -134,7 +159,6 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
     }
 
     private void stopLoadingScheme() {
-        fab = findViewById(R.id.fab_add_favorite);
         fab.setVisibility(View.VISIBLE);
 
         mRecyclerView.setVisibility(View.VISIBLE);
@@ -155,13 +179,14 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
                 startDownload(pos);
                 break;
             case COMPLETED:
-                openFile(episode);
+                startActivity(MediaPlayerActivity.createIntent(this, mPodcast.getFeedUrl(), pos));
+                finish();
         }
     }
 
     private void startDownload(int pos) {
-        DownloadUtils utils = new DownloadUtils(this);
-        utils.startDownload(mPodcast, pos);
+        mSelectedPos = pos;
+        requestPermission();
     }
 
     private void stopDownload(int pos) {
@@ -169,21 +194,28 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
         utils.stopDownload(mPodcast.getFeedUrl(), pos);
     }
 
-    private void openFile(Episode episode) {
-        MediaPlayer mp = new MediaPlayer();
-
-        try {
-            mp.setDataSource(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PODCASTS) + episode.getPathInDisk());
-            mp.prepare();
-            mp.start();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     private void stopAllDownload() {
         DownloadUtils utils = new DownloadUtils(this);
         utils.stopDownload(mPodcast.getFeedUrl(), -1);
         mRecyclerView.setEnabled(false);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_WRITE_PERMISSION && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            new DownloadUtils(this).startDownload(mPodcast, mSelectedPos);
+        }
+    }
+
+    private void requestPermission() {
+        requestPermissions(new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_PERMISSION);
+    }
+
+    @Override
+    protected void onResume() {
+        if (!UserControlSharedPrefs.isUserLogged(this)) {
+            finish();
+        }
+        super.onResume();
     }
 }

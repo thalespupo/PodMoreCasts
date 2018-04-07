@@ -10,6 +10,7 @@ import android.view.MenuItem;
 
 import com.tapura.podmorecasts.MyLog;
 import com.tapura.podmorecasts.R;
+import com.tapura.podmorecasts.database.UserControlSharedPrefs;
 import com.tapura.podmorecasts.details.PodcastDetailsActivity;
 import com.tapura.podmorecasts.discover.DiscoverPodcastFragment;
 import com.tapura.podmorecasts.favorite.FavoritePodcastFragment;
@@ -17,15 +18,8 @@ import com.tapura.podmorecasts.favorite.FavoritePodcastFragment;
 public class MainActivity extends AppCompatActivity implements DiscoverPodcastFragment.PodcastClickListener, FavoritePodcastFragment.FavoriteClickListener {
 
     public static final String QUERY_KEY = "query";
-    public static final String THUMBNAIL_KEY = "thumbnail";
-    public static final String FEED_URL_KEY = "feed_url";
-    public static final String FAVORITE_KEY = "favorite";
 
-    private FavoritePodcastFragment mFavoriteFragment;
     private DiscoverPodcastFragment mDiscoverFragment;
-
-    private MenuItem searchItem;
-    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements DiscoverPodcastFr
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        FavoritePodcastFragment mFavoriteFragment;
         if (savedInstanceState == null) {
             mFavoriteFragment = new FavoritePodcastFragment();
 
@@ -52,8 +47,8 @@ public class MainActivity extends AppCompatActivity implements DiscoverPodcastFr
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
 
-        searchItem = menu.findItem(R.id.action_search);
-        searchView = (SearchView) searchItem.getActionView();
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -98,18 +93,19 @@ public class MainActivity extends AppCompatActivity implements DiscoverPodcastFr
 
     @Override
     public void onPodcastClick(String feed, String thumbnail) {
-        Intent intent = new Intent(this, PodcastDetailsActivity.class);
-        intent.putExtra(FEED_URL_KEY, feed);
-        intent.putExtra(THUMBNAIL_KEY, thumbnail);
-        startActivity(intent);
+        startActivity(PodcastDetailsActivity.createIntent(this, feed, thumbnail));
     }
 
     @Override
     public void onFavoritePodcastClick(String feed) {
-        Intent intent = new Intent(this, PodcastDetailsActivity.class);
-        intent.putExtra(FEED_URL_KEY, feed);
-        intent.putExtra(FAVORITE_KEY, true);
-        startActivity(intent);
+        startActivity(PodcastDetailsActivity.createIntent(this, feed, null));
     }
 
+    @Override
+    protected void onResume() {
+        if (!UserControlSharedPrefs.isUserLogged(this)) {
+            finish();
+        }
+        super.onResume();
+    }
 }

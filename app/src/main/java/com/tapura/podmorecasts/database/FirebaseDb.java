@@ -11,9 +11,8 @@ import com.tapura.podmorecasts.model.Podcast;
 
 public class FirebaseDb {
 
-    private static final String TAG = FirebaseDb.class.getCanonicalName();
-
-    private static String USER_REF = "user";
+    private static final String EPISODES_LIST_REF = "episodes";
+    private static final String USER_REF = "user";
 
     static {
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
@@ -123,6 +122,42 @@ public class FirebaseDb {
 
         DatabaseReference podcastRef = database.getReference(USER_REF).child(uid).child(String.valueOf(hashCode));
         podcastRef.addListenerForSingleValueEvent(listener);
+    }
+
+    public void attachEpisodeListener(Context applicationContext, String feed, int pos, ValueEventListener listener) {
+        String uid = getUser(applicationContext);
+        if (TextUtils.isEmpty(uid)) {
+            return;
+        }
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        int hashCode = feed.hashCode();
+
+        DatabaseReference podcastRef = database.getReference(USER_REF)
+                .child(uid)
+                .child(String.valueOf(hashCode))
+                .child(EPISODES_LIST_REF)
+                .child(String.valueOf(pos));
+        podcastRef.addValueEventListener(listener);
+    }
+
+    public void detachEpisodeListener(Context applicationContext, String feed, int pos, ValueEventListener listener) {
+        String uid = getUser(applicationContext);
+        if (TextUtils.isEmpty(uid)) {
+            return;
+        }
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        int hashCode = feed.hashCode();
+
+        DatabaseReference podcastRef = database.getReference(USER_REF)
+                .child(uid)
+                .child(String.valueOf(hashCode))
+                .child(EPISODES_LIST_REF)
+                .child(String.valueOf(pos));
+        podcastRef.removeEventListener(listener);
     }
 
     private String getUser(Context context) {

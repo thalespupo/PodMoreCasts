@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        release {
+            keyAlias 'key0'
+            keyPassword 'android171'
+            storeFile file('../key/my_key.jks')
+            storePassword 'android171'
+        }
+    }
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.tapura.podmorecasts"
@@ -14,23 +22,24 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
-        targetCompatibility 1.8
-        sourceCompatibility 1.8
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
     }
 }
 
 ext {
     retrofit2LibVersion = '2.3.0'
-    firebaseLibVersion = '11.8.0'
+    firebaseLibVersion = '12.0.1'
     chuckLibVersion = '1.1.0'
     exoplayerLibVersion = '2.6.1'
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     testImplementation 'junit:junit:4.12'
@@ -42,14 +51,14 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation "com.google.firebase:firebase-core:${firebaseLibVersion}"
     implementation 'com.firebaseui:firebase-ui-auth:3.2.1'
-    implementation 'com.google.android.gms:play-services-auth:11.8.0'
+    implementation 'com.google.android.gms:play-services-auth:12.0.1'
     implementation "com.google.firebase:firebase-database:${firebaseLibVersion}"
     implementation "com.google.firebase:firebase-auth:${firebaseLibVersion}"
     debugImplementation "com.readystatesoftware.chuck:library:${chuckLibVersion}"
     releaseImplementation "com.readystatesoftware.chuck:library-no-op:${chuckLibVersion}"
     implementation "com.google.android.exoplayer:exoplayer-core:${exoplayerLibVersion}"
     implementation "com.google.android.exoplayer:exoplayer-ui:${exoplayerLibVersion}"
-    implementation "android.arch.lifecycle:extensions:1.1.0"
+    implementation 'android.arch.lifecycle:extensions:1.1.1'
     implementation 'com.facebook.stetho:stetho:1.5.0'
 }
 

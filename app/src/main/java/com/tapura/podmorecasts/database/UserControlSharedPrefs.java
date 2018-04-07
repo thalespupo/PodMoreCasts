@@ -3,6 +3,7 @@ package com.tapura.podmorecasts.database;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 public class UserControlSharedPrefs {
 
@@ -27,4 +28,8 @@ public class UserControlSharedPrefs {
         editor.apply();
     }
 
+    public static boolean isUserLogged(Context context) {
+        String user = getAlreadyLoggedUserId(context);
+        return !TextUtils.isEmpty(user);
+    }
 }

@@ -20,10 +20,8 @@ import static android.content.Context.DOWNLOAD_SERVICE;
 
 public class DownloadUtils {
 
-    private static final String TAG = DownloadUtils.class.getSimpleName();
-
-    private DownloadRequestRepository mRepository;
-    private Context mContext;
+    private final DownloadRequestRepository mRepository;
+    private final Context mContext;
 
     public DownloadUtils(Context context) {
         mContext = context;
@@ -54,8 +52,6 @@ public class DownloadUtils {
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(episode.getEpisodeLink()));
         request.setTitle("Episode download");
         request.setDescription(episode.getTitle());
-
-        // TODO handlePermissions();
 
         String fileName = Utils.extractNameFrom(episode.getEpisodeLink());
 

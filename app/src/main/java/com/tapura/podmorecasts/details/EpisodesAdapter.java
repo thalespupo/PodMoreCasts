@@ -1,8 +1,6 @@
 package com.tapura.podmorecasts.details;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +17,7 @@ import java.util.List;
 public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.EpisodeViewHolder> {
 
     private List<Episode> mList;
-    private OnDownloadClickListener mCallback;
+    private final OnDownloadClickListener mCallback;
     public boolean isFavorite;
 
     public interface OnDownloadClickListener {
@@ -55,18 +53,14 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.Episod
         return mList != null ? mList.size() : 0;
     }
 
-    public List<Episode> getList() {
-        return mList;
-    }
-
     public void setList(List<Episode> mList) {
         this.mList = mList;
         notifyDataSetChanged();
     }
 
     public class EpisodeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView tvTitle;
-        ImageView ivDownload;
+        final TextView tvTitle;
+        final ImageView ivDownload;
 
         public EpisodeViewHolder(View itemView) {
             super(itemView);

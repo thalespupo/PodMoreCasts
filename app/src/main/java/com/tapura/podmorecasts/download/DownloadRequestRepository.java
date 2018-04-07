@@ -11,11 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class DownloadRequestRepository {
+class DownloadRequestRepository {
 
     private static final String SHARED_PREF_KEY = "download_request_repo";
     private final Context mContext;
-    private List<DownloadRequest> mRequests;
+    private final List<DownloadRequest> mRequests;
 
     public DownloadRequestRepository(Context c) {
         mContext = c;
