@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        release {
+            keyAlias 'key0'
+            keyPassword 'android171'
+            storeFile file('../key/my_key.jks')
+            storePassword 'android171'
+        }
+    }
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.tapura.podmorecasts"
@@ -14,6 +22,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     compileOptions {
