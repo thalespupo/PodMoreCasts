@@ -47,7 +47,7 @@ public class FavoritePodcastFragment extends Fragment implements PodcastFavorite
 
     @Override
     public void onCancelled(DatabaseError databaseError) {
-        Toast.makeText(getActivity(), "List not loaded", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getActivity(), getString(R.string.toast_list_not_loaded), Toast.LENGTH_SHORT).show();
     }
 
     public interface FavoriteClickListener {

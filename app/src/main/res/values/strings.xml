@@ -12,4 +12,14 @@
     <string name="configure">Configure</string>
     <string name="add_widget">Add widget</string>
     <string name="no_podcast">No podcast found</string>
+    <string name="toast_the_podcast">The Podcast</string>
+    <string name="toast_was_added">was added!</string>
+    <string name="toast_podcast_error">Error, please check!!</string>
+    <string name="toast_download_error">Error in download, please try again</string>
+    <string name="download_title">Episode download</string>
+    <string name="toast_list_not_loaded">List not loaded</string>
+    <string name="toast_firebase_login_error">No sign was done, to use the app you must enter with e-mail, or Google account</string>
+    <string name="description_fab_add_or_remove">Add or remove a podcast button</string>
+    <string name="description_fab_remove_podcast">Remove Podcast</string>
+    <string name="description_fab_add_podcast">Add Podcast as favorite</string>
 </resources>

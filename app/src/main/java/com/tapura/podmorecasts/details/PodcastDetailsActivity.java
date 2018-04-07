@@ -70,7 +70,7 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
 
-        fab = findViewById(R.id.fab_add_favorite);
+        fab = findViewById(R.id.fab_add_remove_favorite);
 
         String feedUrl = getIntent().getStringExtra(FEED_URL_KEY);
         String thumbnail = getIntent().getStringExtra(THUMBNAIL_KEY);
@@ -118,9 +118,9 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
             boolean result = db.insert(mPodcast, this);
 
             if (result) {
-                Toast.makeText(this, "The Podcast " + mPodcast.getTitle() + " was added!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.toast_the_podcast) + mPodcast.getTitle() + getString(R.string.toast_was_added), Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(this, "Error, please check!!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.toast_podcast_error), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -129,13 +129,16 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
         stopLoadingScheme();
 
         if (podcast == null) {
-            Toast.makeText(this, "Podcast Null!!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.toast_podcast_error), Toast.LENGTH_SHORT).show();
+            MyLog.e(getClass(), "bindview: Podcast is null");
             return;
         }
         if (mAdapter.isFavorite) {
             fab.setImageResource(R.drawable.ic_close);
+            fab.setContentDescription(getString(R.string.description_fab_remove_podcast));
         } else {
             fab.setImageResource(R.drawable.ic_add);
+            fab.setContentDescription(getString(R.string.description_fab_add_podcast));
         }
         podcast.setFeedUrl(mPodcast.getFeedUrl());
         podcast.setThumbnailPath(mPodcast.getThumbnailPath());

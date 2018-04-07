@@ -7,7 +7,9 @@ import android.net.Uri;
 import android.os.Environment;
 import android.widget.Toast;
 
+import com.tapura.podmorecasts.MyApplication;
 import com.tapura.podmorecasts.MyLog;
+import com.tapura.podmorecasts.R;
 import com.tapura.podmorecasts.Utils;
 import com.tapura.podmorecasts.database.FirebaseDb;
 import com.tapura.podmorecasts.model.Episode;
@@ -50,7 +52,7 @@ public class DownloadUtils {
         DownloadManager downloadManager = (DownloadManager) mContext.getSystemService(DOWNLOAD_SERVICE);
 
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(episode.getEpisodeLink()));
-        request.setTitle("Episode download");
+        request.setTitle(mContext.getString(R.string.download_title));
         request.setDescription(episode.getTitle());
 
         String fileName = Utils.extractNameFrom(episode.getEpisodeLink());
@@ -68,7 +70,9 @@ public class DownloadUtils {
             podcast.getEpisodes().get(pos).setEpisodeState(EpisodeMediaState.DOWNLOADING);
             db.insert(podcast, mContext);
         } else {
-            Toast.makeText(mContext, "manager null", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext,
+                    mContext.getString(R.string.toast_download_error),
+                    Toast.LENGTH_SHORT).show();
         }
     }
 }

@@ -67,13 +67,13 @@ public class SplashActivity extends AppCompatActivity {
                 startPodMoreCastsEntryPoint();
                 // ...
             } else {
-                Toast.makeText(this, "Error in Firebase login", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.toast_firebase_login_error), Toast.LENGTH_SHORT).show();
                 finish();
                 // Sign in failed, check response for error code
                 // ...
             }
         } else {
-            Toast.makeText(this, "No sign was done, to use the app you must enter with e-mail, or Google account", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_firebase_login_error), Toast.LENGTH_SHORT).show();
         }
     }
 }
