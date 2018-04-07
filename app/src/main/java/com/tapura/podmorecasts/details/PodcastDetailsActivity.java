@@ -44,6 +44,7 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
     private EpisodesAdapter mAdapter;
     private ProgressBar progressBar;
     private int mSelectedPos;
+    private FloatingActionButton fab;
 
     public static Intent createIntent(Context context, String feedUrl, @Nullable String thumbnail) {
         Intent intent = new Intent(context, PodcastDetailsActivity.class);
@@ -68,6 +69,8 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setHasFixedSize(true);
+
+        fab = findViewById(R.id.fab_add_favorite);
 
         String feedUrl = getIntent().getStringExtra(FEED_URL_KEY);
         String thumbnail = getIntent().getStringExtra(THUMBNAIL_KEY);
@@ -106,10 +109,12 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
     public void onFabClick(View view) {
         FirebaseDb db = new FirebaseDb();
         if (mAdapter.isFavorite) {
+            fab.setImageResource(R.drawable.ic_add);
             db.remove(this, mPodcast.getFeedUrl());
             mAdapter.isFavorite = false;
             stopAllDownload();
         } else {
+            fab.setImageResource(R.drawable.ic_close);
             boolean result = db.insert(mPodcast, this);
 
             if (result) {
@@ -126,6 +131,11 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
         if (podcast == null) {
             Toast.makeText(this, "Podcast Null!!", Toast.LENGTH_LONG).show();
             return;
+        }
+        if (mAdapter.isFavorite) {
+            fab.setImageResource(R.drawable.ic_close);
+        } else {
+            fab.setImageResource(R.drawable.ic_add);
         }
         podcast.setFeedUrl(mPodcast.getFeedUrl());
         podcast.setThumbnailPath(mPodcast.getThumbnailPath());
@@ -149,7 +159,6 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
     }
 
     private void stopLoadingScheme() {
-        FloatingActionButton fab = findViewById(R.id.fab_add_favorite);
         fab.setVisibility(View.VISIBLE);
 
         mRecyclerView.setVisibility(View.VISIBLE);
