@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "576802086373",
+    "firebase_url": "https://podmorecasts.firebaseio.com",
+    "project_id": "podmorecasts",
+    "storage_bucket": "podmorecasts.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:576802086373:android:1ed92cee1d3c73e6",
+        "android_client_info": {
+          "package_name": "com.tapura.podmorecasts"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "576802086373-ib8vaq1g22hjbapoeqk4q8re9dggobph.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tapura.podmorecasts",
+            "certificate_hash": "b9c4923f20b447245697e5ee1b38e1d8b3291ba3"
+          }
+        },
+        {
+          "client_id": "576802086373-rt7tdng7e1db71h8rm4ggp5qsvjotnoc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tapura.podmorecasts",
+            "certificate_hash": "73d9b60bfe0bb3bcbd3025f630bda81cbc0289e4"
+          }
+        },
+        {
+          "client_id": "576802086373-vh7lsbrn36fui1rgaj4irdo5migdh99k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfZEYETI6TzWNtZ56GIkhsajpyxLRADKo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "576802086373-vh7lsbrn36fui1rgaj4irdo5migdh99k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
