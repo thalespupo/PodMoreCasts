@@ -27,7 +27,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-class PodcastDetailsViewModel extends ViewModel implements ValueEventListener {
+public class PodcastDetailsViewModel extends ViewModel implements ValueEventListener {
 
     // Pair is a Podcast object, and the source type: true = Firebase, false = DownloadTask
     private MutableLiveData<Pair<Podcast, Boolean>> mCurrentPodcast;
