@@ -24,7 +24,6 @@ public class PodcastWidget extends AppWidgetProvider {
         MyLog.d(PodcastWidget.class, "updateAppWidget");
 
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.podcast_widget);
-        views.setTextViewText(R.id.appwidget_text, context.getString(R.string.app_name));
 
         Intent appIntent = new Intent(context, MainActivity.class);
         PendingIntent pendingIntentToOpenApp = PendingIntent.getActivity(context, 0, appIntent, 0);
