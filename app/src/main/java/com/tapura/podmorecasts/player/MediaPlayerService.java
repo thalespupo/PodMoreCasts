@@ -1,11 +1,10 @@
 package com.tapura.podmorecasts.player;
 
 
-import android.app.NotificationManager;
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -51,7 +50,6 @@ public class MediaPlayerService extends Service implements Player.EventListener 
     private static MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
     private SimpleExoPlayer mExoPlayer;
-    private NotificationManager mNotificationManager;
 
     private final IBinder mBinder = new LocalBinder();
     private Episode mEpisode;
@@ -73,15 +71,15 @@ public class MediaPlayerService extends Service implements Player.EventListener 
     }
 
     @Override
-    public ComponentName startService(Intent service) {
-        if (service != null) {
-            if (service.getAction() != null && service.getAction().equals(ACTION_NOTIFICATION_DELETED)) {
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent != null) {
+            if (intent.getAction() != null && intent.getAction().equals(ACTION_NOTIFICATION_DELETED)) {
                 stopSelf();
+                return START_NOT_STICKY;
             }
         }
-        return super.startService(service);
+        return super.onStartCommand(intent, flags, startId);
     }
-
 
     @Nullable
     @Override
@@ -90,14 +88,9 @@ public class MediaPlayerService extends Service implements Player.EventListener 
     }
 
 
-
     @Override
     public void onDestroy() {
         releasePlayer();
-        if (mNotificationManager != null) {
-            mNotificationManager.cancelAll();
-        }
-
         if (mMediaSession != null) {
             mMediaSession.setActive(false);
         }
@@ -210,7 +203,7 @@ public class MediaPlayerService extends Service implements Player.EventListener 
         Intent notificationDeleted = new Intent(this, MediaPlayerService.class);
         notificationDeleted.setAction(ACTION_NOTIFICATION_DELETED);
 
-        PendingIntent pendingNotificationDeleted = PendingIntent.getService(this, 0, notificationDeleted, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingNotificationDeleted = PendingIntent.getService(this, 0, notificationDeleted, PendingIntent.FLAG_UPDATE_CURRENT);
 
         builder.setContentTitle(getString(R.string.app_name))
                 .setContentText(mEpisode.getTitle())
@@ -222,13 +215,13 @@ public class MediaPlayerService extends Service implements Player.EventListener 
                 .addAction(playPauseAction)
                 .addAction(fastForwardAction)
                 .setDeleteIntent(pendingNotificationDeleted)
+                .setOngoing(false)
+                .setAutoCancel(true)
                 .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle()
                         .setMediaSession(mMediaSession.getSessionToken())
                         .setShowActionsInCompactView(0, 1, 2));
 
-
-        mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        mNotificationManager.notify(0, builder.build());
+        startForeground(1, builder.build());
     }
 
 

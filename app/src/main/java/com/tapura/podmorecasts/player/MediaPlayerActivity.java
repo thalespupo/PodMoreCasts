@@ -95,14 +95,6 @@ public class MediaPlayerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_media_player);
 
-        mFeed = getIntent().getStringExtra(EXTRA_FEED_URL);
-        mEpisodePos = getIntent().getIntExtra(EXTRA_EPISODE_POS, -1);
-
-        mDb = new FirebaseDb();
-        mDb.attachEpisodeListener(MyApplication.getApp(), mFeed, mEpisodePos, fbCallback);
-
-        mPlayerView = findViewById(R.id.playerView);
-
         if (savedInstanceState != null) {
             bound = savedInstanceState.getBoolean(SIS_BOUND);
         }
@@ -110,14 +102,26 @@ public class MediaPlayerActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStart() {
+        super.onStart();
+        mFeed = getIntent().getStringExtra(EXTRA_FEED_URL);
+        mEpisodePos = getIntent().getIntExtra(EXTRA_EPISODE_POS, -1);
+
+        mDb = new FirebaseDb();
+        mDb.attachEpisodeListener(MyApplication.getApp(), mFeed, mEpisodePos, fbCallback);
+
+        mPlayerView = findViewById(R.id.playerView);
+    }
+
+    @Override
+    protected void onStop() {
         if (mDb != null) {
             mDb.detachEpisodeListener(MyApplication.getApp(), mFeed, mEpisodePos, fbCallback);
         }
         if (bound) {
             unbindService(mConnection);
         }
+        super.onStop();
     }
 
     private void initializeUi() {
