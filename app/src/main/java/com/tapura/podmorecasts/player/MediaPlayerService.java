@@ -1,7 +1,7 @@
 package com.tapura.podmorecasts.player;
 
 
-import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -46,6 +46,7 @@ import java.io.File;
 public class MediaPlayerService extends Service implements Player.EventListener {
 
     private static final String ACTION_NOTIFICATION_DELETED = "action_notification_deleted";
+    private static final int NOTIFICATION_ID = 2345678;
 
     private static MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
@@ -221,7 +222,13 @@ public class MediaPlayerService extends Service implements Player.EventListener 
                         .setMediaSession(mMediaSession.getSessionToken())
                         .setShowActionsInCompactView(0, 1, 2));
 
-        startForeground(1, builder.build());
+        if (state.getState() == PlaybackStateCompat.STATE_PLAYING) {
+            startForeground(NOTIFICATION_ID, builder.build());
+        } else {
+            stopForeground(false);
+            NotificationManager mNotificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+            mNotificationManager.notify(NOTIFICATION_ID, builder.build());
+        }
     }
 
 
