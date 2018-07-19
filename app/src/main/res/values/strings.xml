@@ -22,4 +22,6 @@
     <string name="description_fab_add_or_remove">Add or remove a podcast button</string>
     <string name="description_fab_remove_podcast">Remove Podcast</string>
     <string name="description_fab_add_podcast">Add Podcast as favorite</string>
+    <string name="channel_name">podcast channel</string>
+    <string name="channel_description">Notification of a playing podcast episode</string>
 </resources>

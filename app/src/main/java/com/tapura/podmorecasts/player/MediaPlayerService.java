@@ -1,6 +1,6 @@
 package com.tapura.podmorecasts.player;
 
-
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -47,6 +48,7 @@ public class MediaPlayerService extends Service implements Player.EventListener 
 
     private static final String ACTION_NOTIFICATION_DELETED = "action_notification_deleted";
     private static final int NOTIFICATION_ID = 2345678;
+    private static final String CHANNEL_ID = "podcast_channel";
 
     private static MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
@@ -171,7 +173,8 @@ public class MediaPlayerService extends Service implements Player.EventListener 
     }
 
     private void showNotification(PlaybackStateCompat state) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "");
+        createNotificationChannel();
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID);
 
         int icon;
         String play_pause;
@@ -218,6 +221,7 @@ public class MediaPlayerService extends Service implements Player.EventListener 
                 .setDeleteIntent(pendingNotificationDeleted)
                 .setOngoing(false)
                 .setAutoCancel(true)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setStyle(new android.support.v4.media.app.NotificationCompat.MediaStyle()
                         .setMediaSession(mMediaSession.getSessionToken())
                         .setShowActionsInCompactView(0, 1, 2));
@@ -231,6 +235,19 @@ public class MediaPlayerService extends Service implements Player.EventListener 
         }
     }
 
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
 
     private class MySessionCallback extends MediaSessionCompat.Callback {
         @Override
