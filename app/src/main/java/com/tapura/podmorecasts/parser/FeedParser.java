@@ -114,12 +114,18 @@ public class FeedParser {
             }
         }
 
-        Podcast podcast = new Podcast();
-        podcast.setTitle(title);
-        podcast.setSummary(summary);
-        podcast.setAuthor(author);
-        podcast.setImagePath(imagePath);
-        podcast.setEpisodes(episodes);
+        Podcast podcast = null;
+        if (title != null && summary != null && author != null && imagePath != null) {
+            podcast = new Podcast(
+                    title,
+                    summary,
+                    author,
+                    imagePath,
+                    null,
+                    episodes,
+                    null
+            );
+        }
 
         return podcast;
     }
@@ -157,13 +163,16 @@ public class FeedParser {
 
         parser.require(XmlPullParser.END_TAG, ns, EPISODE_TAG);
 
-        Episode episode = new Episode();
-        episode.setTitle(title);
-        episode.setLink(link);
-        episode.setEpisodeLink(episodeLink);
-        episode.setDescription(description);
-        // init value
-        episode.setEpisodeState(EpisodeMediaState.NOT_IN_DISK);
+        Episode episode = null;
+        if (title != null && link != null && episodeLink != null && description != null) {
+            episode = new Episode(
+                    title,
+                    link,
+                    episodeLink,
+                    description,
+                    null,
+                    EpisodeMediaState.NOT_IN_DISK);
+        }
 
         return episode;
     }

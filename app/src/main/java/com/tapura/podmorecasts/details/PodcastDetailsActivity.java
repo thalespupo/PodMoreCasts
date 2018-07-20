@@ -45,6 +45,8 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
     private ProgressBar progressBar;
     private int mSelectedPos;
     private FloatingActionButton fab;
+    private String feedUrlFromIntent;
+    private String thumbnailFromIntent;
 
     public static Intent createIntent(Context context, String feedUrl, @Nullable String thumbnail) {
         Intent intent = new Intent(context, PodcastDetailsActivity.class);
@@ -74,12 +76,12 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
 
         String feedUrl = getIntent().getStringExtra(FEED_URL_KEY);
         String thumbnail = getIntent().getStringExtra(THUMBNAIL_KEY);
-        mPodcast = new Podcast();
+
         if (!TextUtils.isEmpty(feedUrl)) {
-            mPodcast.setFeedUrl(feedUrl);
+            this.feedUrlFromIntent = feedUrl;
         }
         if (!TextUtils.isEmpty(thumbnail)) {
-            mPodcast.setThumbnailPath(thumbnail);
+            this.thumbnailFromIntent = thumbnail;
         }
 
         createViewModel(feedUrl);
@@ -140,9 +142,10 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
             fab.setImageResource(R.drawable.ic_add);
             fab.setContentDescription(getString(R.string.description_fab_add_podcast));
         }
-        podcast.setFeedUrl(mPodcast.getFeedUrl());
-        podcast.setThumbnailPath(mPodcast.getThumbnailPath());
+
         mPodcast = podcast;
+        mPodcast.setThumbnailPath(thumbnailFromIntent);
+        mPodcast.setFeedUrl(feedUrlFromIntent);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(mPodcast.getTitle());
