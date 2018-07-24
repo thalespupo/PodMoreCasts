@@ -6,6 +6,7 @@ import android.util.Xml;
 import com.tapura.podmorecasts.model.Episode;
 import com.tapura.podmorecasts.model.EpisodeMediaState;
 import com.tapura.podmorecasts.model.Podcast;
+import com.tapura.podmorecasts.model.PodcastKt;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -118,12 +119,13 @@ public class FeedParser {
         if (title != null && author != null && imagePath != null) {
             podcast = new Podcast(
                     title,
-                    summary == null ? "" : summary,
                     author,
+                    summary == null ? "" : summary,
                     imagePath,
                     null,
                     episodes,
-                    null
+                    null,
+                    PodcastKt.SOURCE_TYPE_FEED
             );
         }
 

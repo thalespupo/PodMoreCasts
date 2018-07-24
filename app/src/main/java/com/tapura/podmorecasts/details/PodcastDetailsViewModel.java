@@ -13,16 +13,16 @@ import com.tapura.podmorecasts.MyApplication;
 import com.tapura.podmorecasts.MyLog;
 import com.tapura.podmorecasts.database.FirebaseDb;
 import com.tapura.podmorecasts.model.Podcast;
+import com.tapura.podmorecasts.model.PodcastKt;
 
 public class PodcastDetailsViewModel extends ViewModel implements ValueEventListener, DownloadAndParseFeedTask.CallBack {
 
-    // Pair is a Podcast object, and the source type: true = Firebase, false = DownloadTask
-    private MutableLiveData<Pair<Podcast, Boolean>> mCurrentPodcast;
+    private MutableLiveData<Podcast> mCurrentPodcast;
     private FirebaseDb firebaseDb;
     private String currentFeed;
     private boolean wasLoaded;
 
-    public MutableLiveData<Pair<Podcast, Boolean>> getCurrentPodcast(String feed) {
+    public MutableLiveData<Podcast> getCurrentPodcast(String feed) {
         if (mCurrentPodcast == null) {
             mCurrentPodcast = new MutableLiveData<>();
             wasLoaded = false;
@@ -41,7 +41,8 @@ public class PodcastDetailsViewModel extends ViewModel implements ValueEventList
     }
 
     private void onLoadedPodcast(Podcast podcast) {
-        mCurrentPodcast.setValue(new Pair<>(podcast, true));
+        podcast.setSourceType(PodcastKt.SOURCE_TYPE_FIREBASE);
+        mCurrentPodcast.setValue(podcast);
         wasLoaded = true;
     }
 
@@ -51,9 +52,9 @@ public class PodcastDetailsViewModel extends ViewModel implements ValueEventList
         if (dataSnapshot.exists()) {
             onLoadedPodcast(dataSnapshot.getValue(Podcast.class));
         } else if (wasLoaded) {
-            Pair<Podcast, Boolean> alreadyLoaded = mCurrentPodcast.getValue();
+            Podcast alreadyLoaded = mCurrentPodcast.getValue();
             if (alreadyLoaded != null) {
-                mCurrentPodcast.setValue(new Pair<>(alreadyLoaded.first, false));
+                mCurrentPodcast.setValue(alreadyLoaded);
             }
         } else {
             new DownloadAndParseFeedTask(this).execute(currentFeed);
@@ -78,7 +79,7 @@ public class PodcastDetailsViewModel extends ViewModel implements ValueEventList
 
     @Override
     public void onDownloadAndParseFinished(Podcast podcast) {
-        mCurrentPodcast.setValue(new Pair<>(podcast, false));
+        mCurrentPodcast.setValue(podcast);
         wasLoaded = true;
     }
 }

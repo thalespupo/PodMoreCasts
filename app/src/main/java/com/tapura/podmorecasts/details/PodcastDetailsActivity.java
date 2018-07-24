@@ -30,6 +30,7 @@ import com.tapura.podmorecasts.database.UserControlSharedPrefs;
 import com.tapura.podmorecasts.download.DownloadUtils;
 import com.tapura.podmorecasts.model.Episode;
 import com.tapura.podmorecasts.model.Podcast;
+import com.tapura.podmorecasts.model.PodcastKt;
 import com.tapura.podmorecasts.player.MediaPlayerActivity;
 
 public class PodcastDetailsActivity extends AppCompatActivity implements EpisodesAdapter.OnDownloadClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
@@ -92,12 +93,12 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
     private void createViewModel(String feedUrl) {
         PodcastDetailsViewModel mModel = ViewModelProviders.of(this).get(PodcastDetailsViewModel.class);
 
-        final Observer<Pair<Podcast, Boolean>> observer = new Observer<Pair<Podcast, Boolean>>() {
+        final Observer<Podcast> observer = new Observer<Podcast>() {
             @Override
-            public void onChanged(@Nullable Pair<Podcast, Boolean> pair) {
-                if (pair != null) {
-                    mAdapter.isFavorite = pair.second;
-                    bindView(pair.first);
+            public void onChanged(@Nullable Podcast podcast) {
+                if (podcast != null) {
+                    mAdapter.isFavorite = podcast.getSourceType() == PodcastKt.SOURCE_TYPE_FIREBASE;
+                    bindView(podcast);
                 } else {
 
                     MyLog.e(this.getClass(), "ViewModel onChanged: the podcast info comes null");
