@@ -115,10 +115,10 @@ public class FeedParser {
         }
 
         Podcast podcast = null;
-        if (title != null && summary != null && author != null && imagePath != null) {
+        if (title != null && author != null && imagePath != null) {
             podcast = new Podcast(
                     title,
-                    summary,
+                    summary == null ? "" : summary,
                     author,
                     imagePath,
                     null,
