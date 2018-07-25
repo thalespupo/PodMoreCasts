@@ -4,9 +4,8 @@ package com.tapura.podmorecasts.parser;
 import android.util.Xml;
 
 import com.tapura.podmorecasts.model.Episode;
-import com.tapura.podmorecasts.model.EpisodeMediaState;
+import com.tapura.podmorecasts.model.EpisodeKt;
 import com.tapura.podmorecasts.model.Podcast;
-import com.tapura.podmorecasts.model.PodcastKt;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -28,6 +27,7 @@ public class FeedParser {
     private static final String EPISODE_TAG = "item";
     private static final String LINK_TAG = "link";
     private static final String EPISODE_LINK_TAG = "enclosure";
+    private static final String GUID_TAG = "guid";
     private static final String DESCRIPTION_TAG = "description";
 
     public Podcast parse(InputStream in) throws XmlPullParserException, IOException {
@@ -124,8 +124,7 @@ public class FeedParser {
                     imagePath,
                     null,
                     episodes,
-                    null,
-                    PodcastKt.SOURCE_TYPE_FEED
+                    null
             );
         }
 
@@ -137,6 +136,7 @@ public class FeedParser {
         String title = null;
         String link = null;
         String episodeLink = null;
+        String guid = null;
         String description = null;
 
         while (parser.next() != XmlPullParser.END_TAG) {
@@ -154,6 +154,9 @@ public class FeedParser {
                 case EPISODE_LINK_TAG:
                     episodeLink = readEpisodeLink(parser);
                     break;
+                case GUID_TAG:
+                    guid = readSimple(parser, GUID_TAG);
+                    break;
                 case DESCRIPTION_TAG:
                     description = readSimple(parser, DESCRIPTION_TAG);
                     break;
@@ -166,14 +169,15 @@ public class FeedParser {
         parser.require(XmlPullParser.END_TAG, ns, EPISODE_TAG);
 
         Episode episode = null;
-        if (title != null && link != null && episodeLink != null && description != null) {
+        if (title != null && link != null && episodeLink != null && guid != null && description != null) {
             episode = new Episode(
                     title,
                     link,
                     episodeLink,
                     description,
                     null,
-                    EpisodeMediaState.NOT_IN_DISK);
+                    guid,
+                    EpisodeKt.STATE_NOT_IN_DISK);
         }
 
         return episode;
@@ -207,9 +211,9 @@ public class FeedParser {
 
     private String readSimple(XmlPullParser parser, String tag) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, ns, tag);
-        String title = readText(parser);
+        String text = readText(parser);
         parser.require(XmlPullParser.END_TAG, ns, tag);
-        return title;
+        return text;
     }
 
     private String readText(XmlPullParser parser) throws IOException, XmlPullParserException {

@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.tapura.podmorecasts.MyLog;
 import com.tapura.podmorecasts.R;
 import com.tapura.podmorecasts.model.Episode;
+import com.tapura.podmorecasts.model.EpisodeKt;
 import com.tapura.podmorecasts.model.EpisodeMediaState;
 
 import java.util.List;
@@ -75,13 +76,13 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.Episod
             mCallback.onDownloadClick(getAdapterPosition());
         }
 
-        private int getDownloadIcon(EpisodeMediaState episodeState) {
+        private int getDownloadIcon(int episodeState) {
             switch (episodeState) {
-                case COMPLETED:
+                case EpisodeKt.STATE_DOWNLOADED:
                     return R.drawable.ic_done_green;
-                case DOWNLOADING:
+                case EpisodeKt.STATE_DOWNLOADING:
                     return R.drawable.ic_file_download_red;
-                case NOT_IN_DISK:
+                case EpisodeKt.STATE_NOT_IN_DISK:
                     return R.drawable.ic_file_download_black;
                 default:
                     return -1;

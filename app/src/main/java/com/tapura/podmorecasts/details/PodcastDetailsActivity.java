@@ -16,7 +16,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Pair;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -29,8 +28,8 @@ import com.tapura.podmorecasts.database.FirebaseDb;
 import com.tapura.podmorecasts.database.UserControlSharedPrefs;
 import com.tapura.podmorecasts.download.DownloadUtils;
 import com.tapura.podmorecasts.model.Episode;
+import com.tapura.podmorecasts.model.EpisodeKt;
 import com.tapura.podmorecasts.model.Podcast;
-import com.tapura.podmorecasts.model.PodcastKt;
 import com.tapura.podmorecasts.player.MediaPlayerActivity;
 
 public class PodcastDetailsActivity extends AppCompatActivity implements EpisodesAdapter.OnDownloadClickListener, ActivityCompat.OnRequestPermissionsResultCallback {
@@ -97,7 +96,7 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
             @Override
             public void onChanged(@Nullable Podcast podcast) {
                 if (podcast != null) {
-                    mAdapter.isFavorite = podcast.getSourceType() == PodcastKt.SOURCE_TYPE_FIREBASE;
+                    //mAdapter.isFavorite = podcast.getSourceType() == PodcastKt.SOURCE_TYPE_FIREBASE;
                     bindView(podcast);
                 } else {
 
@@ -113,12 +112,12 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
         FirebaseDb db = new FirebaseDb();
         if (mAdapter.isFavorite) {
             fab.setImageResource(R.drawable.ic_add);
-            db.remove(this, mPodcast.getFeedUrl());
+            db.removeFavorite(this, mPodcast.getFeedUrl());
             mAdapter.isFavorite = false;
             stopAllDownload();
         } else {
             fab.setImageResource(R.drawable.ic_close);
-            boolean result = db.insert(mPodcast, this);
+            boolean result = db.insertFavorite(this, mPodcast);
 
             if (result) {
                 Toast.makeText(this, getString(R.string.toast_the_podcast) + mPodcast.getTitle() + getString(R.string.toast_was_added), Toast.LENGTH_SHORT).show();
@@ -179,13 +178,13 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
         Episode episode = mPodcast.getEpisodes().get(pos);
 
         switch (episode.getEpisodeState()) {
-            case DOWNLOADING:
+            case EpisodeKt.STATE_DOWNLOADING:
                 stopDownload(pos);
                 break;
-            case NOT_IN_DISK:
+            case EpisodeKt.STATE_NOT_IN_DISK:
                 startDownload(pos);
                 break;
-            case COMPLETED:
+            case EpisodeKt.STATE_DOWNLOADED:
                 startActivity(MediaPlayerActivity.createIntent(this, mPodcast.getFeedUrl(), pos));
                 finish();
         }

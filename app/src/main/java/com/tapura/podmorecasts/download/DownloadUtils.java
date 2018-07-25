@@ -13,6 +13,7 @@ import com.tapura.podmorecasts.R;
 import com.tapura.podmorecasts.Utils;
 import com.tapura.podmorecasts.database.FirebaseDb;
 import com.tapura.podmorecasts.model.Episode;
+import com.tapura.podmorecasts.model.EpisodeKt;
 import com.tapura.podmorecasts.model.EpisodeMediaState;
 import com.tapura.podmorecasts.model.Podcast;
 
@@ -67,8 +68,8 @@ public class DownloadUtils {
             DownloadRequest downloadRequest = new DownloadRequest(refId, podcast.getFeedUrl(), pos);
             mRepository.append(downloadRequest);
             FirebaseDb db = new FirebaseDb();
-            podcast.getEpisodes().get(pos).setEpisodeState(EpisodeMediaState.DOWNLOADING);
-            db.insert(podcast, mContext);
+            podcast.getEpisodes().get(pos).setEpisodeState(EpisodeKt.STATE_DOWNLOADING);
+            //db.insert(podcast, mContext);
         } else {
             Toast.makeText(mContext,
                     mContext.getString(R.string.toast_download_error),

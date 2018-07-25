@@ -2,165 +2,100 @@ package com.tapura.podmorecasts.database;
 
 
 import android.content.Context;
-import android.text.TextUtils;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.tapura.podmorecasts.model.Podcast;
 
+import java.util.Objects;
+
 public class FirebaseDb {
 
-    private static final String EPISODES_LIST_REF = "episodes";
     private static final String USER_REF = "user";
+    private static final String PODCASTS_LIST_REF = "podcasts";
+    private static final String EPISODES_LIST_REF = "episodes";
 
     static {
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
 
-    public boolean insert(Podcast podcast, Context context) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        String uid = getUser(context);
-        if (TextUtils.isEmpty(uid)) {
-            return false;
-        }
-
-        String podcastId = String.valueOf(podcast.getFeedUrl().hashCode());
-        DatabaseReference userRef = database.getReference(USER_REF).child(uid).child(podcastId);
-
-        userRef.setValue(podcast);
+    public boolean insertFavorite(Context context, Podcast podcast) {
+        getPodcastFavoriteRef(context)
+                .child(createHash(Objects.requireNonNull(podcast.getFeedUrl())))
+                .setValue(podcast);
         return true;
     }
 
-    public void remove(Context context, String feedUrl) {
-
-        String uid = getUser(context);
-        if (TextUtils.isEmpty(uid)) {
-            return;
-        }
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        String hashCode = String.valueOf(feedUrl.hashCode());
-
-        DatabaseReference userRef = database.getReference(USER_REF).child(uid);
-
-        userRef.child(hashCode).removeValue();
+    public void removeFavorite(Context context, String feedUrl) {
+        getPodcastFavoriteRef(context)
+                .child(createHash(feedUrl))
+                .removeValue();
     }
 
     public void attachPodcastListener(Context context, String feedUrl, ValueEventListener listener) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        String uid = getUser(context);
-        if (TextUtils.isEmpty(uid)) {
-            return;
-        }
-
-        int hashCode = feedUrl.hashCode();
-
-        DatabaseReference podcastRef = database.getReference(USER_REF).child(uid).child(String.valueOf(hashCode));
-
-        // Attach a listener to read the data at our posts reference
-        podcastRef.addValueEventListener(listener);
+        getPodcastFavoriteRef(context)
+                .child(createHash(feedUrl))
+                .addValueEventListener(listener);
     }
 
     public void detachPodcastListener(Context context, String feedUrl, ValueEventListener listener) {
-
-        String uid = getUser(context);
-        if (TextUtils.isEmpty(uid)) {
-            return;
-        }
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        int hashCode = feedUrl.hashCode();
-
-        DatabaseReference podcastRef = database.getReference(USER_REF).child(uid).child(String.valueOf(hashCode));
-
-        // Detach the listener
-        podcastRef.removeEventListener(listener);
+        getPodcastFavoriteRef(context)
+                .child(createHash(feedUrl))
+                .removeEventListener(listener);
     }
 
-    public void attachPodcastListListener(Context context, ValueEventListener listener) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        String uid = getUser(context);
-        if (TextUtils.isEmpty(uid)) {
-            return;
-        }
-
-        DatabaseReference podcastRef = database.getReference(USER_REF).child(uid);
-
-        // Attach a listener to read the data at our posts reference
-        podcastRef.addValueEventListener(listener);
+    public void attachPodcastFavoriteListListener(Context context, ValueEventListener listener) {
+        getPodcastFavoriteRef(context)
+                .addValueEventListener(listener);
     }
 
-    public void detachPodcastListListener(Context context, ValueEventListener listener) {
-
-        String uid = getUser(context);
-        if (TextUtils.isEmpty(uid)) {
-            return;
-        }
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        DatabaseReference podcastRef = database.getReference(USER_REF).child(uid);
-
-        // Detach the listener
-        podcastRef.removeEventListener(listener);
+    public void detachPodcastFavoriteListListener(Context context, ValueEventListener listener) {
+        getPodcastFavoriteRef(context)
+                .removeEventListener(listener);
     }
 
-    public void getPodcast(Context applicationContext, String feed, ValueEventListener listener) {
-        String uid = getUser(applicationContext);
-        if (TextUtils.isEmpty(uid)) {
-            return;
-        }
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        int hashCode = feed.hashCode();
-
-        DatabaseReference podcastRef = database.getReference(USER_REF).child(uid).child(String.valueOf(hashCode));
-        podcastRef.addListenerForSingleValueEvent(listener);
+    public void getPodcast(Context context, String feed, ValueEventListener listener) {
+        getPodcastFavoriteRef(context)
+                .child(createHash(feed))
+                .addListenerForSingleValueEvent(listener);
     }
 
-    public void attachEpisodeListener(Context applicationContext, String feed, int pos, ValueEventListener listener) {
-        String uid = getUser(applicationContext);
-        if (TextUtils.isEmpty(uid)) {
-            return;
-        }
-
+    private DatabaseReference getPodcastFavoriteRef(Context context) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        int hashCode = feed.hashCode();
+        String userId = UserControlSharedPrefs.getAlreadyLoggedUserId(context);
 
-        DatabaseReference podcastRef = database.getReference(USER_REF)
-                .child(uid)
-                .child(String.valueOf(hashCode))
-                .child(EPISODES_LIST_REF)
-                .child(String.valueOf(pos));
-        podcastRef.addValueEventListener(listener);
+        return database.getReference(USER_REF)
+                .child(Objects.requireNonNull(userId))
+                .child(PODCASTS_LIST_REF);
     }
 
-    public void detachEpisodeListener(Context applicationContext, String feed, int pos, ValueEventListener listener) {
-        String uid = getUser(applicationContext);
-        if (TextUtils.isEmpty(uid)) {
-            return;
-        }
+    public void attachEpisodeListener(Context context, String feed, String guid, ValueEventListener listener) {
+        getEpisodeListRef(context)
+                .child(createHash(feed))
+                .child(createHash(guid))
+                .addValueEventListener(listener);
+    }
 
+    public void detachEpisodeListener(Context context, String feed, String guid, ValueEventListener listener) {
+        getEpisodeListRef(context)
+                .child(createHash(feed))
+                .child(createHash(guid))
+                .removeEventListener(listener);
+    }
+
+    private DatabaseReference getEpisodeListRef(Context context) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        int hashCode = feed.hashCode();
+        String userId = UserControlSharedPrefs.getAlreadyLoggedUserId(context);
 
-        DatabaseReference podcastRef = database.getReference(USER_REF)
-                .child(uid)
-                .child(String.valueOf(hashCode))
-                .child(EPISODES_LIST_REF)
-                .child(String.valueOf(pos));
-        podcastRef.removeEventListener(listener);
+        return database.getReference(USER_REF)
+                .child(Objects.requireNonNull(userId))
+                .child(EPISODES_LIST_REF);
     }
 
-    private String getUser(Context context) {
-        return UserControlSharedPrefs.getAlreadyLoggedUserId(context);
+    private String createHash(String value) {
+        return String.valueOf(value.hashCode());
     }
 }

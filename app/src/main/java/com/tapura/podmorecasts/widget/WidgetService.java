@@ -64,7 +64,7 @@ public class WidgetService extends RemoteViewsService {
             mContext = getApplicationContext();
 
             mDb = new FirebaseDb();
-            mDb.attachPodcastListListener(mContext, firebaseListener);
+            mDb.attachPodcastFavoriteListListener(mContext, firebaseListener);
         }
 
         @Override
@@ -81,7 +81,7 @@ public class WidgetService extends RemoteViewsService {
         public void onDestroy() {
             MyLog.d(getClass(), "onDestroy");
             if (mDb != null) {
-                mDb.detachPodcastListListener(mContext, firebaseListener);
+                mDb.attachPodcastFavoriteListListener(mContext, firebaseListener);
             }
         }
 

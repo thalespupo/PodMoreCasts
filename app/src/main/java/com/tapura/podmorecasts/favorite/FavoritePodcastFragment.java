@@ -72,7 +72,7 @@ public class FavoritePodcastFragment extends Fragment implements PodcastFavorite
 
         firebaseDb = new FirebaseDb();
 
-        firebaseDb.attachPodcastListListener(getActivity(), this);
+        firebaseDb.attachPodcastFavoriteListListener(getActivity(), this);
         startLoadingScheme();
         return view;
     }
@@ -102,7 +102,7 @@ public class FavoritePodcastFragment extends Fragment implements PodcastFavorite
     @Override
     public void onDestroy() {
         if (firebaseDb != null) {
-            firebaseDb.detachPodcastListListener(getActivity(), this);
+            firebaseDb.detachPodcastFavoriteListListener(getActivity(), this);
         }
         super.onDestroy();
     }

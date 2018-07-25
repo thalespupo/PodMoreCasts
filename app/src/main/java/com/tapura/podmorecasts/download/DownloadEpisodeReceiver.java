@@ -12,6 +12,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.tapura.podmorecasts.MyLog;
 import com.tapura.podmorecasts.Utils;
 import com.tapura.podmorecasts.database.FirebaseDb;
+import com.tapura.podmorecasts.model.EpisodeKt;
 import com.tapura.podmorecasts.model.EpisodeMediaState;
 import com.tapura.podmorecasts.model.Podcast;
 
@@ -76,8 +77,8 @@ public class DownloadEpisodeReceiver extends BroadcastReceiver {
                     case DownloadManager.STATUS_FAILED:
                         MyLog.d(getClass(), "updateDatabase: FAILED");
                         if (podcast != null) {
-                            podcast.getEpisodes().get(episodePos).setEpisodeState(EpisodeMediaState.NOT_IN_DISK);
-                            db.insert(podcast, context);
+                            podcast.getEpisodes().get(episodePos).setEpisodeState(EpisodeKt.STATE_NOT_IN_DISK);
+                            //db.insert(podcast, context);
                             mRepository.remove(refId);
                         }
                         break;
@@ -87,8 +88,8 @@ public class DownloadEpisodeReceiver extends BroadcastReceiver {
                             String filePath = Utils.EPISODES_PATH + podcast.getTitle() + File.separator;
                             String fileName = Utils.extractNameFrom(podcast.getEpisodes().get(episodePos).getEpisodeLink());
                             podcast.getEpisodes().get(episodePos).setPathInDisk(filePath + fileName);
-                            podcast.getEpisodes().get(episodePos).setEpisodeState(EpisodeMediaState.COMPLETED);
-                            db.insert(podcast, context);
+                            //podcast.getEpisodes().get(episodePos).setEpisodeState(EpisodeKt.STATE_COMPLETED);
+                            //db.insert(podcast, context);
                             mRepository.remove(refId);
                         }
                         break;
