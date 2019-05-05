@@ -145,7 +145,6 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
 
         mPodcast = podcast;
         mPodcast.setThumbnailPath(thumbnailFromIntent);
-        mPodcast.setFeedUrl(feedUrlFromIntent);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(mPodcast.getTitle());

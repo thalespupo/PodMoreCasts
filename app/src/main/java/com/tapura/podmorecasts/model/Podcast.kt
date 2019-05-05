@@ -11,5 +11,5 @@ data class Podcast(
         @get:Exclude var imagePath: String = "",
         @get:Exclude var thumbnailPath: String? = null,
         @get:Exclude var episodes: List<Episode> = Collections.emptyList(),
-        var feedUrl: String? = null
+        var feedUrl: String = ""
 )

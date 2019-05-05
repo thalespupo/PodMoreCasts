@@ -30,7 +30,7 @@ public class FeedParser {
     private static final String GUID_TAG = "guid";
     private static final String DESCRIPTION_TAG = "description";
 
-    public Podcast parse(InputStream in) throws XmlPullParserException, IOException {
+    public Podcast parse(InputStream in, String feed) throws XmlPullParserException, IOException {
         if (in == null) {
             throw new IOException("InputStream null, some error occurred in download");
         }
@@ -39,7 +39,7 @@ public class FeedParser {
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(in, null);
             parser.nextTag();
-            return readFeed(parser);
+            return readFeed(parser, feed);
         } finally {
             in.close();
         }
@@ -62,7 +62,7 @@ public class FeedParser {
         }
     }
 
-    private Podcast readFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
+    private Podcast readFeed(XmlPullParser parser, String feed) throws XmlPullParserException, IOException {
         Podcast podcast = null;
 
         parser.require(XmlPullParser.START_TAG, ns, RSS_TAG);
@@ -72,7 +72,7 @@ public class FeedParser {
             }
             String name = parser.getName();
             if (name.equals(CHANNEL_TAG)) {
-                podcast = readPodcast(parser);
+                podcast = readPodcast(parser, feed);
             } else {
                 skip(parser);
             }
@@ -80,7 +80,7 @@ public class FeedParser {
         return podcast;
     }
 
-    private Podcast readPodcast(XmlPullParser parser) throws IOException, XmlPullParserException {
+    private Podcast readPodcast(XmlPullParser parser, String feed) throws IOException, XmlPullParserException {
         parser.require(XmlPullParser.START_TAG, ns, CHANNEL_TAG);
         String title = null;
         String summary = null;
@@ -124,7 +124,7 @@ public class FeedParser {
                     imagePath,
                     null,
                     episodes,
-                    null
+                    feed
             );
         }
 
