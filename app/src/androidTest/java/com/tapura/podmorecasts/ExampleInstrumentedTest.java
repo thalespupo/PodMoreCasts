@@ -2,20 +2,20 @@ package com.tapura.podmorecasts;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.tapura.podmorecasts.model.Podcast;
-import com.tapura.podmorecasts.parser.FeedParser;
-
-import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import static org.junit.Assert.*;
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.pressImeActionButton;
+import static android.support.test.espresso.action.ViewActions.typeText;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -24,6 +24,10 @@ import static org.junit.Assert.*;
  */
 @RunWith(AndroidJUnit4.class)
 public class ExampleInstrumentedTest {
+
+    @Rule
+    public ActivityTestRule<SplashActivity> rule = new ActivityTestRule<>(SplashActivity.class);
+
     @Test
     public void useAppContext() throws Exception {
         // Context of the app under test.
@@ -33,17 +37,11 @@ public class ExampleInstrumentedTest {
     }
 
     @Test
-    public void parsePodcast() {
-        InputStream inputStream = InstrumentationRegistry.getTargetContext().getResources().openRawResource(R.raw.fakedata);
-
-        FeedParser parser = new FeedParser();
-        Podcast podcast = null;
-        try {
-            podcast = parser.parse(inputStream);
-        } catch (XmlPullParserException | IOException e) {
-            e.printStackTrace();
-        }
-
-        Assert.assertNotNull(podcast);
+    public void whenSearching_shouldShowResultsCorrectly() throws InterruptedException {
+        onView(withId(R.id.action_search)).perform(click());
+        onView(withId(android.support.design.R.id.search_src_text)).perform(typeText("Nerdcast"));
+        onView(withId(android.support.design.R.id.search_src_text)).perform().perform(pressImeActionButton());
+        Thread.sleep(3000);
+        onView(withId(R.id.recycler_view_podcasts_discover_list)).check(new RecyclerViewItemCountAssertion(greaterThan(0)));
     }
 }
