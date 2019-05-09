@@ -47,6 +47,7 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
     private FloatingActionButton fab;
     private String feedUrlFromIntent;
     private String thumbnailFromIntent;
+    private PodcastDetailsViewModel model;
 
     public static Intent createIntent(Context context, String feedUrl, @Nullable String thumbnail) {
         Intent intent = new Intent(context, PodcastDetailsActivity.class);
@@ -90,13 +91,12 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
     }
 
     private void createViewModel(String feedUrl) {
-        PodcastDetailsViewModel mModel = ViewModelProviders.of(this).get(PodcastDetailsViewModel.class);
-
+        model = ViewModelProviders.of(this).get(PodcastDetailsViewModel.class);
         final Observer<Podcast> observer = new Observer<Podcast>() {
             @Override
             public void onChanged(@Nullable Podcast podcast) {
                 if (podcast != null) {
-                    //mAdapter.isFavorite = podcast.getSourceType() == PodcastKt.SOURCE_TYPE_FIREBASE;
+                    mAdapter.isFavorite = podcast.isFavorite();
                     bindView(podcast);
                 } else {
 
@@ -105,7 +105,7 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
             }
         };
 
-        mModel.getCurrentPodcast(feedUrl).observe(this, observer);
+        model.getCurrentPodcast(feedUrl).observe(this, observer);
     }
 
     public void onFabClick(View view) {
@@ -113,6 +113,7 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
         if (mAdapter.isFavorite) {
             fab.setImageResource(R.drawable.ic_add);
             db.removeFavorite(this, mPodcast.getFeedUrl());
+            model.invalidateCache();
             mAdapter.isFavorite = false;
             stopAllDownload();
         } else {

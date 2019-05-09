@@ -124,7 +124,8 @@ public class FeedParser {
                     imagePath,
                     null,
                     episodes,
-                    feed
+                    feed,
+                    false
             );
         }
 

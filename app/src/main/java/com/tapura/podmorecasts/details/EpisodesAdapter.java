@@ -11,7 +11,6 @@ import com.tapura.podmorecasts.MyLog;
 import com.tapura.podmorecasts.R;
 import com.tapura.podmorecasts.model.Episode;
 import com.tapura.podmorecasts.model.EpisodeKt;
-import com.tapura.podmorecasts.model.EpisodeMediaState;
 
 import java.util.List;
 
@@ -40,13 +39,9 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.Episod
     @Override
     public void onBindViewHolder(EpisodeViewHolder holder, int position) {
         holder.tvTitle.setText(mList.get(position).getTitle());
-        if (isFavorite) {
-            holder.ivDownload.setVisibility(View.VISIBLE);
-            Episode epi = mList.get(position);
-            holder.ivDownload.setImageResource(holder.getDownloadIcon(epi.getEpisodeState()));
-        } else {
-            holder.ivDownload.setVisibility(View.INVISIBLE);
-        }
+        holder.ivDownload.setVisibility(View.VISIBLE);
+        Episode epi = mList.get(position);
+        holder.ivDownload.setImageResource(holder.getDownloadIcon(epi.getEpisodeState()));
     }
 
     @Override
