@@ -18,7 +18,6 @@ public class EpisodesAdapter extends RecyclerView.Adapter<EpisodesAdapter.Episod
 
     private List<Episode> mList;
     private final OnDownloadClickListener mCallback;
-    public boolean isFavorite;
 
     public interface OnDownloadClickListener {
         void onDownloadClick(int pos);

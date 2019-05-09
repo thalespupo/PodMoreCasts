@@ -14,9 +14,10 @@ import com.tapura.podmorecasts.model.Podcast
 
 class PodcastDetailsViewModel : ViewModel() {
 
-    private lateinit var mCurrentPodcast: MutableLiveData<Podcast>
+    private val database: FirebaseDb by lazy { FirebaseDb() }
+    private val cache: PodcastCache by lazy { PodcastCache() }
 
-    private val cache = PodcastCache()
+    private lateinit var mCurrentPodcast: MutableLiveData<Podcast>
 
     fun getCurrentPodcast(feed: String): MutableLiveData<Podcast> {
         if (::mCurrentPodcast.isInitialized.not()) {
@@ -31,7 +32,7 @@ class PodcastDetailsViewModel : ViewModel() {
                 }.execute(feed)
             }
 
-            mCurrentPodcast.value = cachedPodcast
+            mCurrentPodcast.postValue(cachedPodcast)
         }
         return mCurrentPodcast
     }
@@ -47,15 +48,15 @@ class PodcastDetailsViewModel : ViewModel() {
                     override fun onDataChange(data: DataSnapshot) {
                         podcast.isFavorite = data.exists()
                         cache.setCache(MyApplication.getApp(), podcast)
-                        mCurrentPodcast.value = podcast
+                        mCurrentPodcast.postValue(podcast)
                     }
                 })
     }
 
-    fun invalidateCache() {
+    fun setFav(isFav: Boolean) {
         mCurrentPodcast.value?.let {
-            it.isFavorite = false
-            mCurrentPodcast.value = it
+            it.isFavorite = isFav
+            mCurrentPodcast.postValue(it)
 
             cache.setCache(MyApplication.getApp(), it)
         }

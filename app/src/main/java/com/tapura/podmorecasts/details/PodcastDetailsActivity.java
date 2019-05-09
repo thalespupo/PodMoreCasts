@@ -96,7 +96,6 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
             @Override
             public void onChanged(@Nullable Podcast podcast) {
                 if (podcast != null) {
-                    mAdapter.isFavorite = podcast.isFavorite();
                     bindView(podcast);
                 } else {
 
@@ -110,15 +109,14 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
 
     public void onFabClick(View view) {
         FirebaseDb db = new FirebaseDb();
-        if (mAdapter.isFavorite) {
-            fab.setImageResource(R.drawable.ic_add);
+        if (mPodcast.isFavorite()) {
             db.removeFavorite(this, mPodcast.getFeedUrl());
-            model.invalidateCache();
-            mAdapter.isFavorite = false;
             stopAllDownload();
+            model.setFav(false);
         } else {
-            fab.setImageResource(R.drawable.ic_close);
             boolean result = db.insertFavorite(this, mPodcast);
+            mPodcast.setFavorite(true);
+            model.setFav(true);
 
             if (result) {
                 Toast.makeText(this, getString(R.string.toast_the_podcast) + mPodcast.getTitle() + getString(R.string.toast_was_added), Toast.LENGTH_SHORT).show();
@@ -131,12 +129,7 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
     private void bindView(Podcast podcast) {
         stopLoadingScheme();
 
-        if (podcast == null) {
-            Toast.makeText(this, getString(R.string.toast_podcast_error), Toast.LENGTH_SHORT).show();
-            MyLog.e(getClass(), "bindview: Podcast is null");
-            return;
-        }
-        if (mAdapter.isFavorite) {
+        if (podcast.isFavorite()) {
             fab.setImageResource(R.drawable.ic_close);
             fab.setContentDescription(getString(R.string.description_fab_remove_podcast));
         } else {
@@ -145,7 +138,9 @@ public class PodcastDetailsActivity extends AppCompatActivity implements Episode
         }
 
         mPodcast = podcast;
-        mPodcast.setThumbnailPath(thumbnailFromIntent);
+        if (thumbnailFromIntent != null) {
+            mPodcast.setThumbnailPath(thumbnailFromIntent);
+        }
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(mPodcast.getTitle());
