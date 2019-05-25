@@ -54,8 +54,10 @@ class PodcastFavoriteAdapter extends RecyclerView.Adapter<PodcastFavoriteAdapter
     }
 
     public void setPodcastList(List<Podcast> podcastList) {
-        this.mList = podcastList;
-        notifyDataSetChanged();
+        if (podcastList != null) {
+            this.mList = podcastList;
+            notifyDataSetChanged();
+        }
     }
 
     public List<Podcast> getList() {

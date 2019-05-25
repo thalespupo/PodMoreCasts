@@ -35,11 +35,11 @@ public class MainActivity extends AppCompatActivity implements DiscoverPodcastFr
             mFavoriteFragment = new FavoritePodcastFragment();
 
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.main_fragment, mFavoriteFragment, FavoritePodcastFragment.fragTag)
+                    .add(R.id.main_fragment, mFavoriteFragment, FavoritePodcastFragment.FRAG_TAG)
                     .commit();
         } else {
             mDiscoverFragment = (DiscoverPodcastFragment) getSupportFragmentManager().findFragmentByTag(DiscoverPodcastFragment.fragTag);
-            mFavoriteFragment = (FavoritePodcastFragment) getSupportFragmentManager().findFragmentByTag(FavoritePodcastFragment.fragTag);
+            mFavoriteFragment = (FavoritePodcastFragment) getSupportFragmentManager().findFragmentByTag(FavoritePodcastFragment.FRAG_TAG);
         }
     }
 
