@@ -38,10 +38,27 @@ public class ExampleInstrumentedTest {
 
     @Test
     public void whenSearching_shouldShowResultsCorrectly() throws InterruptedException {
+        // Arrange
         onView(withId(R.id.action_search)).perform(click());
         onView(withId(android.support.design.R.id.search_src_text)).perform(typeText("Nerdcast"));
+
+        //Action
         onView(withId(android.support.design.R.id.search_src_text)).perform().perform(pressImeActionButton());
         Thread.sleep(3000);
+
+        //Assert
         onView(withId(R.id.recycler_view_podcasts_discover_list)).check(new RecyclerViewItemCountAssertion(greaterThan(0)));
+    }
+
+    @Test
+    public void whenSearching_shouldShowResultsCorrectlyTestRobot() throws InterruptedException {
+        new MainScreenRobot()
+                .clickInSearchBox()
+                .typeInSearchBox("Nerdcast")
+                .clickOkInSearchBox()
+                .wait(3000);
+
+        new SearchableListScreenRobot()
+                .assertListGreaterThan(0);
     }
 }
