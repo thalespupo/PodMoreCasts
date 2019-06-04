@@ -10,6 +10,6 @@ data class Episode(
         var episodeLink: String = "",
         var description: String = "",
         var pathInDisk: String? = null,
-        val guid: String = "",
+        var guid: String = "",
         var episodeState: Int = STATE_NOT_IN_DISK
 )
